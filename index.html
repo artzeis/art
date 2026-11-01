@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wordweave Crosswords</title>
+  <meta name="description" content="Generate fresh, playable crossword puzzles on any theme, at the difficulty you choose.">
+  <meta name="theme-color" content="#f6f1e7">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23e5603b'/%3E%3Cpath d='M6 9h4l2 10 3-10h2l3 10 2-10h4l-4 14h-3.4L16 14l-2.6 9H10z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" id="brandHome" type="button" aria-label="Wordweave home">
+      <span class="brand-mark" aria-hidden="true">W</span>
+      <span class="brand-name">Wordweave</span>
+    </button>
+    <div class="top-actions">
+      <button class="icon-btn" id="helpBtn" type="button" aria-label="How to play" title="How to play">?</button>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ SETUP ============ -->
+    <section id="setupView" class="view setup-view">
+      <div class="hero">
+        <p class="eyebrow">A brand-new crossword, every time</p>
+        <h1>Pick a theme. Choose your challenge.<br><em>We'll weave the puzzle.</em></h1>
+      </div>
+
+      <div id="resumeCard" class="resume-card" hidden>
+        <div class="resume-info">
+          <span class="resume-icon" id="resumeIcon">🧩</span>
+          <div>
+            <strong>Continue your puzzle</strong>
+            <span id="resumeMeta" class="muted"></span>
+          </div>
+        </div>
+        <button id="resumeBtn" class="btn btn-soft" type="button">Continue →</button>
+      </div>
+
+      <div class="setup-card">
+        <div class="step">
+          <h2 class="step-title"><span class="step-num">1</span>Choose a theme</h2>
+          <div id="themeGrid" class="theme-grid" role="radiogroup" aria-label="Theme"></div>
+          <div class="custom-theme" id="customWrap">
+            <label for="customTheme" class="custom-label">…or write your own theme</label>
+            <div class="custom-input">
+              <span class="custom-icon" aria-hidden="true">✏️</span>
+              <input id="customTheme" type="text" maxlength="40" autocomplete="off" spellcheck="true"
+                     placeholder="e.g. Dinosaurs, Coffee, Halloween, Ancient Egypt">
+              <button id="clearCustom" class="clear-btn" type="button" aria-label="Clear custom theme" hidden>×</button>
+            </div>
+            <div class="suggestions" id="suggestions" aria-label="Theme ideas"></div>
+          </div>
+        </div>
+
+        <div class="step">
+          <h2 class="step-title"><span class="step-num">2</span>Pick a difficulty</h2>
+          <div id="difficultyGrid" class="difficulty-grid" role="radiogroup" aria-label="Difficulty"></div>
+        </div>
+
+        <button id="generateBtn" class="btn btn-primary btn-big" type="button">
+          <span>Generate my puzzle</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p class="stats-line" id="statsLine"></p>
+      </div>
+    </section>
+
+    <!-- ============ LOADING ============ -->
+    <section id="loadingView" class="view loading-view" hidden>
+      <div class="loader" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <p id="loadingText" class="loading-text">Gathering words…</p>
+    </section>
+
+    <!-- ============ GAME ============ -->
+    <section id="gameView" class="view game-view" hidden>
+      <div class="game-head">
+        <div class="title-block">
+          <span class="title-icon" id="puzzleIcon">🧩</span>
+          <div>
+            <h2 id="puzzleTitle">Puzzle</h2>
+            <div class="meta">
+              <span class="badge" id="puzzleBadge">Medium</span>
+              <span class="muted" id="puzzleCount"></span>
+            </div>
+          </div>
+        </div>
+        <div class="controls">
+          <div class="timer" id="timerWrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>
+            <span id="timer">0:00</span>
+            <button class="mini-btn" id="pauseBtn" type="button" aria-label="Pause">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+            </button>
+          </div>
+          <details class="menu" id="checkMenu">
+            <summary class="btn btn-soft">Check</summary>
+            <div class="menu-pop">
+              <button type="button" data-check="letter">Check letter</button>
+              <button type="button" data-check="word">Check word</button>
+              <button type="button" data-check="puzzle">Check puzzle</button>
+              <label class="switch-row">
+                <span>Auto-check as I type</span>
+                <input type="checkbox" id="autocheck">
+                <span class="switch" aria-hidden="true"></span>
+              </label>
+            </div>
+          </details>
+          <details class="menu" id="revealMenu">
+            <summary class="btn btn-soft">Reveal</summary>
+            <div class="menu-pop">
+              <button type="button" data-reveal="letter">Reveal letter</button>
+              <button type="button" data-reveal="word">Reveal word</button>
+              <button type="button" data-reveal="puzzle" class="danger">Reveal puzzle</button>
+            </div>
+          </details>
+          <details class="menu" id="moreMenu">
+            <summary class="btn btn-soft" aria-label="More options">•••</summary>
+            <div class="menu-pop menu-right">
+              <button type="button" id="restartBtn">Clear all answers</button>
+              <button type="button" id="printBtn">Print puzzle</button>
+              <button type="button" id="newSameBtn">New puzzle, same settings</button>
+              <button type="button" id="changeBtn">Change theme or difficulty</button>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div id="notice" class="notice" hidden></div>
+
+      <div class="board-layout">
+        <div class="board-col">
+          <div class="clue-bar" id="clueBar">
+            <button class="nav-btn" id="prevClue" type="button" aria-label="Previous clue">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <div class="clue-bar-text" id="clueBarText" role="status" aria-live="polite"></div>
+            <button class="nav-btn" id="nextClue" type="button" aria-label="Next clue">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+          <div class="grid-wrap" id="gridWrap">
+            <div id="grid" class="grid" role="grid" aria-label="Crossword grid"></div>
+            <div class="pause-overlay" id="pauseOverlay" hidden>
+              <p>Paused</p>
+              <button class="btn btn-primary" id="resumePlayBtn" type="button">Resume</button>
+            </div>
+          </div>
+          <div class="progress" aria-label="Progress">
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+            <span id="progressText">0%</span>
+          </div>
+        </div>
+        <aside class="clues-col" aria-label="Clues">
+          <div class="clue-section">
+            <h3>Across</h3>
+            <ol id="acrossList" class="clue-list"></ol>
+          </div>
+          <div class="clue-section">
+            <h3>Down</h3>
+            <ol id="downList" class="clue-list"></ol>
+          </div>
+        </aside>
+      </div>
+
+    </section>
+  </main>
+
+  <div class="keyboard" id="keyboard" hidden aria-label="On-screen keyboard"></div>
+
+  <!-- ============ MODALS ============ -->
+  <div class="modal" id="winModal" hidden role="dialog" aria-modal="true" aria-labelledby="winTitle">
+    <div class="modal-card">
+      <div class="win-burst" aria-hidden="true">🎉</div>
+      <h2 id="winTitle">Puzzle solved!</h2>
+      <p class="muted" id="winSub"></p>
+      <div class="win-stats">
+        <div><span class="stat-num" id="winTime">0:00</span><span class="stat-label">Time</span></div>
+        <div><span class="stat-num" id="winWords">0</span><span class="stat-label">Words</span></div>
+        <div><span class="stat-num" id="winHelp">0</span><span class="stat-label">Reveals</span></div>
+      </div>
+      <p class="win-best" id="winBest"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="winAgain" type="button">Play another</button>
+        <button class="btn btn-soft" id="winChange" type="button">Change theme</button>
+        <button class="btn btn-ghost" id="winView" type="button">View grid</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="helpModal" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal-card help-card">
+      <h2 id="helpTitle">How to play</h2>
+      <ul class="help-list">
+        <li><strong>Tap or click</strong> a square to select it. Tap it again to switch between Across and Down.</li>
+        <li><strong>Type</strong> to fill letters — the cursor moves along the word for you.</li>
+        <li><strong>Arrow keys</strong> move around, <kbd>Space</kbd> switches direction, <kbd>Tab</kbd> jumps to the next clue, <kbd>Backspace</kbd> erases.</li>
+        <li><strong>Click a clue</strong> in the list to jump straight to it.</li>
+        <li>Stuck? Use <strong>Check</strong> to spot mistakes or <strong>Reveal</strong> for a nudge.</li>
+        <li>Your progress saves automatically — come back any time.</li>
+      </ul>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="helpClose" type="button">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="confirmModal" hidden role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-card">
+      <h2 id="confirmTitle">Are you sure?</h2>
+      <p class="muted" id="confirmText"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="confirmYes" type="button">Yes</button>
+        <button class="btn btn-ghost" id="confirmNo" type="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <!-- Print layout -->
+  <div class="print-sheet" id="printSheet" aria-hidden="true"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/wordbank.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/custom-theme.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
