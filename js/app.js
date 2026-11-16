@@ -868,6 +868,61 @@
   }
 
   // =====================================================
+  // Install / Add to Home Screen
+  // =====================================================
+  const SITE_URL = 'https://artzeis.github.io/art/';
+  let deferredInstall = null;
+  const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const ua = navigator.userAgent;
+  const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /android/i.test(ua);
+  let embedded = false;
+  try { embedded = window.top !== window.self; } catch (e) { embedded = true; }
+
+  function refreshInstallBtn() { $('#installBtn').hidden = isStandalone(); }
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstall = e; refreshInstallBtn(); });
+  window.addEventListener('appinstalled', () => { deferredInstall = null; refreshInstallBtn(); toast('Wordweave is on your Home Screen 🎉'); });
+
+  function installSteps() {
+    const share = '<svg viewBox="0 0 24 24" class="inline-ic"><path d="M12 3v12M8 7l4-4 4 4M5 12v8h14v-8"/></svg>';
+    if (embedded) {
+      return `<p>Home Screen icons need the app's own website. Open it in your browser first:</p>
+        <a class="btn btn-soft site-link" href="${SITE_URL}" target="_blank" rel="noopener">${SITE_URL.replace('https://', '')}</a>
+        <p class="muted small">Then tap this ⤓ Install button again for the steps.</p>`;
+    }
+    if (isIOS) {
+      return `<ol><li>Tap the <strong>Share</strong> button ${share} in Safari's toolbar.</li>
+        <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
+        <li>Tap <strong>Add</strong> — the Wordweave icon appears on your Home Screen.</li></ol>`;
+    }
+    if (isAndroid) {
+      return `<ol><li>Tap the browser menu <strong>⋮</strong> (top-right).</li>
+        <li>Tap <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>
+        <li>Confirm — the Wordweave icon appears with your apps.</li></ol>`;
+    }
+    return `<ol><li>Click the <strong>install</strong> icon at the right end of the address bar, or open the browser menu.</li>
+      <li>Choose <strong>Install Wordweave</strong> (or <strong>Add to Home Screen / Dock</strong>).</li>
+      <li>Wordweave opens in its own window with its own icon.</li></ol>`;
+  }
+
+  $('#installBtn').addEventListener('click', async () => {
+    if (deferredInstall && !embedded) {
+      deferredInstall.prompt();
+      try { await deferredInstall.userChoice; } catch (e) { /* ignore */ }
+      deferredInstall = null;
+      return;
+    }
+    $('#installSteps').innerHTML = installSteps();
+    openModal('installModal');
+  });
+  $('#installClose').addEventListener('click', () => closeModal('installModal'));
+  refreshInstallBtn();
+
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost') && !embedded) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is optional */ }));
+  }
+
+  // =====================================================
   // Boot
   // =====================================================
   renderSetup();

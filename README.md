@@ -31,6 +31,18 @@ python3 -m http.server 8000
 
 You can also open `index.html` directly, or host the folder on GitHub Pages (Settings → Pages → deploy from branch).
 
+## Add to Home Screen
+
+Wordweave is an installable web app: it has its own icon, opens full-screen, and keeps working offline.
+
+1. Host the folder on GitHub Pages (Settings → Pages → Deploy from a branch → pick the branch and `/ (root)`) and open the site on your phone.
+2. Tap the **⤓ Install** button in the app's top bar for step-by-step instructions, or:
+   - **iPhone/iPad (Safari):** Share → *Add to Home Screen* → Add.
+   - **Android (Chrome):** menu ⋮ → *Install app* / *Add to Home screen*.
+   - **Desktop (Chrome/Edge):** the install icon in the address bar.
+
+The icon lives in `icons/icon.svg`. After editing it, run `node scripts/make-icons.js` to regenerate the PNG sizes.
+
 ## Project layout
 
 ```
@@ -43,7 +55,11 @@ js/ambient.js         Animated theme backgrounds (particle engine)
 js/generator.js       Crossword layout engine
 js/custom-theme.js    Custom-theme word lookup (Datamuse + local fallback)
 js/app.js             UI, input, game state, saving
+manifest.webmanifest  App name, icon and colors used when it's installed
+sw.js                 Service worker (offline support)
+icons/                App icon (SVG source + generated PNGs)
 scripts/check.js      Sanity tests: node scripts/check.js
+scripts/make-icons.js Renders the icon PNGs from icons/icon.svg
 ```
 
 ### Adding words or themes

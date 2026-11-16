@@ -123,7 +123,7 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
 .topbar {
   position: relative; z-index: 5;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px clamp(16px, 4vw, 40px);
+  padding: max(16px, env(safe-area-inset-top)) max(clamp(16px, 4vw, 40px), env(safe-area-inset-right)) 16px max(clamp(16px, 4vw, 40px), env(safe-area-inset-left));
   max-width: 1320px; margin: 0 auto;
 }
 .brand { display: flex; align-items: center; gap: 12px; background: none; border: 0; cursor: pointer; padding: 4px; border-radius: 12px; }
@@ -151,6 +151,23 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
 .i-sun { display: none; }
 :root[data-theme="light"] .i-sun { display: block; }
 :root[data-theme="light"] .i-moon { display: none; }
+
+/* Install / Add to Home Screen */
+.install-btn { width: auto; padding: 0 12px; gap: 6px; display: flex; align-items: center; font-family: var(--font-ui); font-size: 13.5px; font-weight: 600; }
+.install-btn svg { width: 17px; height: 17px; color: var(--accent-ink); }
+.install-icon { display: block; margin: 0 auto 6px; border-radius: 22px; box-shadow: 0 0 40px -6px var(--a1), 0 10px 30px -10px rgba(0,0,0,.6); }
+#installModal h2, .install-sub { text-align: center; }
+.install-steps { margin-top: 16px; font-size: 14.5px; color: var(--ink-2); }
+.install-steps ol { list-style: none; counter-reset: step; padding: 0; margin: 0; display: grid; gap: 10px; }
+.install-steps li { counter-increment: step; position: relative; padding: 11px 12px 11px 48px; min-height: 46px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); line-height: 1.45; }
+.install-steps li::before {
+  content: counter(step); position: absolute; left: 12px; top: 10px; width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700; background: var(--a1); color: var(--on-accent); box-shadow: 0 0 12px -2px var(--a1);
+}
+.install-steps strong { color: var(--ink); }
+.install-steps .inline-ic { width: 17px; height: 17px; vertical-align: -3px; color: var(--accent-ink); }
+.install-steps .site-link { display: flex; width: 100%; margin: 10px 0; font-family: var(--font-mono); white-space: normal; word-break: break-all; text-decoration: none; }
+.install-steps .small { font-size: 12.5px; }
 
 main { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 48px; }
 .view { animation: fadeUp .45s cubic-bezier(.2, .8, .2, 1) both; }
@@ -647,6 +664,8 @@ body.has-kb .toast { bottom: 200px; }
 }
 @media (max-width: 640px) {
   .brand-name { font-size: 15px; letter-spacing: .1em; }
+  .install-label { display: none; }
+  .install-btn { width: 42px; padding: 0; justify-content: center; }
   .brand-mark { width: 34px; height: 34px; font-size: 14px; }
   .difficulty-grid { grid-template-columns: 1fr; }
   .diff-card { padding: 13px 14px; }
