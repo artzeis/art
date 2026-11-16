@@ -4,7 +4,8 @@ A real-world treasure hunt game for kids. Help a Fairy, a Gnome, an Elf, a Sunfe
 Centaur and Leo the Moonhusky find their lost treasures by solving riddles and completing activity challenges. There is
 also an optional AR hide-and-seek mode.
 
-See [GAME_DESIGN.md](GAME_DESIGN.md) for the full design.
+See [GAME_DESIGN.md](GAME_DESIGN.md) for the full design, and [ART_BRIEF.md](ART_BRIEF.md) for the character
+art brief and image prompts.
 
 ## Run it
 It's a static web app with no build step:
@@ -21,7 +22,8 @@ folder on GitHub Pages works well for playing on a phone.
 - `index.html` — app shell and the How to Play instructions
 - `styles.css` — styles
 - `js/data.js` — creatures, descriptions, challenges, hiding spots and riddles (edit content here)
-- `js/art.js` — character illustrations
+- `js/art.js` — placeholder character drawings and the loader for finished artwork
+- `assets/characters/` — finished character pictures (`fairy.png`, `gnome.png`, …) replace the drawings automatically
 - `assets/leo.jpg` — photo of the real Leo
 - `js/app.js` — screens, quest flow, journal, grown-up setup
 - `js/ar.js` — AR mode: room scan, hiding and seeking

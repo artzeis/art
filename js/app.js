@@ -55,7 +55,7 @@
   const tile = (c, pill) => `
     <button class="creature-tile bob" style="${vars(c)}" data-open="${c.id}" aria-label="${c.name} the ${c.kind}">
       ${pill || ""}
-      <span class="art">${CREATURE_SVG[c.id]}</span>
+      <span class="art">${creatureArt(c.id)}</span>
       <span class="label"><span class="name">${c.name}</span><span class="kind">${c.kind}</span></span>
     </button>`;
 
@@ -162,7 +162,7 @@
           <section class="hero">
             <button class="icon-btn say-btn" data-say aria-label="Read aloud">🔊</button>
             ${c.photo ? `<div class="photo-badge"><img src="${c.photo}" alt="The real ${c.name.split(" ")[0]}">The real ${c.name.split(" ")[0]}</div>` : ""}
-            <div class="art bob">${CREATURE_SVG[c.id]}</div>
+            <div class="art bob">${creatureArt(c.id)}</div>
             <h1>${c.name}</h1>
             <span class="kind-chip">${c.kind}${friend ? " · Friend ✔" : ""}</span><br>
             <span class="bubble">“${c.catchphrase}”</span>
@@ -301,7 +301,7 @@
           <div class="path">${PATH.map((ico, i) =>
             `${i ? `<span class="line ${i <= step ? "on" : ""}"></span>` : ""}<span class="stop ${i <= step ? "on" : ""} ${i === step ? "now" : ""}">${ico}</span>`).join("")}</div>
           <div class="card">
-            <div class="quest-head"><div class="art bob">${CREATURE_SVG[c.id]}</div>
+            <div class="quest-head"><div class="art bob">${creatureArt(c.id)}</div>
               <div><h2>${c.name}</h2><span class="kind-chip">${c.kind}</span></div></div>
             ${body}
           </div>
@@ -417,6 +417,8 @@
   document.getElementById("helpClose").onclick = () => dlg.close();
 
   persist();
-  go("home");
-  try { if (!localStorage.getItem(STORE_KEY + ".seenHelp")) { dlg.showModal(); localStorage.setItem(STORE_KEY + ".seenHelp", "1"); } } catch (_) {}
+  loadCreatureImages(CREATURES.map((c) => c.id)).then(() => {
+    go("home");
+    try { if (!localStorage.getItem(STORE_KEY + ".seenHelp")) { dlg.showModal(); localStorage.setItem(STORE_KEY + ".seenHelp", "1"); } } catch (_) {}
+  });
 })();

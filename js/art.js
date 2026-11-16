@@ -277,3 +277,23 @@ const CREATURE_SVG = {
   </g>
 </svg>`,
 };
+
+// ---------- Professional artwork ----------
+// Drop a finished picture into assets/characters/<id>.png (transparent background,
+// e.g. assets/characters/fairy.png) and it automatically replaces the drawing above
+// everywhere in the app, including AR. Missing files simply fall back to the drawing.
+const CREATURE_IMG = {};
+function creatureArt(id) {
+  return CREATURE_IMG[id]
+    ? `<img class="char-img" src="${CREATURE_IMG[id]}" alt="" draggable="false">`
+    : CREATURE_SVG[id];
+}
+function loadCreatureImages(ids) {
+  return Promise.all(ids.map((id) => new Promise((resolve) => {
+    const url = `assets/characters/${id}.png`;
+    const img = new Image();
+    img.onload = () => { CREATURE_IMG[id] = url; resolve(); };
+    img.onerror = () => resolve();
+    img.src = url;
+  })));
+}
