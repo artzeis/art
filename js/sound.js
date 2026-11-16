@@ -101,7 +101,60 @@
     }
   }
 
+  // ---------- generative ambient music ----------
+  let musicOn = false;
+  let musicTimer = null;
+  let step = 0;
+  const PROG = [[0, 7, 16], [-3, 4, 12], [-7, 0, 9], [-5, 2, 11]]; // I – vi – IV – V voicings
+
+  function pad(freq, at, dur, vol) {
+    const c = ac();
+    if (!c) return;
+    const t = c.currentTime + at;
+    const o = c.createOscillator();
+    const f = c.createBiquadFilter();
+    const g = c.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(freq, t);
+    f.type = 'lowpass';
+    f.frequency.value = 900;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + dur * 0.35);
+    g.gain.linearRampToValueAtTime(0.0001, t + dur);
+    o.connect(f).connect(g).connect(master);
+    o.start(t);
+    o.stop(t + dur + 0.1);
+  }
+
+  function musicTick() {
+    if (!musicOn || document.hidden) return;
+    const chord = PROG[Math.floor(step / 2) % PROG.length];
+    const low = voice.base / 4;
+    if (step % 2 === 0) chord.forEach((n) => pad(low * Math.pow(2, n / 12), 0, 7.5, 0.018));
+    // sparse melody from the pentatonic scale
+    if (Math.random() < 0.7) {
+      const n = chord[0] + 12 + PENTA[(Math.random() * PENTA.length) | 0] + (Math.random() < 0.3 ? 12 : 0);
+      tone(low * 2 * Math.pow(2, n / 12), Math.random() * 1.2, 1.6, 0.012, 'sine');
+    }
+    step++;
+  }
+
+  function setMusic(on) {
+    musicOn = !!on;
+    clearInterval(musicTimer);
+    musicTimer = null;
+    if (musicOn) {
+      if (!ac()) return;
+      musicTick();
+      musicTimer = setInterval(musicTick, 3600);
+    }
+  }
+
   function setTheme(id) { voice = VOICES[id] || VOICES.general; }
+  function setEnabled(on) {
+    enabled = !!on;
+    try { localStorage.setItem(KEY, enabled ? 'on' : 'off'); } catch (e) { /* ignore */ }
+  }
   function isOn() { return enabled; }
   function toggle() {
     enabled = !enabled;
@@ -110,5 +163,5 @@
     return enabled;
   }
 
-  root.CW = Object.assign(root.CW || {}, { sound: { play, setTheme, toggle, isOn } });
+  root.CW = Object.assign(root.CW || {}, { sound: { play, setTheme, toggle, isOn, setEnabled, setMusic } });
 })(window);

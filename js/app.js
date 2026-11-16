@@ -21,6 +21,24 @@
   let customText = prefs.custom || '';
   let difficulty = DIFFICULTIES[prefs.difficulty] ? prefs.difficulty : 'medium';
 
+  // ---------- game modes ----------
+  const MODES = {
+    classic: { label: 'Classic', icon: '⏱', blurb: 'Clock running, best times & speed bonus' },
+    zen: { label: 'Zen', icon: '🍃', blurb: 'No clock, no pressure — just words' },
+    attack: { label: 'Time Attack', icon: '⚡', blurb: 'Beat the countdown. Each word adds +12s' }
+  };
+  const ATTACK_TIME = { easy: 180, medium: 300, hard: 480 };
+  const ATTACK_BONUS = 12;
+  let mode = MODES[prefs.mode] ? prefs.mode : 'classic';
+
+  // ---------- settings ----------
+  const DEFAULT_SETTINGS = { calm: false, music: false, tts: false, skipFilled: false, autocheckAll: false, showTimer: true };
+  const settings = Object.assign({}, DEFAULT_SETTINGS, store.get('settings', {}));
+  function saveSettings() { store.set('settings', settings); }
+
+  // ---------- sparks (power-up currency) ----------
+  const POWER_COST = { anagram: 3, flip: 1, hint: 5, freeze: 4 };
+
   // ---------- game state ----------
   let G = null; // current game
   let paused = false;
@@ -31,12 +49,13 @@
   // =====================================================
   // Color scheme
   // =====================================================
-  // Dark "neon" mode is the default; light "frost" mode is opt-in.
-  function applyScheme(mode) {
-    const dark = mode !== 'light';
+  // Dark is the default; light is opt-in from Settings.
+  function applyScheme(scheme) {
+    const dark = scheme !== 'light';
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = dark ? '#060913' : '#eef1fb';
+    if (meta) meta.content = dark ? '#0a0c13' : '#f4f5f9';
+    $$('#schemeSeg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scheme === (dark ? 'dark' : 'light'))));
   }
 
   // =====================================================
@@ -67,36 +86,112 @@
     demo.start($('#heroDemo'), theme.entries);
   }
 
-  // Sound toggle
-  function paintSoundBtn() {
-    const on = sound.isOn();
-    const b = $('#soundBtn');
-    b.classList.toggle('muted-on', !on);
-    b.setAttribute('aria-pressed', String(on));
-    b.setAttribute('aria-label', on ? 'Sound on' : 'Sound off');
-  }
-  $('#soundBtn').addEventListener('click', () => { sound.toggle(); paintSoundBtn(); });
-  paintSoundBtn();
   function previewSkinDesc() {
     return customText.trim() ? skins.forCustom(customText.trim(), bank) : { id: selTheme || 'animals' };
   }
   applyScheme(store.get('scheme', null));
-  $('#themeToggle').addEventListener('click', () => {
-    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    store.set('scheme', next);
-    applyScheme(next);
+
+  // =====================================================
+  // Settings drawer
+  // =====================================================
+  function applySettings() {
+    document.body.classList.toggle('calm', settings.calm);
+    if (ambient && ambient.setPaused) ambient.setPaused(settings.calm);
+    $$('[data-setting]').forEach((input) => {
+      const k = input.dataset.setting;
+      input.checked = k === 'sound' ? sound.isOn() : !!settings[k];
+    });
+    if (G) paintTimerVisibility();
+  }
+  function openSettings() {
+    $('#settingsDrawer').classList.add('open');
+    $('#settingsDrawer').setAttribute('aria-hidden', 'false');
+    $('#scrim').hidden = false;
+    applySettings();
+    setTimeout(() => $('#settingsClose').focus(), 50);
+  }
+  function closeSettings() {
+    $('#settingsDrawer').classList.remove('open');
+    $('#settingsDrawer').setAttribute('aria-hidden', 'true');
+    $('#scrim').hidden = true;
+  }
+  $('#settingsBtn').addEventListener('click', openSettings);
+  $('#settingsClose').addEventListener('click', closeSettings);
+  $('#scrim').addEventListener('click', closeSettings);
+  $$('#schemeSeg button').forEach((b) => b.addEventListener('click', () => { store.set('scheme', b.dataset.scheme); applyScheme(b.dataset.scheme); }));
+  $$('[data-setting]').forEach((input) => input.addEventListener('change', () => {
+    const k = input.dataset.setting;
+    if (k === 'sound') { sound.setEnabled(input.checked); if (input.checked) sound.play('click'); return; }
+    settings[k] = input.checked;
+    saveSettings();
+    if (k === 'music') sound.setMusic(settings.music);
+    if (k === 'tts' && !settings.tts && window.speechSynthesis) speechSynthesis.cancel();
+    applySettings();
+  }));
+  $('#resetBtn').addEventListener('click', () => {
+    confirmBox('Erase all XP, badges, sparks, stats and your Wordbook on this device?', () => {
+      ['stats', 'current', 'recent', 'counter'].forEach((k) => store.del(k));
+      closeSettings();
+      G = null;
+      renderSetup();
+      updateWallet();
+      toast('Progress reset');
+    });
   });
+  // Browsers only allow audio after a user gesture, so ambient music starts on the first tap.
+  window.addEventListener('pointerdown', function startMusic() {
+    if (settings.music) sound.setMusic(true);
+    window.removeEventListener('pointerdown', startMusic);
+  });
+
+  // =====================================================
+  // Sparks wallet
+  // =====================================================
+  function sparks() { const st = getStats(); return st.sparks == null ? 20 : st.sparks; }
+  function addSparks(n) {
+    const st = getStats();
+    st.sparks = Math.max(0, (st.sparks == null ? 20 : st.sparks) + n);
+    store.set('stats', st);
+    updateWallet(n);
+    return st.sparks;
+  }
+  function updateWallet(delta) {
+    const amt = sparks();
+    $('#walletAmt').textContent = amt;
+    if (delta) {
+      const w = $('#wallet');
+      w.classList.remove('bump', 'spend'); void w.offsetWidth; w.classList.add(delta > 0 ? 'bump' : 'spend');
+    }
+    $$('.power').forEach((b) => {
+      const cost = POWER_COST[b.dataset.power];
+      b.classList.toggle('poor', cost > amt);
+    });
+  }
+  $('#wallet').addEventListener('click', () => toast(`✦ ${sparks()} Sparks — earn 2 per word and 10 per puzzle, spend them on power-ups`));
 
   // =====================================================
   // Views
   // =====================================================
   function show(view) {
-    for (const id of ['setupView', 'loadingView', 'gameView']) $('#' + id).hidden = id !== view;
+    for (const id of ['setupView', 'loadingView', 'gameView', 'profileView']) $('#' + id).hidden = id !== view;
     document.body.classList.toggle('in-game', view === 'gameView');
+    const tab = view === 'profileView' ? 'profile' : view === 'setupView' ? 'home' : '';
+    $$('[data-tab]').forEach((b) => b.toggleAttribute('aria-current', b.dataset.tab === tab));
     document.body.classList.toggle('has-kb', view === 'gameView' && isTouch);
     $('#keyboard').hidden = !(view === 'gameView' && isTouch);
     window.scrollTo({ top: 0 });
-    if (view === 'gameView') requestAnimationFrame(fitGrid);
+    if (view === 'gameView') {
+      requestAnimationFrame(() => {
+        fitGrid();
+        // On phones, park the board right under the top bar so the whole grid sits above the keyboard.
+        if (window.innerWidth <= 720) {
+          const y = $('.board-col').getBoundingClientRect().top + window.scrollY - $('.topbar').offsetHeight;
+          window.scrollTo({ top: Math.max(0, y) });
+        }
+      });
+      // Phones can report a zoomed-out viewport for a moment while switching views; measure again once it settles.
+      setTimeout(fitGrid, 350);
+    }
   }
 
   // =====================================================
@@ -128,7 +223,7 @@
     for (const idea of ideas) {
       const c = document.createElement('button');
       c.type = 'button';
-      c.className = 'chip';
+      c.className = 'idea';
       c.textContent = idea;
       c.addEventListener('click', () => { customText = idea; $('#customTheme').value = idea; selTheme = null; syncSetup(); });
       sug.appendChild(c);
@@ -147,6 +242,19 @@
       b.addEventListener('click', () => { difficulty = key; sound.play('click'); syncSetup(); });
       dg.appendChild(b);
     });
+
+    const mg = $('#modeGrid');
+    mg.innerHTML = '';
+    for (const [key, m] of Object.entries(MODES)) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'diff-card mode-card';
+      b.setAttribute('role', 'radio');
+      b.dataset.id = key;
+      b.innerHTML = `<span class="d-top"><span class="d-name"><span class="m-icon" aria-hidden="true">${m.icon}</span>${m.label}</span></span><span class="d-blurb">${m.blurb}</span>`;
+      b.addEventListener('click', () => { mode = key; sound.play('click'); syncSetup(); });
+      mg.appendChild(b);
+    }
 
     $('#customTheme').value = customText;
     syncSetup();
@@ -170,10 +278,19 @@
 
   function syncSetup() {
     $$('.theme-card').forEach((b) => b.setAttribute('aria-checked', String(!customText && b.dataset.id === selTheme)));
-    $$('.diff-card').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.id === difficulty)));
+    $$('#difficultyGrid .diff-card').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.id === difficulty)));
+    $$('#modeGrid .diff-card').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.id === mode)));
+    const tName = customText.trim() ? `“${titleCase(customText.trim())}”` : (bank.themes.find((t) => t.id === selTheme) || bank.themes[0]).name;
+    $('#buildSummary').innerHTML = '';
+    [['Theme', tName], ['Difficulty', DIFFICULTIES[difficulty].label], ['Mode', MODES[mode].label]].forEach(([k, v]) => {
+      const sp = document.createElement('span');
+      sp.innerHTML = `<small>${k}</small>`;
+      sp.appendChild(document.createTextNode(v));
+      $('#buildSummary').appendChild(sp);
+    });
     $('#customWrap .custom-input').classList.toggle('active', !!customText);
     $('#clearCustom').hidden = !customText;
-    store.set('prefs', { theme: selTheme || 'animals', custom: customText, difficulty });
+    store.set('prefs', { theme: selTheme || 'animals', custom: customText, difficulty, mode });
     // live preview of the chosen theme's design (debounced while typing)
     clearTimeout(syncSetup.t);
     syncSetup.t = setTimeout(() => { if (!$('#setupView').hidden) { setSkin(previewSkinDesc()); refreshDemo(); } }, customText ? 450 : 0);
@@ -197,7 +314,9 @@
     const filled = saved.fill.filter(Boolean).length;
     const total = saved.puzzle.solution.filter(Boolean).length;
     $('#resumeIcon').textContent = saved.puzzle.icon;
-    $('#resumeMeta').textContent = `${saved.puzzle.title} · ${DIFFICULTIES[saved.puzzle.difficulty].label} · ${Math.round((filled / total) * 100)}% filled · ${fmtTime(saved.elapsed)}`;
+    const m = MODES[saved.puzzle.mode || 'classic'];
+    const clock = saved.puzzle.mode === 'attack' ? `${fmtTime(Math.ceil(saved.timeLeft || 0))} left` : saved.puzzle.mode === 'zen' ? 'no clock' : fmtTime(saved.elapsed);
+    $('#resumeMeta').textContent = `${saved.puzzle.title} · ${DIFFICULTIES[saved.puzzle.difficulty].label} · ${m.label} · ${Math.round((filled / total) * 100)}% filled · ${clock}`;
     card.hidden = false;
   }
   $('#resumeBtn').addEventListener('click', () => {
@@ -206,7 +325,7 @@
   });
 
   function getStats() {
-    return Object.assign({ solved: 0, best: {}, xp: 0, badges: [], themes: [], daily: {} }, store.get('stats', {}));
+    return Object.assign({ solved: 0, best: {}, xp: 0, badges: [], themes: [], daily: {}, words: {}, history: [] }, store.get('stats', {}));
   }
 
   function renderStats() {
@@ -219,7 +338,7 @@
     $('#xpText').textContent = `${lv.into} / ${lv.need} XP to level ${lv.level + 1}`;
     $('#statSolved').textContent = s.solved || 0;
     $('#statStreak').textContent = s.streak || 0;
-    $('#statBadges').textContent = `${(s.badges || []).length}/${progress.BADGES.length}`;
+    $('#statWords').textContent = Object.keys(s.words || {}).length;
     const strip = $('#badgeStrip');
     strip.innerHTML = '';
     for (const b of progress.BADGES) {
@@ -234,6 +353,126 @@
     renderDaily();
   }
 
+  // =====================================================
+  // Profile page
+  // =====================================================
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function ago(ms) {
+    const d = Math.floor((Date.now() - ms) / 864e5);
+    if (d <= 0) return 'Today';
+    if (d === 1) return 'Yesterday';
+    if (d < 7) return `${d} days ago`;
+    return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  function renderProfile() {
+    const st = getStats();
+    const lv = progress.levelFor(st.xp);
+    $('#pLevelNum').textContent = lv.level;
+    $('#pLevelRing').style.setProperty('--p', Math.round((lv.into / lv.need) * 100));
+    $('#pTitle').textContent = lv.title;
+    $('#pXpFill').style.width = (lv.into / lv.need) * 100 + '%';
+    $('#pXpText').textContent = `${st.xp || 0} XP total · ${lv.need - lv.into} XP to level ${lv.level + 1}`;
+    $('#pSparks').textContent = sparks();
+
+    const hist = st.history || [];
+    const classicSolved = hist.filter((h) => h.ok && h.mode === 'classic');
+    const avg = classicSolved.length ? classicSolved.reduce((a, h) => a + h.time, 0) / classicSolved.length : null;
+    const words = Object.keys(st.words || {}).length;
+    const tiles = [
+      ['Puzzles solved', st.solved || 0, `${hist.length} played`],
+      ['Day streak', st.streak || 0, `Best ${Math.max(st.bestStreak || 0, st.streak || 0)}`],
+      ['Words collected', words, 'in your Wordbook'],
+      ['Average time', avg == null ? '—' : fmtTime(avg), 'Classic mode'],
+      ['Help-free solves', st.cleanSolves || 0, 'no power-ups'],
+      ['Badges', `${(st.badges || []).length}/${progress.BADGES.length}`, 'unlocked']
+    ];
+    $('#statTiles').innerHTML = tiles.map(([k, v, sub]) => `<div class="stat-tile"><span class="st-label">${k}</span><b>${v}</b><span class="st-sub">${sub}</span></div>`).join('');
+
+    $('#bests').innerHTML = Object.entries(DIFFICULTIES).map(([k, d]) =>
+      `<div class="best-row"><span class="dot-${k}"></span><span>${d.label}</span><b>${st.best && st.best[k] ? fmtTime(st.best[k]) : '—'}</b></div>`).join('');
+
+    const recent = hist.slice(-8).reverse();
+    $('#historyList').innerHTML = recent.length ? recent.map((h) => `
+      <li><span class="h-icon">${esc(h.icon || '🧩')}</span>
+        <span class="h-main"><b>${esc(h.title)}</b><small>${DIFFICULTIES[h.diff] ? DIFFICULTIES[h.diff].label : ''} · ${(MODES[h.mode] || MODES.classic).label} · ${ago(h.d)}</small></span>
+        <span class="h-res ${h.ok ? '' : 'miss'}">${h.ok ? (h.mode === 'zen' ? 'Solved' : fmtTime(h.time)) : `${h.words}/${h.total}`}<small>+${h.xp} XP</small></span></li>`).join('')
+      : '<li class="empty">No games yet — your history will appear here.</li>';
+
+    renderChart(hist.slice(-14));
+
+    const have = new Set(st.badges || []);
+    $('#badgeCount').textContent = `${have.size} of ${progress.BADGES.length}`;
+    $('#badgeGrid').innerHTML = progress.BADGES.map((b) => `
+      <div class="badge-tile ${have.has(b.id) ? 'got' : ''}" title="${esc(b.desc)}">
+        <span class="bt-icon">${b.icon}</span><span><b>${esc(b.name)}</b><small>${esc(b.desc)}</small></span>
+        ${have.has(b.id) ? '' : '<span class="bt-lock" aria-label="locked">🔒</span>'}
+      </div>`).join('');
+
+    renderWordbook();
+  }
+
+  function renderWordbook() {
+    const st = getStats();
+    const all = Object.entries(st.words || {}).reverse();
+    const q = ($('#wordSearch').value || '').trim().toLowerCase();
+    const list = q ? all.filter(([w, e]) => w.toLowerCase().includes(q) || (e.c || '').toLowerCase().includes(q) || (e.t || '').toLowerCase().includes(q)) : all;
+    $('#wordbookCount').textContent = `${all.length} word${all.length === 1 ? '' : 's'}`;
+    $('#wordbook').innerHTML = list.length
+      ? list.slice(0, 240).map(([w, e]) => `<div class="word-card"><div class="wc-top"><b>${esc(w)}</b><span>${esc(e.i || '')}${e.n > 1 ? ` ×${e.n}` : ''}</span></div><p>${esc(e.c || '')}</p><small>${esc(e.t || '')}</small></div>`).join('')
+      : `<p class="empty">${all.length ? 'No words match your search.' : 'Solve a puzzle to start collecting words.'}</p>`;
+  }
+  $('#wordSearch').addEventListener('input', renderWordbook);
+
+  // Bar chart of recent solve times, one bar per game, colored by difficulty.
+  function renderChart(games) {
+    const host = $('#historyChart');
+    const legend = $('#chartLegend');
+    legend.innerHTML = Object.entries(DIFFICULTIES).map(([k, d]) => `<span><i class="sw sw-${k}"></i>${d.label}</span>`).join('')
+      + '<span><i class="sw sw-miss"></i>Time ran out</span>';
+    const timed = games.filter((g) => g.mode !== 'zen');
+    if (!timed.length) { host.innerHTML = '<p class="empty">Play a Classic or Time Attack game to see your times here.</p>'; return; }
+    const Wd = 560, Ht = 200, padL = 40, padB = 18, padT = 10;
+    const max = Math.max(60, ...timed.map((g) => g.time));
+    const stepMin = max > 1200 ? 10 : max > 600 ? 5 : max > 180 ? 2 : 1;
+    const top = Math.ceil(max / 60 / stepMin) * stepMin * 60;
+    const y = (v) => padT + (Ht - padT - padB) * (1 - v / top);
+    const n = timed.length;
+    const slot = (Wd - padL) / Math.max(n, 6);
+    const bw = Math.min(34, slot - 6);
+    let svg = `<svg viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Solve times of your last ${n} timed games">`;
+    for (let t = 0; t <= top; t += stepMin * 60) {
+      svg += `<line class="grid-line" x1="${padL}" x2="${Wd}" y1="${y(t)}" y2="${y(t)}"/><text class="axis" x="${padL - 8}" y="${y(t) + 4}" text-anchor="end">${t / 60}m</text>`;
+    }
+    timed.forEach((g, i) => {
+      const x = padL + slot * i + (slot - bw) / 2;
+      const yt = y(g.time), h = Math.max(2, Ht - padB - yt);
+      const r = Math.min(4, h / 2, bw / 2);
+      // rounded top, square base anchored on the baseline
+      const path = `M${x},${Ht - padB} V${yt + r} Q${x},${yt} ${x + r},${yt} H${x + bw - r} Q${x + bw},${yt} ${x + bw},${yt + r} V${Ht - padB} Z`;
+      const tip = `${g.title} · ${DIFFICULTIES[g.diff] ? DIFFICULTIES[g.diff].label : ''} · ${(MODES[g.mode] || MODES.classic).label}
+${g.ok ? 'Solved in ' + fmtTime(g.time) : 'Time ran out — ' + g.words + '/' + g.total + ' words'}`;
+      svg += `<g class="bar-hit" data-tip="${esc(tip)}"><rect class="hit" x="${x - 3}" y="${padT}" width="${bw + 6}" height="${Ht - padT - padB}"/><path class="bar bar-${g.ok ? g.diff : 'miss'}" d="${path}"/></g>`;
+    });
+    svg += `<line class="baseline" x1="${padL}" x2="${Wd}" y1="${Ht - padB}" y2="${Ht - padB}"/></svg><div class="chart-tip" hidden></div>`;
+    host.innerHTML = svg;
+    const tipEl = host.querySelector('.chart-tip');
+    host.querySelectorAll('.bar-hit').forEach((g) => {
+      const showTip = () => {
+        const r = g.querySelector('.bar').getBoundingClientRect(), hr = host.getBoundingClientRect();
+        tipEl.textContent = g.dataset.tip;
+        tipEl.hidden = false;
+        const half = tipEl.offsetWidth / 2;
+        tipEl.style.left = Math.min(hr.width - half, Math.max(half, r.left - hr.left + r.width / 2)) + 'px';
+        tipEl.style.top = Math.max(tipEl.offsetHeight, r.top - hr.top - 6) + 'px';
+        host.querySelectorAll('.bar-hit').forEach((o) => o.classList.toggle('dim', o !== g));
+      };
+      g.addEventListener('pointerenter', showTip);
+      g.addEventListener('click', showTip);
+    });
+    host.addEventListener('pointerleave', () => { tipEl.hidden = true; host.querySelectorAll('.bar-hit').forEach((o) => o.classList.remove('dim')); });
+  }
+
   function renderDaily() {
     const d = progress.daily(bank);
     const s = getStats();
@@ -246,8 +485,8 @@
     const saved = store.get('current', null);
     const inProgress = saved && !saved.done && saved.puzzle.daily === d.key;
     $('#dailyMeta').textContent = solvedTime != null
-      ? `Solved in ${fmtTime(solvedTime)} — come back tomorrow for a new one!`
-      : 'Same puzzle for everyone today · Medium · +100 XP bonus';
+      ? `Solved in ${fmtTime(solvedTime)} — a new one arrives tomorrow.`
+      : 'The same puzzle for every player today · Medium · +100 XP';
     $('#dailyBtn').textContent = solvedTime != null ? 'Play it again' : inProgress ? 'Continue daily' : "Play today's puzzle";
     card.classList.toggle('done', solvedTime != null);
   }
@@ -260,15 +499,35 @@
   }
   $('#dailyBtn').addEventListener('click', playDaily);
   $('#heroDaily').addEventListener('click', playDaily);
-  $('#heroPlay').addEventListener('click', () => $('.setup-card').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  $('#heroPlay').addEventListener('click', () => $('#builder').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  $('#playerCard').addEventListener('click', () => goProfile());
 
   $('#brandHome').addEventListener('click', goHome);
-  function goHome() {
+  $('#backBtn').addEventListener('click', goHome);
+  function leaveGame() {
+    if (window.speechSynthesis) speechSynthesis.cancel();
     stopTimer();
+    clearTimeout(saveHandle);
     saveNow();
+  }
+  function goHome() {
+    leaveGame();
     renderSetup();
     show('setupView');
   }
+  function goProfile() {
+    leaveGame();
+    setSkin(previewSkinDesc());
+    renderProfile();
+    show('profileView');
+  }
+  $$('[data-tab]').forEach((b) => b.addEventListener('click', () => {
+    const t = b.dataset.tab;
+    if (t === 'home') goHome();
+    else if (t === 'daily') { leaveGame(); playDaily(); }
+    else if (t === 'profile') goProfile();
+    else if (t === 'settings') openSettings();
+  }));
 
   // =====================================================
   // Puzzle creation
@@ -318,7 +577,8 @@
       const used = puzzle.words.map((w) => w.answer);
       store.set('recent', used.concat([...recent]).slice(0, 160));
 
-      Object.assign(puzzle, { title, icon, skin, difficulty: diffKey, notice, seed, created: Date.now(), custom: !!text, daily: dailyInfo ? dailyInfo.key : null });
+      const gameMode = dailyInfo ? 'classic' : mode;
+      Object.assign(puzzle, { title, icon, skin, difficulty: diffKey, notice, seed, created: Date.now(), custom: !!text, daily: dailyInfo ? dailyInfo.key : null, mode: gameMode });
       const counter = store.get('counter', 0) + 1;
       store.set('counter', counter);
       puzzle.number = counter;
@@ -331,8 +591,10 @@
         elapsed: 0,
         reveals: 0,
         done: false,
-        autocheck: cfg.autocheck,
-        maxCombo: 0
+        autocheck: settings.autocheckAll || cfg.autocheck,
+        maxCombo: 0,
+        timeLeft: gameMode === 'attack' ? ATTACK_TIME[diffKey] : null,
+        flipped: [], anagrams: [], helped: [], hints: 0, powersUsed: 0
       });
     } catch (err) {
       console.error(err);
@@ -371,6 +633,14 @@
     G.lastWordAt = 0;
     G.correctWords = new Set();
     p.words.forEach((w, wi) => { if (w.cells.every((i) => G.fill[i] === p.solution[i])) G.correctWords.add(wi); });
+    G.mode = p.mode || 'classic';
+    G.flipped = new Set(saved.flipped || []);
+    G.anagrams = new Set(saved.anagrams || []);
+    G.helped = new Set(saved.helped || []);
+    G.hints = saved.hints || 0;
+    G.powersUsed = saved.powersUsed || 0;
+    G.frozenUntil = 0;
+    G.lastSpoken = -1;
 
     // header
     setSkin(p.skin || { id: 'general' });
@@ -378,7 +648,12 @@
     $('#puzzleIcon').textContent = p.icon;
     const badge = $('#puzzleBadge');
     badge.textContent = DIFFICULTIES[p.difficulty].label;
-    badge.className = 'badge ' + p.difficulty;
+    badge.className = 'chip chip-' + p.difficulty;
+    $('#modeChip').textContent = `${MODES[G.mode].icon} ${MODES[G.mode].label}`;
+    $('#modeChip').className = 'chip chip-mode mode-' + G.mode;
+    $('[data-power="freeze"]').hidden = G.mode !== 'attack';
+    paintTimerVisibility();
+    updateWallet();
     $('#puzzleCount').textContent = `Puzzle #${p.number || 1} · ${p.words.length} words`;
     const notice = $('#notice');
     notice.hidden = !p.notice;
@@ -437,7 +712,7 @@
       const li = document.createElement('li');
       li.innerHTML = '<span class="cn"></span><span class="ct"></span><span class="cl"></span>';
       li.querySelector('.cn').textContent = w.number;
-      li.querySelector('.ct').textContent = w.clue;
+      li.querySelector('.ct').textContent = clueText(wi);
       li.querySelector('.cl').textContent = `(${w.len})`;
       li.addEventListener('click', () => {
         select(firstEmpty(w) ?? w.cells[0], w.dir);
@@ -490,15 +765,27 @@
     const availW = wrap.clientWidth - padX;
     const kbH = isTouch ? $('#keyboard').offsetHeight || 170 : 0;
     const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
-    // On phones the board sticks to the top, so only the clue bar sits above it.
-    const above = window.innerWidth <= 640 ? $('#clueBar').offsetHeight + 16 : wrap.getBoundingClientRect().top + window.scrollY;
-    const availH = window.innerHeight - above - padY - 44 - kbH;
+    // On phones the board column sticks under the top bar, so only its own header rows sit above the grid.
+    const topbar = $('.topbar').offsetHeight;
+    let availH;
+    if (window.innerWidth <= 720) {
+      const col = $('.board-col');
+      const cs = getComputedStyle(col);
+      const gap = parseFloat(cs.rowGap) || 10;
+      const tray = $('#anagramTray');
+      const rows = $('#clueBar').offsetHeight + $('#powerbar').offsetHeight + (tray.hidden ? 0 : tray.offsetHeight + gap) + gap * 2;
+      availH = window.innerHeight - kbH - topbar - parseFloat(cs.paddingTop) - rows - padY - 6;
+    } else {
+      const above = Math.max(wrap.getBoundingClientRect().top + window.scrollY, topbar + 120);
+      availH = window.innerHeight - above - padY - 44 - kbH;
+    }
     const GAP = 0.08; // gap between tiles, as a fraction of the tile size
-    const size = Math.floor(Math.max(18, Math.min(54, availW / (G.W + (G.W - 1) * GAP), Math.max(availH, 240) / (G.H + (G.H - 1) * GAP))));
+    const size = Math.floor(Math.max(18, Math.min(54, availW / (G.W + (G.W - 1) * GAP), Math.max(availH, 200) / (G.H + (G.H - 1) * GAP))));
     document.documentElement.style.setProperty('--cell-size', size + 'px');
     document.documentElement.style.setProperty('--gap', Math.max(2, Math.round(size * GAP)) + 'px');
   }
   window.addEventListener('resize', fitGrid);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fitGrid);
 
   // =====================================================
   // Selection & painting
@@ -513,6 +800,11 @@
     else if (wordIdx(idx, G.dir) === -1) G.dir = G.dir === 'across' ? 'down' : 'across';
     G.sel = idx;
     paintSelection();
+  }
+
+  function clueText(wi) {
+    const w = G.puzzle.words[wi];
+    return G.flipped.has(wi) && w.alt ? w.alt : w.clue;
   }
 
   function paintSelection() {
@@ -534,9 +826,128 @@
     });
     if (word) {
       $('#clueBarText').innerHTML = `<span class="cb-num">${word.number} ${word.dir === 'across' ? 'Across' : 'Down'}</span>`;
-      $('#clueBarText').appendChild(document.createTextNode(word.clue));
+      $('#clueBarText').appendChild(document.createTextNode(clueText(wi)));
+      if (G.flipped.has(wi)) $('#clueBarText').insertAdjacentHTML('beforeend', ' <span class="alt-tag">alt clue</span>');
       scrollClueIntoView(G.clueEls[wi]);
+      if (wi !== G.lastSpoken) {
+        G.lastSpoken = wi;
+        if (settings.tts && !G.done) speakClue(wi);
+      }
     }
+    paintPowers();
+    renderAnagram();
+  }
+
+  // ---------- read clue aloud ----------
+  function speakClue(wi) {
+    if (!('speechSynthesis' in window)) { toast('Reading aloud isn’t supported in this browser'); return; }
+    const w = G.puzzle.words[wi];
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(`${w.number} ${w.dir}. ${clueText(wi).replace(/_+/g, 'blank')}. ${w.len} letters.`);
+    u.rate = 0.98;
+    speechSynthesis.speak(u);
+  }
+  $('#speakBtn').addEventListener('click', () => { if (G) speakClue(currentWord()); });
+
+  // ---------- power-ups ----------
+  function paintPowers() {
+    const wi = currentWord();
+    const w = G.puzzle.words[wi];
+    const solved = G.correctWords.has(wi);
+    const btn = (k) => $(`[data-power="${k}"]`);
+    btn('anagram').disabled = G.done || solved || G.anagrams.has(wi);
+    btn('flip').disabled = G.done || !w.alt;
+    btn('flip').querySelector('.p-name').textContent = G.flipped.has(wi) ? 'Original clue' : 'Flip clue';
+    btn('flip').querySelector('.p-cost').textContent = G.flipped.has(wi) ? 'free' : '✦' + POWER_COST.flip;
+    btn('hint').disabled = G.done || solved;
+    btn('freeze').disabled = G.done || Date.now() < G.frozenUntil;
+    updateWallet();
+  }
+
+  function spend(kind) {
+    const cost = POWER_COST[kind];
+    if (sparks() < cost) {
+      toast(`You need ✦${cost} Sparks — solve words to earn more`);
+      sound.play('wrong');
+      return false;
+    }
+    addSparks(-cost);
+    G.powersUsed++;
+    sound.play('good');
+    return true;
+  }
+
+  function usePower(kind) {
+    if (!G || G.done || paused) return;
+    const wi = currentWord();
+    const w = G.puzzle.words[wi];
+    if (kind === 'anagram') {
+      if (G.anagrams.has(wi) || G.correctWords.has(wi)) return;
+      if (!spend('anagram')) return;
+      G.anagrams.add(wi);
+      G.helped.add(wi);
+      renderAnagram();
+    } else if (kind === 'flip') {
+      if (!w.alt) return;
+      if (G.flipped.has(wi)) { G.flipped.delete(wi); }
+      else { if (!spend('flip')) return; G.flipped.add(wi); }
+      G.clueEls[wi].querySelector('.ct').textContent = clueText(wi);
+      G.lastSpoken = -1;
+      paintSelection();
+    } else if (kind === 'hint') {
+      let idx = G.sel;
+      if (G.fill[idx] === G.puzzle.solution[idx]) idx = w.cells.find((i) => G.fill[i] !== G.puzzle.solution[i]);
+      if (idx == null) return;
+      if (!spend('hint')) return;
+      G.fill[idx] = G.puzzle.solution[idx];
+      G.wrong[idx] = false;
+      G.revealed[idx] = true;
+      G.hints++;
+      for (const d of ['across', 'down']) { const x = wordIdx(idx, d); if (x >= 0) G.helped.add(x); }
+      afterChange([idx], { quiet: true });
+    } else if (kind === 'freeze') {
+      if (G.mode !== 'attack' || Date.now() < G.frozenUntil) return;
+      if (!spend('freeze')) return;
+      G.frozenUntil = Date.now() + 20000;
+      $('#timerWrap').classList.add('frozen');
+      toast('❄ Countdown frozen for 20 seconds');
+    }
+    paintPowers();
+    scheduleSave();
+  }
+  $$('.power').forEach((b) => b.addEventListener('click', () => usePower(b.dataset.power)));
+
+  function renderAnagram() {
+    const tray = $('#anagramTray');
+    const wi = currentWord();
+    const wasHidden = tray.hidden;
+    if (!G || wi < 0 || !G.anagrams.has(wi) || G.correctWords.has(wi)) {
+      tray.hidden = true;
+      if (!wasHidden) requestAnimationFrame(fitGrid);
+      return;
+    }
+    const w = G.puzzle.words[wi];
+    // stable shuffle per word so the tray doesn't jump around
+    let seed = (G.puzzle.seed || 1) + wi * 7919;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    let letters = w.answer.split('');
+    for (let t = 0; t < 6; t++) {
+      for (let i = letters.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [letters[i], letters[j]] = [letters[j], letters[i]]; }
+      if (letters.join('') !== w.answer) break;
+    }
+    const placed = w.cells.filter((i) => G.fill[i] === G.puzzle.solution[i]).map((i) => G.fill[i]);
+    tray.innerHTML = '<span class="tray-label">Anagram</span>';
+    letters.forEach((ch) => {
+      const k = placed.indexOf(ch);
+      const used = k >= 0;
+      if (used) placed.splice(k, 1);
+      const el = document.createElement('span');
+      el.className = 'tray-tile' + (used ? ' used' : '');
+      el.textContent = ch;
+      tray.appendChild(el);
+    });
+    tray.hidden = false;
+    if (wasHidden) requestAnimationFrame(fitGrid);
   }
 
   function scrollClueIntoView(li) {
@@ -592,6 +1003,13 @@
     G.combo = now - G.lastWordAt < 25000 ? G.combo + 1 : 1;
     G.lastWordAt = now;
     G.maxCombo = Math.max(G.maxCombo || 0, G.combo);
+    addSparks(2);
+    if (G.mode === 'attack') {
+      G.timeLeft += ATTACK_BONUS;
+      renderTimer();
+      const tw = $('#timerWrap');
+      tw.classList.remove('bonus'); void tw.offsetWidth; tw.classList.add('bonus');
+    }
 
     w.cells.forEach((i, n) => {
       const el = G.cellEls[i];
@@ -709,6 +1127,11 @@
       if (word.cells.every((i) => G.fill[i])) jumpWord(1, true);
       return;
     }
+    if (settings.skipFilled) {
+      const next = word.cells.slice(pos + 1).find((i) => !G.fill[i]);
+      if (next !== undefined) { select(next, G.dir); return; }
+      if (word.cells.every((i) => G.fill[i])) { jumpWord(1, true); return; }
+    }
     select(word.cells[pos + 1], G.dir);
   }
 
@@ -789,6 +1212,7 @@
         G.fill[i] = G.puzzle.solution[i];
         G.wrong[i] = false;
         G.revealed[i] = true;
+        for (const d of ['across', 'down']) { const x = wordIdx(i, d); if (x >= 0) G.helped.add(x); }
         changed.push(i);
       }
       if (changed.length) G.reveals += scope === 'puzzle' ? changed.length : 1;
@@ -847,55 +1271,148 @@
     }
   }
 
-  function win() {
-    G.done = true;
-    stopTimer();
-    saveNow();
+  function win() { finishGame('solved'); }
+
+  function timeUp() {
+    if (G.done) return;
+    sound.play('wrong');
+    // show the answers that were missed, marked as revealed
+    const missed = [];
+    G.puzzle.solution.forEach((ch, i) => {
+      if (ch && G.fill[i] !== ch) { G.fill[i] = ch; G.revealed[i] = true; G.wrong[i] = false; missed.push(i); }
+    });
+    missed.forEach(paintCell);
+    G.puzzle.words.forEach((_, wi) => paintClueDone(wi));
+    finishGame('timeout');
+  }
+
+  function shareText() {
     const p = G.puzzle;
+    const rows = [];
+    let row = '';
+    p.words.forEach((w, wi) => {
+      const solvedClean = G.solvedAtEnd.has(wi) && !G.helped.has(wi);
+      row += solvedClean ? '🟩' : G.solvedAtEnd.has(wi) ? '🟨' : '⬛';
+      if (row.length >= 16) { rows.push(row); row = ''; }
+    });
+    if (row) rows.push(row);
+    const head = `Wordweave ${p.daily ? 'Daily ' + p.daily : '#' + (p.number || 1)} ${p.icon}`;
+    const line = `${p.title} · ${DIFFICULTIES[p.difficulty].label} · ${MODES[G.mode].label}`;
+    const result = G.outcome === 'timeout'
+      ? `⏰ ${G.solvedAtEnd.size}/${p.words.length} words before time ran out`
+      : `${G.mode === 'zen' ? '🍃 Zen solve' : '⏱ ' + fmtTime(G.elapsed)} · 🔥 best combo ×${Math.max(1, G.maxCombo)} · 💡 ${G.powersUsed + G.reveals} helps`;
+    return [head, line, result, ...rows, SITE_URL].join('\n');
+  }
+
+  async function shareResult() {
+    const text = shareText();
+    try {
+      if (navigator.share && isTouch) { await navigator.share({ text }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    try {
+      await navigator.clipboard.writeText(text);
+      toast('Result copied — paste it anywhere to share');
+    } catch (e) {
+      toast('Couldn’t copy automatically — long-press the grid preview to copy');
+    }
+  }
+  $('#shareBtn').addEventListener('click', shareResult);
+
+  function finishGame(outcome) {
+    G.done = true;
+    G.outcome = outcome;
+    stopTimer();
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    const p = G.puzzle;
+    const completed = outcome === 'solved';
     const assisted = G.reveals > 0;
+    const clean = completed && !assisted;
+    G.solvedAtEnd = new Set(completed ? p.words.map((_, i) => i) : [...G.correctWords]);
+    saveNow();
+
     const stats = getStats();
     const before = progress.levelFor(stats.xp);
     let bestMsg = '';
-    if (!assisted) {
+    if (clean) {
       stats.solved = (stats.solved || 0) + 1;
-      const prev = stats.best[p.difficulty];
-      if (!prev || G.elapsed < prev) {
-        stats.best[p.difficulty] = G.elapsed;
-        bestMsg = prev ? `⚡ New personal best for ${DIFFICULTIES[p.difficulty].label}!` : '';
-      } else bestMsg = `Your best ${DIFFICULTIES[p.difficulty].label} time: ${fmtTime(prev)}`;
+      if (G.mode === 'classic') {
+        const prev = stats.best[p.difficulty];
+        if (!prev || G.elapsed < prev) {
+          stats.best[p.difficulty] = G.elapsed;
+          bestMsg = prev ? `⚡ New personal best for ${DIFFICULTIES[p.difficulty].label}!` : '';
+        } else bestMsg = `Your best ${DIFFICULTIES[p.difficulty].label} time: ${fmtTime(prev)}`;
+      } else if (G.mode === 'attack') bestMsg = `Beat the clock with ${fmtTime(Math.ceil(G.timeLeft))} to spare!`;
       const today = new Date().toDateString();
       const yesterday = new Date(Date.now() - 864e5).toDateString();
       if (stats.lastDay !== today) stats.streak = stats.lastDay === yesterday ? (stats.streak || 0) + 1 : 1;
+      stats.bestStreak = Math.max(stats.bestStreak || 0, stats.streak || 0);
       stats.lastDay = today;
       const themeKey = p.custom ? 'custom:' + p.title.toLowerCase() : (p.skin && p.skin.id) || p.title;
       if (!stats.themes.includes(themeKey)) stats.themes.push(themeKey);
       if (p.daily && stats.daily[p.daily] == null) stats.daily[p.daily] = Math.round(G.elapsed);
+      if (!G.powersUsed) stats.cleanSolves = (stats.cleanSolves || 0) + 1;
     }
-    const dailyFirst = !!p.daily && !assisted && stats.daily[p.daily] === Math.round(G.elapsed);
-    const gain = progress.xpFor({ difficulty: p.difficulty, elapsed: G.elapsed, reveals: G.reveals, maxCombo: G.maxCombo, daily: dailyFirst });
+    if (!completed) bestMsg = `You solved ${G.solvedAtEnd.size} of ${p.words.length} words. Try Freeze or an easier level next time!`;
+
+    // Wordbook: collect every word the player actually solved
+    stats.words = stats.words || {};
+    const today = new Date().toISOString().slice(0, 10);
+    let newWords = 0;
+    G.solvedAtEnd.forEach((wi) => {
+      const w = p.words[wi];
+      const e = stats.words[w.answer];
+      if (e) { e.n = (e.n || 1) + 1; delete stats.words[w.answer]; stats.words[w.answer] = e; }
+      else { stats.words[w.answer] = { c: w.clue, t: p.custom ? p.title : (p.title.replace(/^Daily · /, '')), i: p.icon, d: today, n: 1 }; newWords++; }
+    });
+
+    const dailyFirst = !!p.daily && clean && stats.daily[p.daily] === Math.round(G.elapsed);
+    let gain;
+    if (completed) {
+      gain = progress.xpFor({ difficulty: p.difficulty, elapsed: G.elapsed, reveals: G.reveals, maxCombo: G.maxCombo, daily: dailyFirst, mode: G.mode, timeLeft: G.timeLeft });
+      if (G.mode === 'zen') gain.total = Math.round(gain.total * 0.85);
+    } else {
+      const per = { easy: 8, medium: 12, hard: 16 }[p.difficulty] || 10;
+      gain = { total: G.solvedAtEnd.size * per, base: G.solvedAtEnd.size * per, speed: 0, combo: 0, dailyBonus: 0, partial: true };
+    }
     stats.xp = (stats.xp || 0) + gain.total;
-    const earned = progress.newBadges(stats, { difficulty: p.difficulty, elapsed: G.elapsed, reveals: G.reveals, custom: p.custom, daily: !!p.daily, maxCombo: G.maxCombo });
+    stats.history = (stats.history || []).concat([{
+      d: Date.now(), title: p.title, icon: p.icon, diff: p.difficulty, mode: G.mode, time: Math.round(G.elapsed),
+      words: G.solvedAtEnd.size, total: p.words.length, xp: gain.total, ok: completed
+    }]).slice(-60);
+    const sparkGain = completed ? 10 + (dailyFirst ? 5 : 0) : 0;
+    stats.sparks = (stats.sparks == null ? 20 : stats.sparks) + sparkGain;
+    const earned = progress.newBadges(stats, { difficulty: p.difficulty, elapsed: G.elapsed, reveals: G.reveals, custom: p.custom, daily: !!p.daily, maxCombo: G.maxCombo, mode: G.mode, completed });
     stats.badges = (stats.badges || []).concat(earned);
     store.set('stats', stats);
+    updateWallet(sparkGain);
     const after = progress.levelFor(stats.xp);
 
-    $('#grid').classList.add('solved');
-    G.cellEls.forEach((el, i) => { el.style.animationDelay = ((i % G.W) + Math.floor(i / G.W)) * 25 + 'ms'; });
-    sound.play('win');
-    if (!assisted) confetti();
+    if (completed) {
+      $('#grid').classList.add('solved');
+      G.cellEls.forEach((el, i) => { el.style.animationDelay = ((i % G.W) + Math.floor(i / G.W)) * 25 + 'ms'; });
+      sound.play('win');
+      if (!assisted && !settings.calm) confetti();
+    }
+    paintPowers();
+    $('#anagramTray').hidden = true;
+
     setTimeout(() => {
-      $('#winTitle').textContent = assisted ? 'Puzzle complete!' : 'Puzzle solved!';
-      $('.win-burst').textContent = assisted ? '🧩' : (p.icon || '🎉');
-      $('#winSub').textContent = `${p.title} · ${DIFFICULTIES[p.difficulty].label}`;
-      $('#winTime').textContent = fmtTime(G.elapsed);
-      $('#winWords').textContent = p.words.length;
-      $('#winHelp').textContent = G.reveals;
-      $('#winBest').textContent = assisted ? 'Solve one without reveals to set a best time.' : bestMsg;
-      const parts = [`Solve +${gain.base}`];
-      if (gain.speed) parts.push(`Speed +${gain.speed}`);
+      $('#winTitle').textContent = !completed ? 'Time’s up!' : assisted ? 'Puzzle complete!' : 'Puzzle solved!';
+      $('.win-burst').textContent = !completed ? '⏰' : assisted ? '🧩' : (p.icon || '🎉');
+      $('#winSub').textContent = `${p.title} · ${DIFFICULTIES[p.difficulty].label} · ${MODES[G.mode].label}`;
+      $('#winTime').textContent = G.mode === 'zen' ? '—' : fmtTime(G.elapsed);
+      $('#winTimeLabel').textContent = G.mode === 'zen' ? 'Zen' : 'Time';
+      $('#winWords').textContent = completed ? p.words.length : `${G.solvedAtEnd.size}/${p.words.length}`;
+      $('#winHelp').textContent = G.reveals + G.powersUsed;
+      $('#winBest').textContent = completed && assisted ? 'Solve one without reveals to set a best time.' : bestMsg;
+      $('#emojiGrid').textContent = shareText().split('\n').filter((l) => /[🟩🟨⬛]/u.test(l)).join('\n');
+      const parts = gain.partial ? [`${G.solvedAtEnd.size} words solved +${gain.total}`] : [`Solve +${gain.base}`];
+      if (gain.speed) parts.push(G.mode === 'attack' ? `Time left +${gain.speed}` : `Speed +${gain.speed}`);
       if (gain.combo) parts.push(`Combo +${gain.combo}`);
       if (gain.dailyBonus) parts.push(`Daily +${gain.dailyBonus}`);
       if (gain.assisted) parts.push('Reveals ×0.4');
+      if (sparkGain) parts.push(`✦ +${sparkGain} Sparks`);
+      if (newWords) parts.push(`📚 ${newWords} new word${newWords === 1 ? '' : 's'}`);
       $('#xpBreakdown').textContent = parts.join('  ·  ');
       const wb = $('#winBadges');
       wb.innerHTML = '';
@@ -911,7 +1428,7 @@
       }
       openModal('winModal');
       animateXp(before, after, gain.total);
-    }, assisted ? 300 : 900);
+    }, completed && !assisted ? 900 : 400);
   }
 
   function animateXp(before, after, total) {
@@ -961,7 +1478,23 @@
     const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
     return h ? `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}` : `${m}:${String(sec).padStart(2, '0')}`;
   }
-  function renderTimer() { $('#timer').textContent = fmtTime(G.elapsed); }
+  function renderTimer() {
+    const tw = $('#timerWrap');
+    if (G.mode === 'attack') {
+      const left = Math.max(0, G.timeLeft || 0);
+      $('#timer').textContent = fmtTime(Math.ceil(left));
+      tw.classList.add('countdown');
+      tw.classList.toggle('low', left < 30);
+      tw.classList.toggle('frozen', Date.now() < G.frozenUntil);
+    } else {
+      tw.classList.remove('countdown', 'low', 'frozen');
+      $('#timer').textContent = fmtTime(G.elapsed);
+    }
+  }
+  function paintTimerVisibility() {
+    if (!G) return;
+    $('#timerWrap').hidden = G.mode === 'zen' || (G.mode === 'classic' && !settings.showTimer);
+  }
   function startTimer() {
     stopTimer();
     renderTimer();
@@ -969,11 +1502,17 @@
     timerHandle = setInterval(() => {
       const t = Date.now();
       if (!paused && !document.hidden && G && !G.done) {
-        G.elapsed += (t - last) / 1000;
+        const dt = (t - last) / 1000;
+        G.elapsed += dt;
+        if (G.mode === 'attack' && t >= G.frozenUntil) {
+          G.timeLeft -= dt;
+          if (G.timeLeft <= 0) { G.timeLeft = 0; renderTimer(); timeUp(); return; }
+        }
         renderTimer();
+        if (G.frozenUntil && t >= G.frozenUntil) { G.frozenUntil = 0; paintPowers(); }
       }
       last = t;
-    }, 500);
+    }, 250);
   }
   function stopTimer() { if (timerHandle) clearInterval(timerHandle); timerHandle = null; }
 
@@ -996,7 +1535,10 @@
   // =====================================================
   function snapshot() {
     const puzzle = Object.assign({}, G.puzzle, { words: G.puzzle.words.map(({ cells, ...w }) => w) });
-    return { puzzle, fill: G.fill, revealed: G.revealed, wrong: G.wrong, elapsed: G.elapsed, reveals: G.reveals, done: G.done, autocheck: G.autocheck };
+    return {
+      puzzle, fill: G.fill, revealed: G.revealed, wrong: G.wrong, elapsed: G.elapsed, reveals: G.reveals, done: G.done, autocheck: G.autocheck,
+      maxCombo: G.maxCombo, timeLeft: G.timeLeft, flipped: [...G.flipped], anagrams: [...G.anagrams], helped: [...G.helped], hints: G.hints, powersUsed: G.powersUsed
+    };
   }
   function saveNow() { if (G) store.set('current', snapshot()); }
   function scheduleSave() { clearTimeout(saveHandle); saveHandle = setTimeout(saveNow, 400); }
@@ -1150,5 +1692,7 @@
   // Boot
   // =====================================================
   renderSetup();
+  applySettings();
+  updateWallet();
   show('setupView');
 })();

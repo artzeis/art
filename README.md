@@ -16,12 +16,19 @@ Choose a theme from the list (or type your own), choose a difficulty, and play r
 - **Unique puzzles**: each grid is built from a fresh random seed. Dozens of layouts are tried and the best interlocking one wins. Words you've seen recently are pushed down the list.
 - **Comfortable play**: click or tap squares, type to fill, use the arrow keys, press Space to switch direction and Tab for the next clue. The current clue bar has previous/next buttons and the clue list stays in sync with the grid.
 - **Help when you need it**: check or reveal a letter, word or the whole puzzle, plus an optional auto-check mode.
-- **A look for every theme**: a futuristic glass-and-neon interface where each theme brings its own colors, display font, background pattern and animated background. Examples: twinkling stars and shooting stars for Space, rising bubbles for Ocean, falling binary digits for Technology, drifting leaves for Nature, golden dust for History, and floating notes for Music. Pick a theme and the whole page changes to match. Custom themes borrow the closest built-in look or get their own color.
+- **Three game modes**: *Classic* (clock, best times, speed bonus), *Zen* (no clock, no pressure) and *Time Attack* (a countdown where every solved word adds 12 seconds).
+- **Power-ups paid for with Sparks ✦**: earn 2 Sparks per word and 10 per puzzle, then spend them on *Anagram* (see the word's letters scrambled), *Flip clue* (swap to the alternate clue), *Hint letter* (fill a square) or *Freeze* (stop the Time Attack countdown for 20 seconds).
+- **Read clues aloud** with the speaker button, or automatically with a setting.
+- **Share your result** as a spoiler-free emoji grid (🟩 solved clean, 🟨 solved with help, ⬛ missed) plus time, combo and helps.
+- **Wordbook**: every word you solve is collected with its clue on your Profile, searchable.
+- **Profile page**: rank and XP, six headline stats, a chart of recent solve times, personal bests, recent games and all 12 badges.
+- **Settings**: dark/light, calm mode (fewer effects), sound effects, generated ambient music per theme, read-aloud, skip filled squares, always auto-check, show/hide timer, and reset progress.
+- **A look for every theme**: a clean, modern interface where each theme brings its own colors, display font, background pattern and animated background. Examples: twinkling stars and shooting stars for Space, rising bubbles for Ocean, falling binary digits for Technology, drifting leaves for Nature, golden dust for History, and floating notes for Music. Pick a theme and the whole page changes to match. Custom themes borrow the closest built-in look or get their own color.
 - **Daily Puzzle**: one puzzle a day, identical for everyone, with a different theme each day and a +100 XP bonus.
-- **Levels, XP and badges**: earn XP for every solve (bonuses for speed, word combos and dailies), climb ten ranks from *Rookie Weaver* to *Grand Weaver*, and unlock 9 badges.
-- **Juicy feedback**: finished words light up with a floating "+WORD" label, quick solves chain into combos, and every theme has its own synthesized sound effects (mute from the top bar).
+- **Levels, XP and badges**: earn XP for every solve (bonuses for speed, word combos and dailies), climb ten ranks from *Rookie Weaver* to *Grand Weaver*, and unlock 12 badges.
+- **Juicy feedback**: finished words light up with a floating "+WORD" label, quick solves chain into combos, and every theme has its own synthesized sound effects.
 - **Live preview**: the start screen shows a mini crossword solving itself with words from the theme you've picked. Theme cards tilt in 3D under the pointer, and confetti uses theme symbols.
-- **Extras**: a timer with pause, a progress bar, automatic saving (resume later), best times and a daily streak, a celebration with confetti, a print layout, neon (dark) and frost (light) modes, and an on-screen keyboard on touch devices.
+- **Extras**: a timer with pause, a progress bar, automatic saving (resume later), best times and a daily streak, a celebration with confetti, a print layout, dark and light modes, a Play / Daily / Profile navigation (with a bottom tab bar on phones), and an on-screen keyboard on touch devices.
 
 ## Running it
 

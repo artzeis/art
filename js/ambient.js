@@ -202,9 +202,10 @@
     ctx.globalAlpha = 1;
   }
 
+  let paused = false;
   function loop(now) {
     raf = requestAnimationFrame(loop);
-    if (document.hidden) { last = now; return; }
+    if (document.hidden || paused) { last = now; return; }
     const dt = Math.min(0.05, (now - (last || now)) / 1000);
     last = now;
     step(dt);
@@ -222,5 +223,6 @@
   }
 
   window.addEventListener('resize', () => { if (fx) resize(); });
-  root.CW = Object.assign(root.CW || {}, { ambient: { set } });
+  function setPaused(p) { paused = !!p; if (paused) ctx.clearRect(0, 0, W, H); }
+  root.CW = Object.assign(root.CW || {}, { ambient: { set, setPaused } });
 })(window);

@@ -29,10 +29,13 @@
   }
 
   /** XP earned for a finished puzzle. */
-  function xpFor({ difficulty, elapsed, reveals, maxCombo, daily }) {
+  function xpFor({ difficulty, elapsed, reveals, maxCombo, daily, mode, timeLeft }) {
     const base = BASE_XP[difficulty] || 150;
     const par = PAR[difficulty] || 540;
-    const speed = Math.max(0, Math.round(((par - elapsed) / par) * base * 0.6));
+    let speed = Math.max(0, Math.round(((par - elapsed) / par) * base * 0.6));
+    if (mode === 'zen') speed = 0;
+    // Time Attack rewards seconds left on the clock, capped so it can't dwarf the solve itself
+    if (mode === 'attack') speed = Math.min(Math.round(base * 0.8), Math.round(Math.max(0, timeLeft || 0) * 0.5));
     const combo = Math.min(5, Math.max(0, (maxCombo || 1) - 1)) * 10;
     const dailyBonus = daily ? 100 : 0;
     let total = base + speed + combo + dailyBonus;
@@ -49,7 +52,10 @@
     { id: 'creator', icon: '✨', name: 'Trailblazer', desc: 'Solve a puzzle on your own custom theme' },
     { id: 'daily', icon: '📅', name: 'Daily Devotee', desc: 'Solve a Daily Puzzle' },
     { id: 'combo', icon: '💥', name: 'Combo Master', desc: 'Hit a ×5 word combo' },
-    { id: 'decorated', icon: '🏆', name: 'Decorated', desc: 'Solve 10 puzzles' }
+    { id: 'decorated', icon: '🏆', name: 'Decorated', desc: 'Solve 10 puzzles' },
+    { id: 'beatclock', icon: '⏱️', name: 'Beat the Clock', desc: 'Finish a Time Attack puzzle before time runs out' },
+    { id: 'zen', icon: '🍃', name: 'Inner Peace', desc: 'Solve a puzzle in Zen mode' },
+    { id: 'collector', icon: '📚', name: 'Collector', desc: 'Collect 100 words in your Wordbook' }
   ];
 
   /** Returns the ids of badges newly earned, given updated stats and the solve that just happened. */
@@ -67,6 +73,9 @@
     award('daily', clean && solve.daily);
     award('combo', (solve.maxCombo || 0) >= 5);
     award('decorated', stats.solved >= 10);
+    award('beatclock', solve.mode === 'attack' && solve.completed);
+    award('zen', clean && solve.mode === 'zen');
+    award('collector', Object.keys(stats.words || {}).length >= 100);
     return earned;
   }
 

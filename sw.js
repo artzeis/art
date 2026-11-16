@@ -1,5 +1,5 @@
 /* Wordweave service worker: caches the app so it opens instantly and works offline. */
-const CACHE = 'wordweave-v5';
+const CACHE = 'wordweave-v6';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/styles.css',
   'js/config.js', 'js/skins.js', 'js/ambient.js', 'js/sound.js', 'js/progress.js', 'js/demo.js', 'js/wordbank.js', 'js/generator.js', 'js/custom-theme.js', 'js/app.js',

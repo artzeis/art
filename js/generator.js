@@ -204,9 +204,12 @@
       if (cfg.clueMode === 'easy') clue = p.entry.easy;
       else if (cfg.clueMode === 'hard') clue = p.entry.hard;
       else clue = rng() < 0.5 ? p.entry.hard : p.entry.easy;
+      const main = clue || p.entry.easy || p.entry.hard;
+      const other = main === p.entry.easy ? p.entry.hard : p.entry.easy;
       return {
         answer: p.entry.answer,
-        clue: clue || p.entry.easy || p.entry.hard,
+        clue: main,
+        alt: other && other !== main ? other : null,
         dir: p.dir,
         row: p.r - bbox.r0,
         col: p.c - bbox.c0,
