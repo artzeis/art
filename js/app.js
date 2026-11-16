@@ -1,6 +1,6 @@
 // Myth Seekers — main app: screens, quest flow, journal, grown-up setup.
 (() => {
-  const STORE_KEY = "mythSeekers.v1";
+  const STORE_KEY = "mythSeekers.v2";
   const app = document.getElementById("app");
   const byId = Object.fromEntries(CREATURES.map((c) => [c.id, c]));
   const spotById = Object.fromEntries(SPOTS.map((s) => [s.id, s]));
@@ -19,7 +19,7 @@
   const shuffle = (arr) => arr.map((v) => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map((p) => p[1]);
   const vars = (c) => `--c:${c.color};--soft:${c.soft}`;
 
-  function confetti(emojis = ["⭐", "✨", "🌸", "🍄", "🪶", "🍀", "🎾"]) {
+  function confetti(emojis = ["⭐", "✨", "🖍️", "💎", "🌕", "🗝️", "🟩"]) {
     for (let i = 0; i < 28; i++) {
       const s = document.createElement("span");
       s.className = "confetti";
@@ -161,7 +161,6 @@
         <div style="${vars(c)}">
           <section class="hero">
             <button class="icon-btn say-btn" data-say aria-label="Read aloud">🔊</button>
-            ${c.photo ? `<div class="photo-badge"><img src="${c.photo}" alt="The real ${c.name.split(" ")[0]}">The real ${c.name.split(" ")[0]}</div>` : ""}
             <div class="art bob">${creatureArt(c.id)}</div>
             <h1>${c.name}</h1>
             <span class="kind-chip">${c.kind}${friend ? " · Friend ✔" : ""}</span><br>
@@ -176,6 +175,7 @@
               `<button role="tab" aria-selected="${k === tab}" class="${k === tab ? "active" : ""}" data-tab="${k}">${l}</button>`).join("")}
           </div>
           ${panels[tab]}
+          ${plushCard(c)}
         </div>`;
       app.querySelector("[data-say]").onclick = () => speak(`${c.name} the ${c.kind}. ${c.catchphrase} ${c.description}`);
       app.querySelector("[data-ar]").onclick = () => startAR(id);
@@ -198,42 +198,76 @@
     },
 
     grownup() {
-      // Grown-up gate: a times-table question answered on a big on-screen keypad,
-      // so it works the same on every phone without the device keyboard.
-      const a = 3 + Math.floor(Math.random() * 7), b = 3 + Math.floor(Math.random() * 7);
-      const answer = String(a * b);
-      let typed = "";
-      app.innerHTML = `
-        <h1 class="screen-title">🔑 Grown-up Corner</h1>
-        <div class="card center">
-          <p class="big">To make sure you're a grown-up, what is<br><b>${a} × ${b}</b> ?</p>
-          <div class="gate-display" id="gateShow" aria-live="polite">&nbsp;</div>
-          <p class="small" id="gateMsg">&nbsp;</p>
-          <div class="keypad">
-            ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `<button data-key="${n}">${n}</button>`).join("")}
-            <button data-key="del" aria-label="Delete">⌫</button>
-            <button data-key="0">0</button>
-            <button data-key="ok" class="ok" aria-label="Enter">✔</button>
-          </div>
-        </div>`;
-      const show = app.querySelector("#gateShow"), msg = app.querySelector("#gateMsg");
-      const refresh = () => { show.innerHTML = typed || "&nbsp;"; };
-      const check = () => {
-        if (typed === answer) return setupScreen();
-        msg.textContent = typed ? "Not quite — try again!" : "Tap the numbers first.";
-        show.animate([{ transform: "translateX(-8px)" }, { transform: "translateX(8px)" }, { transform: "none" }], 300);
-        typed = ""; refresh();
-      };
-      app.querySelectorAll("[data-key]").forEach((btn) => btn.onclick = () => {
-        const k = btn.dataset.key;
-        msg.innerHTML = "&nbsp;";
-        if (k === "ok") return check();
-        if (k === "del") typed = typed.slice(0, -1);
-        else if (typed.length < 3) typed += k;
-        refresh();
-      });
+      app.innerHTML = `<h1 class="screen-title">🔑 Grown-up Corner</h1><div class="card center" id="gateBox"></div>`;
+      renderGate(app.querySelector("#gateBox"), setupScreen);
     },
   };
+
+  // Grown-up gate: a times-table question answered on a big on-screen keypad,
+  // so it works the same on every phone without the device keyboard.
+  function renderGate(box, onPass, why = "To make sure you're a grown-up") {
+    const a = 3 + Math.floor(Math.random() * 7), b = 3 + Math.floor(Math.random() * 7);
+    const answer = String(a * b);
+    let typed = "";
+    box.innerHTML = `
+      <p class="big">${why}, what is<br><b>${a} × ${b}</b> ?</p>
+      <div class="gate-display" aria-live="polite">&nbsp;</div>
+      <p class="small gate-msg">&nbsp;</p>
+      <div class="keypad">
+        ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `<button data-key="${n}">${n}</button>`).join("")}
+        <button data-key="del" aria-label="Delete">⌫</button>
+        <button data-key="0">0</button>
+        <button data-key="ok" class="ok" aria-label="Enter">✔</button>
+      </div>`;
+    const show = box.querySelector(".gate-display"), msg = box.querySelector(".gate-msg");
+    const refresh = () => { show.innerHTML = typed || "&nbsp;"; };
+    const check = () => {
+      if (typed === answer) return onPass();
+      msg.textContent = typed ? "Not quite — try again!" : "Tap the numbers first.";
+      show.animate([{ transform: "translateX(-8px)" }, { transform: "translateX(8px)" }, { transform: "none" }], 300);
+      typed = ""; refresh();
+    };
+    box.querySelectorAll("[data-key]").forEach((btn) => btn.onclick = () => {
+      const k = btn.dataset.key;
+      msg.innerHTML = "&nbsp;";
+      if (k === "ok") return check();
+      if (k === "del") typed = typed.slice(0, -1);
+      else if (typed.length < 3) typed += k;
+      refresh();
+    });
+  }
+
+  // ---------- Plush shop ----------
+  // Store links live in STORE_LINKS (js/data.js). Opening one needs the grown-up gate.
+  const plushCard = (c) => `
+    <div class="card shop">
+      <img src="assets/plush/${c.id}.jpg" alt="${c.name} pillow plush" loading="lazy">
+      <div>
+        <span class="step-label">Pillow plush</span>
+        <h2>Take ${c.name} home!</h2>
+        <p class="muted small">A super-soft pillow plush of ${c.name}, just like the one in the game.</p>
+        ${STORE_LINKS[c.id]
+          ? `<button class="btn primary" data-shop="${c.id}">🛍️ Get the plush</button>`
+          : `<button class="btn" disabled>🛍️ Coming soon</button>`}
+      </div>
+    </div>`;
+  function openShop(id) {
+    const url = STORE_LINKS[id];
+    if (!url) return;
+    const dlg = document.createElement("dialog");
+    dlg.className = "sheet center";
+    dlg.innerHTML = `<h2>Ask a grown-up</h2><div class="gate-box"></div>
+      <button class="btn block" data-close style="margin-top:14px">Not now</button>`;
+    document.body.appendChild(dlg);
+    const close = () => { dlg.close(); dlg.remove(); };
+    dlg.querySelector("[data-close]").onclick = close;
+    renderGate(dlg.querySelector(".gate-box"), () => { close(); window.open(url, "_blank", "noopener"); }, "Grown-ups only! To open the store");
+    dlg.showModal();
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-shop]");
+    if (b) openShop(b.dataset.shop);
+  });
 
   const AREAS = [
     ["inside", "🏠", "Inside", "Rooms in the house"],
@@ -261,7 +295,7 @@
       </div>
       <div class="card">
         <ol class="setup-steps small">
-          <li>Take out the creature accessories (and any ball for Leo).</li>
+          <li>Take out the six treasures (or any small toys to stand in for them).</li>
           <li>Hide each one in a different spot ${area === "outside" ? "outside" : area === "both" ? "inside or outside" : "inside"}.</li>
           <li>Choose that spot below so the riddles lead kids to it.</li>
         </ol>
@@ -407,6 +441,7 @@
             <button class="btn" data-say="${esc(thanks)}">🔊 Listen</button>
             <button class="btn" id="secrets">🔓 See secrets</button>
             <button class="btn purple" id="seeAR">🔮 Visit in AR</button>
+            ${STORE_LINKS[c.id] ? `<button class="btn" data-shop="${c.id}">🛍️ Get the plush</button>` : ""}
             <button class="btn primary" id="home">More quests</button>
           </div>`);
         app.querySelector("#secrets").onclick = () => { go("creature", c.id); screens.creature(c.id, "secrets"); };

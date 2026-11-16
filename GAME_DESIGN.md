@@ -11,14 +11,20 @@ phone camera.
 creatures; you never capture them).
 
 ## What's in the box
-| Creature | Kind | Accessory (physical item) |
+| Character | Kind | Treasure to find |
 |---|---|---|
-| Pip Petalwing | Fairy | 🌸 Flower Crown |
-| Bramble Mossbeard | Gnome | 🎩 Pointy Red Hat |
-| Lirien Leafwhisper | Elf | 🍃 Silver Leaf Bow |
-| Ember Sunfeather | Sunfeather Bird | 🪶 Golden Feather |
-| Thistle Swiftmane | Centaur | 🍀 Lucky Horseshoe |
-| Leo Starpaw | Moonhusky (based on a real dog, Leo) | 🎾 Moonbeam Ball (any ball works) |
+| Scribbi | Doodle Sprite | 🖍️ Rainbow Crayon |
+| Craggle | Moss Rock | 💎 Glow Crystal |
+| Orbit | Little Planet | 🌕 Moon Marble |
+| Tangle | Maze Keeper | 🗝️ Golden Key |
+| Nyxie | Moon Cat | ⭐ Wishing Star |
+| Glitch | Pixel Pal | 🟩 Power Pixel |
+
+Each character has two versions: the **app character** used in the game, and a matching **pillow plush**
+sold separately. Every character page has a "Take ___ home!" card with the plush photo and a **Get the
+plush** button, also offered after a quest is finished. Store links are set in `STORE_LINKS` at the top
+of `js/data.js`; while a link is empty, the button reads "Coming soon". Opening the store always goes
+through the grown-up gate first.
 
 Each creature has a profile in the Creature Journal, split into three easy tabs:
 - **📖 Story:** size, age and home, the creature's story, then picture tiles for personality, favourite
@@ -33,8 +39,7 @@ Each creature also has a catchphrase and a 🔊 read-aloud button.
 ## Look and feel
 An "enchanted night" theme: a deep indigo sky with a slowly moving aurora and twinkling stars, frosted-glass
 cards, warm gradient buttons, and the rounded Fredoka and Nunito fonts. Each creature has its own glow colour,
-used on its portrait card, profile and quest. Characters are drawn in a shaded storybook style. Leo's profile
-also shows a photo of the real Leo. Quest progress is a path of five icons (👋 → 🏃 → 🧩 → 🎁 → 🎉).
+used on its portrait card, profile and quest. Characters are drawn in a shaded storybook style. Quest progress is a path of five icons (👋 → 🏃 → 🧩 → 🎁 → 🎉).
 Animations are turned off for players whose device asks for reduced motion.
 
 ## Core loop
@@ -44,8 +49,8 @@ Animations are turned off for players whose device asks for reduced motion.
    play shows a safety reminder (fenced area, away from roads and water).
 2. **Choose a quest.** Kids pick a creature marked "Lost".
 3. **Intro.** The creature explains what it lost. The text can be read aloud.
-4. **Seeker Challenge.** An activity matched to the creature: gnome squats, silent elf walk, galloping
-   like a centaur, flapping like a bird, a fairy statue freeze, and so on. Some have a timer.
+4. **Seeker Challenge.** An activity matched to the character: wiggling like a squiggle, freezing like a rock, spinning like a planet,
+   zig-zag walks, cat stretches, robot moves and so on. Some have a timer.
    Treasures hidden outside get outdoor challenges instead, such as galloping across the yard, spotting
    real birds, finding cloud shapes or lining up pebbles.
 5. **Riddle.** The riddle describes the hiding spot. Help comes in three levels: Riddle → 🔎 Clue →
