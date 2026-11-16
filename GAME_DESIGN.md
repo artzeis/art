@@ -59,13 +59,16 @@ Animations are turned off for players whose device asks for reduced motion.
      and outdoor challenges.
 2. **Choose a quest.** Kids pick a creature marked "Lost".
 3. **Intro.** The creature explains what it lost. The text can be read aloud.
-4. **Seeker Challenge.** Kids choose a challenge **type** and turn the **difficulty dial**:
-   - **🏃 Physical** (move your body), **🧠 Mental** (use your brain) or **🤝 Teamwork** (play together).
+4. **Seeker Challenge.** Kids **spin the challenge wheel** for a type and turn the **difficulty dial**:
+   - The wheel has four colours: **🏃 Physical** (move your body), **🧠 Mental** (use your brain),
+     **🤝 Teamwork** (play together) and **💖 Kindness** (an act of kindness, such as a compliment, helping
+     tidy up, a thank-you card or a secret surprise for the family). **SPIN** lands on one at random;
+     tapping a colour chooses that type on purpose. The character reads out the result.
    - **Dial with 4 levels:** 🌱 Easy, 🌿 Medium, 🌳 Hard (+1 bonus ⭐) and 🔥 Super (+2 bonus ⭐). Tap a
      segment or a label; the needle swings to the new level.
    - Each type and level has its own set of challenges (`js/challenges.js`), from "jump 5 times" up to
-     "hold a plank for 30 seconds", "what is 12 × 3?" or "line up from shortest to tallest without
-     talking". Mental challenges have a 👀 Show answer button, some challenges have a timer, and
+     "hold a plank for 30 seconds", "what is 12 × 3?", "line up from shortest to tallest without
+     talking" or "plan a secret surprise for someone in your family". Mental challenges have a 👀 Show answer button, some challenges have a timer, and
      🔀 Another one swaps the challenge.
    - Physical Easy also includes the character's own themed moves. When the treasure is outside, some
      physical challenges use the yard ("run 3 laps around the yard").

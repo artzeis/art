@@ -373,6 +373,25 @@
     </svg>`;
   }
 
+  // Challenge wheel: one coloured wedge per challenge type, pointer at the top.
+  function wheelSVG(rot) {
+    const n = CHALLENGE_TYPES.length, step = 360 / n;
+    const P = (a, r) => [100 + r * Math.sin(a * Math.PI / 180), 100 - r * Math.cos(a * Math.PI / 180)].map((v) => v.toFixed(1)).join(" ");
+    const wedges = CHALLENGE_TYPES.map((t, i) => {
+      const a0 = i * step - step / 2, a1 = i * step + step / 2;
+      return `<g data-wedge="${i}" style="cursor:pointer">
+        <path d="M 100 100 L ${P(a0, 94)} A 94 94 0 0 1 ${P(a1, 94)} Z" fill="${t.color}" stroke="#140f33" stroke-width="3"/>
+        <g transform="rotate(${i * step} 100 100)">
+          <text x="100" y="34" text-anchor="middle" font-size="22">${t.icon}</text>
+          <text x="100" y="54" text-anchor="middle" font-size="11" font-weight="800" fill="#1a1030" font-family="Nunito, sans-serif">${t.label}</text>
+        </g></g>`;
+    }).join("");
+    return `<svg class="wheel" viewBox="0 0 200 200" style="transform: rotate(${rot}deg)" aria-label="Challenge wheel">
+      <circle cx="100" cy="100" r="98" fill="#140f33"/>${wedges}
+      <circle cx="100" cy="100" r="96" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+    </svg>`;
+  }
+
   // ---------- Quest flow ----------
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
   const PATH = ["👋", "🏃", "🧩", "🎁", "🎉"];
@@ -381,6 +400,7 @@
     const spot = makeRiddle(save.hides[c.id].text, c, save.hides[c.id].seed || 0);
     const outside = spot.place ? spot.place === "outside" : save.area === "outside";
     let ctype = save.ctype || "physical", clevel = save.clevel || 1, doneLevel = 1, showAnswer = false, dialFrom = clevel;
+    let wheelRot = -CHALLENGE_TYPES.findIndex((t) => t.id === ctype) * 90, spinning = false;
     let challenge = pickChallenge(ctype, clevel, c, outside);
     let step = 0, helpLevel = 0;
 
@@ -411,12 +431,13 @@
       } else if (step === 1) {
         const lv = CHALLENGE_LEVELS[clevel - 1];
         frame(`
-          <span class="step-label">Step 1 · Choose your challenge</span>
-          <div class="ctype" role="radiogroup" aria-label="Challenge type">
-            ${CHALLENGE_TYPES.map((t) => `
-              <button role="radio" aria-checked="${t.id === ctype}" class="${t.id === ctype ? "active" : ""}" data-ctype="${t.id}">
-                <span class="ico">${t.icon}</span><b>${t.label}</b><small>${t.sub}</small></button>`).join("")}
+          <span class="step-label">Step 1 · Spin for a challenge</span>
+          <div class="wheel-wrap">
+            <div class="wheel-pointer" aria-hidden="true"></div>
+            ${wheelSVG(wheelRot)}
+            <button class="spin-btn" id="spin" aria-label="Spin the wheel">SPIN</button>
           </div>
+          <p class="center small muted" style="margin:-4px 0 6px">Spin the wheel, or tap a colour to choose.</p>
           <div class="dial-wrap">
             ${dialSVG(clevel, dialFrom)}
             <div class="dial-levels" role="radiogroup" aria-label="Difficulty">
@@ -424,7 +445,7 @@
             </div>
           </div>
           <div class="challenge-box" style="--lc:${lv.color}">
-            <span class="level-tag">${lv.icon} ${lv.label}${lv.bonus ? ` · +${lv.bonus} bonus ⭐` : ""}</span>
+            <span class="level-tag">${CHALLENGE_TYPES.find((t) => t.id === ctype).icon} ${CHALLENGE_TYPES.find((t) => t.id === ctype).label} · ${lv.icon} ${lv.label}${lv.bonus ? ` · +${lv.bonus} bonus ⭐` : ""}</span>
             <p class="big">${esc(challenge.text)}</p>
             ${challenge.seconds ? `<div class="timer" id="timer">${challenge.seconds}</div>` : ""}
             ${challenge.answer ? (showAnswer ? `<div class="hintbox">✅ <b>Answer:</b> ${esc(challenge.answer)}</div>` : `<button class="btn small-btn" id="showAnswer">👀 Show answer</button>`) : ""}
@@ -440,7 +461,34 @@
         requestAnimationFrame(() => requestAnimationFrame(() => { needle.style.transform = `rotate(${-(180 - (clevel - 0.5) * 45)}deg)`; }));
         dialFrom = clevel;
         const repick = () => { challenge = pickChallenge(ctype, clevel, c, outside, challenge.text); showAnswer = false; render(); };
-        app.querySelectorAll("[data-ctype]").forEach((b) => b.onclick = () => { ctype = save.ctype = b.dataset.ctype; persist(); repick(); });
+        // Spin the wheel to a type (random, or a tapped segment), then show a challenge of that type.
+        const wheel = app.querySelector(".wheel");
+        const spinTo = (k, turns) => {
+          if (spinning) return;
+          spinning = true;
+          const target = ((-k * 90 + (Math.random() * 50 - 25)) % 360 + 360) % 360;
+          const delta = ((target - (wheelRot % 360)) % 360 + 360) % 360;
+          wheelRot += turns * 360 + delta;
+          wheel.classList.add("spinning");
+          wheel.style.transform = `rotate(${wheelRot}deg)`;
+          let finished = false;
+          const done = () => {
+            if (finished) return;
+            finished = true;
+            spinning = false;
+            const t = CHALLENGE_TYPES[k];
+            ctype = save.ctype = t.id; persist();
+            challenge = pickChallenge(ctype, clevel, c, outside, challenge.text); showAnswer = false;
+            render();
+            if (navigator.vibrate) navigator.vibrate(40);
+            speak(`${t.label}! ${challenge.text}`, c.id);
+          };
+          wheel.addEventListener("transitionend", done, { once: true });
+          // Backup in case the animation is switched off (reduced motion) and never "ends".
+          setTimeout(done, matchMedia("(prefers-reduced-motion: reduce)").matches ? 60 : 3500);
+        };
+        app.querySelector("#spin").onclick = () => spinTo(Math.floor(Math.random() * CHALLENGE_TYPES.length), 4);
+        app.querySelectorAll("[data-wedge]").forEach((w) => w.onclick = () => spinTo(+w.dataset.wedge, 1));
         const setLevel = (n) => { clevel = save.clevel = Math.max(1, Math.min(4, n)); persist(); repick(); };
         app.querySelectorAll("[data-level]").forEach((b) => b.onclick = () => setLevel(+b.dataset.level));
         app.querySelectorAll("[data-seg]").forEach((g) => g.onclick = () => setLevel(+g.dataset.seg));

@@ -1,17 +1,19 @@
 // Myth Seekers — Seeker Challenges.
 //
-// Before solving a riddle, kids pick a challenge TYPE (Physical, Mental or Teamwork) and turn the
-// DIFFICULTY dial (4 levels). A random challenge from that type and level is shown.
+// Before solving a riddle, kids spin the wheel for a challenge TYPE (Physical, Mental, Teamwork or
+// Kindness) — or tap a segment to choose — and turn the DIFFICULTY dial (4 levels). A random challenge from that type and level is shown.
 // Add or edit challenges below. Fields:
 //   text     what to do ({name} becomes the character's name)
 //   seconds  optional timer
 //   answer   optional answer (Mental) — hidden behind a "Show answer" button
 //   outside  true = only offered when the treasure is hidden outside
 
+// The four types share the spinning wheel; `color` is the wheel segment colour.
 const CHALLENGE_TYPES = [
-  { id: "physical", icon: "🏃", label: "Physical", sub: "Move your body" },
-  { id: "mental", icon: "🧠", label: "Mental", sub: "Use your brain" },
-  { id: "teamwork", icon: "🤝", label: "Teamwork", sub: "Play together" },
+  { id: "physical", icon: "🏃", label: "Physical", sub: "Move your body", color: "#ff8a3d" },
+  { id: "mental", icon: "🧠", label: "Mental", sub: "Use your brain", color: "#7c6bff" },
+  { id: "teamwork", icon: "🤝", label: "Teamwork", sub: "Play together", color: "#3fb6ff" },
+  { id: "kindness", icon: "💖", label: "Kindness", sub: "Do something kind", color: "#ff5fa2" },
 ];
 
 const CHALLENGE_LEVELS = [
@@ -118,6 +120,39 @@ const CHALLENGE_BANK = {
       { text: "Three-legged walk! Stand side by side, hold on tight and walk across the room in step." },
       { text: "Team story: each person adds one sentence to a story about {name}." },
       { text: "Balance a toy on a book and pass it to every teammate without dropping it." },
+    ],
+  },
+  kindness: {
+    1: [
+      { text: "Give someone a big smile and say, \"Have a great day!\"" },
+      { text: "Say thank you to someone for something nice they did." },
+      { text: "Give a family member (or a teddy) a gentle hug." },
+      { text: "Tell someone one thing you love about them." },
+      { text: "Share a toy with someone for a little while." },
+      { text: "Wave and say hello to a neighbour (with a grown-up nearby).", outside: true },
+    ],
+    2: [
+      { text: "Help tidy up 5 things that aren't yours." },
+      { text: "Draw a happy picture and give it to someone." },
+      { text: "Ask someone, \"How are you feeling today?\" and really listen to the answer." },
+      { text: "Help set the table or put out the cups." },
+      { text: "Make a kind card for someone and hide it where they'll find it." },
+      { text: "Leave a little water out for the birds (ask a grown-up first).", outside: true },
+    ],
+    3: [
+      { text: "Do a chore without being asked — then tell a grown-up what you did!" },
+      { text: "Write or draw a thank-you note for someone who helps you." },
+      { text: "Teach someone something you know how to do." },
+      { text: "Give 3 different people a compliment." },
+      { text: "Help water the plants or fill a pet's water bowl (with a grown-up)." },
+      { text: "Pick up 3 pieces of litter — wear gloves and ask a grown-up to help.", outside: true },
+    ],
+    4: [
+      { text: "Plan a secret surprise for someone in your family — then do it!" },
+      { text: "Make a kindness coupon, like \"one free hug\" or \"I'll help tidy your room\", and give it away." },
+      { text: "With a grown-up, choose a toy or book you've outgrown to give to someone who'd love it." },
+      { text: "Call or video-chat a grandparent or friend just to say hi and ask about their day." },
+      { text: "Do 3 kind things in a row for 3 different people." },
     ],
   },
 };
