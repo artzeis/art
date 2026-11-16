@@ -364,43 +364,43 @@ const OUTDOOR_CHALLENGES = {
   ],
 };
 
-// "Make something for me!" — after the treasure is found, the character asks the family to
-// create something together. Kids (and grown-ups) can snap a photo for the Memory Book.
+// "Make something together" — after the treasure is found, the character asks the grown-up and kid to
+// imagine, build or play something together (with some moving around). Snap a photo for the Memory Book.
 const CREATE_REQUESTS = {
   scribbi: [
-    "Draw a brand-new doodle creature and give it a name!",
-    "Make a rainbow out of things you can find — one thing for every colour.",
-    "Make and decorate a paper crown together — I lost mine!",
+    "Back-to-back drawing! One of you describes a silly made-up creature, the other draws it without peeking. Then swap!",
+    "Make a giant rainbow on the floor out of clothes, toys or socks — one stripe for every colour. Then jump over it!",
+    "Lie down on big paper (or the floor) and trace each other's outline with toys or string. Turn it into a superhero!",
   ],
   craggle: [
-    "Build me a cosy rock garden out of pebbles, toys or cushions.",
-    "Build the tallest tower you can — strong like a mountain!",
-    "Make a comfy nap spot for me out of blankets and pillows.",
+    "Build a cushion mountain together — strong enough for Craggle to nap on top. Then climb it, slowly, like a rock.",
+    "Make a rock family out of pebbles (or rolled-up socks). Give every rock a face, a name and a silly voice.",
+    "Grown-up becomes a mountain on hands and knees. Kids build a moss garden on top with soft toys — how many can balance?",
   ],
   orbit: [
-    "Build a rocket ship out of boxes, chairs or blankets — big enough for a grown-up too!",
-    "Draw your very own planet and give it a name.",
-    "Make a space helmet out of anything you can find.",
+    "Build a rocket out of a box, chairs or blankets. Do a countdown, blast off, and tell each other what's on the new planet!",
+    "Make a solar system! One person is the sun — everyone else is a planet spinning slowly around them.",
+    "Make a moon-walk path out of pillows and cross it together in slow-motion space steps. No touching the floor!",
   ],
   tangle: [
-    "Build a maze for a toy car or marble to roll through.",
-    "Draw a maze on paper and have your grown-up solve it.",
-    "Invent a secret code and write me a message in it.",
+    "Make a maze in a hallway with tape, string or cushions — for a toy car, or for your grown-up to crawl through!",
+    "Hide a toy, then guide your grown-up to it using only \"left\", \"right\" and \"forward\". Then swap!",
+    "Build an obstacle course with cushions and chairs. Take turns going through it while the other one times you.",
   ],
   nyxie: [
-    "Make a cosy moon bed for me with your softest things.",
-    "Draw the night sky with a constellation you made up.",
-    "Make a dream catcher out of paper, string or ribbon.",
+    "Cut out little paper stars and stick them on a window or wall. Join them up into your very own constellation and name it.",
+    "Build a cosy blanket cave together and tell a whispery bedtime story inside, by torchlight.",
+    "Make shadow puppets on the wall with a torch. Can you make a cat? A moon? A sleepy owl?",
   ],
   glitch: [
-    "Design a brand-new video game level on paper.",
-    "Build a robot out of boxes, cups or blocks.",
-    "Make up a dance move together and give it a game name, like 'The Power-Up'.",
+    "Invent a brand-new game together with three rules. Give it a name, then play it!",
+    "Robot remote! One of you is the remote control and gives the other one robot commands: walk, spin, beep, freeze. Then swap.",
+    "Build a robot costume out of boxes, cups or paper, then do a robot parade around the house.",
   ],
   leo: [
-    "Build a den out of pillows and blankets — big enough for the whole pack!",
-    "Draw a map of your home and mark the best pack hideouts.",
-    "Make a paper moon medallion for every member of your pack.",
+    "Build a wolf den big enough for the whole pack, then have a pack picnic inside it.",
+    "Cut out paper paw prints and lay a secret trail through the house for someone to follow on all fours.",
+    "Draw your family as a wolf pack. What kind of wolf is everyone? Then howl your pack's song together!",
   ],
 };
 
