@@ -43,9 +43,10 @@
   </nav>
 
   <!-- Instructions -->
-  <dialog id="helpDialog" class="sheet">
-    <h2 style="font-size:1.8rem">How to Play</h2>
-    <p class="muted" style="margin:0">Seven squishy friends have lost their treasures. Let's help them!</p>
+  <!-- How to Play: shown as its own page (opened from the home page or the ? button) -->
+  <template id="howtoTpl">
+    <h1 class="screen-title">How to <span class="grad-text">Play</span></h1>
+    <p class="lead">Seven squishy friends have lost their treasures. Let's help them!</p>
     <ol class="howto">
       <li><span class="num">🔑</span><div><b>Grown-ups hide the treasures.</b> Open <em>Grown-ups</em> and hide the creature accessories
         inside, outside, or both: Scribbi's Rainbow Crayon, Craggle's Glow Crystal, Orbit's Moon Marble, Tangle's Golden Key, Nyxie's Wishing Star, Glitch's Power Pixel and Leo's Moon Medallion.
@@ -62,8 +63,31 @@
         Then turn slowly, follow the 🔥 meter, and tap the creature when you see it peeking out!</div></li>
     </ol>
     <p class="safety">🛡️ Grown-ups: keep hiding spots safe and at kid height, and supervise AR mode — watch where you walk while looking at a screen.</p>
-    <button class="btn primary block" id="helpClose">Let's go!</button>
-  </dialog>
+    <button class="btn primary block" data-go="home" style="margin-bottom:16px">Let's go!</button>
+  </template>
+
+  <!-- Animated intro, shown when the app opens -->
+  <div id="intro" class="intro" role="dialog" aria-label="Welcome to Imagine Seek">
+    <div class="intro-stars"></div>
+    <div class="intro-hero">
+      <div class="intro-orbit" aria-hidden="true">
+      <img src="assets/characters/scribbi.png" alt="" style="left:50.0%;top:10.0%;--d:0.50s">
+      <img src="assets/characters/craggle.png" alt="" style="left:81.3%;top:25.1%;--d:0.62s">
+      <img src="assets/characters/orbit.png" alt="" style="left:89.0%;top:58.9%;--d:0.74s">
+      <img src="assets/characters/tangle.png" alt="" style="left:67.4%;top:86.0%;--d:0.86s">
+      <img src="assets/characters/nyxie.png" alt="" style="left:32.6%;top:86.0%;--d:0.98s">
+      <img src="assets/characters/glitch.png" alt="" style="left:11.0%;top:58.9%;--d:1.10s">
+      <img src="assets/characters/leo.png" alt="" style="left:18.7%;top:25.1%;--d:1.22s">
+      </div>
+      <img class="intro-icon" src="assets/icons/icon-512.png" alt="">
+    </div>
+    <h1 class="intro-title" aria-label="Imagine Seek">
+      <span>I</span><span>m</span><span>a</span><span>g</span><span>i</span><span>n</span><span>e</span><span class="sp"> </span><span>S</span><span>e</span><span>e</span><span>k</span>
+    </h1>
+    <p class="intro-tag">A real-world treasure hunt where grown-ups and kids <b>imagine</b>, <b>move</b> and <b>play together</b> to help the Dreamlings find what they've lost.</p>
+    <button class="btn primary intro-go" id="introGo">✨ Let's play!</button>
+    <button class="intro-link" id="introHow">How to play</button>
+  </div>
 
   <script src="js/art.js"></script>
   <script src="js/data.js"></script>

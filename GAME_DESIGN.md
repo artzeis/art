@@ -56,6 +56,14 @@ cards, warm gradient buttons, and the rounded Fredoka and Nunito fonts. Each cre
 used on its portrait card, profile and quest. Characters are drawn in a shaded storybook style. Quest progress is a path of five icons (👋 → 🏃 → 🧩 → 🎁 → 🎉).
 Animations are turned off for players whose device asks for reduced motion.
 
+## Opening the app
+- **Animated intro:** the app icon pops in, the seven Dreamlings bounce into a ring around it, "Imagine
+  Seek" springs in letter by letter, then the tagline appears: *"A real-world treasure hunt where
+  grown-ups and kids imagine, move and play together to help the Dreamlings find what they've lost."*
+  Buttons: **✨ Let's play!** (to the home page) and **How to play**.
+- **How to Play** is its own page, reached from the "📖 How to play →" link on the home page or the
+  **?** button at the top.
+
 ## Core loop
 1. **Setup (grown-up).** Behind a simple math gate, the grown-up chooses where to play (**Inside**,
    **Outside** or **Both**), hides each character's lost item, and **types where it is**, for example

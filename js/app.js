@@ -99,6 +99,10 @@
   ];
 
   const screens = {
+    howto() {
+      app.innerHTML = document.getElementById("howtoTpl").innerHTML;
+    },
+
     home() {
       const ready = CREATURES.filter((c) => hidden(c.id)).length;
       const foundCount = Object.keys(save.found).length;
@@ -112,6 +116,7 @@
             <h1>${allDone ? `<span class="grad-text">Super Seeker!</span>` : `Who needs <span class="grad-text">your help</span> tonight?`}</h1>
             <p>${allDone ? "You helped every creature! Try the AR Hunt or start a new hunt."
               : "Magical friends lost their treasures. Pick one to begin a quest."}</p>
+            <button class="howto-link" data-go="howto">📖 How to play →</button>
           </div>
         </section>
         ${ready < CREATURES.length ? `
@@ -1004,13 +1009,19 @@
     const g = e.target.closest("[data-go]");
     if (g) go(g.dataset.go);
   });
-  const dlg = document.getElementById("helpDialog");
-  document.getElementById("helpBtn").onclick = () => dlg.showModal();
-  document.getElementById("helpClose").onclick = () => dlg.close();
+  document.getElementById("helpBtn").onclick = () => go("howto");
+
+  // Animated intro: shown each time the app opens; "Let's play!" goes to the home page.
+  const intro = document.getElementById("intro");
+  const closeIntro = (then) => {
+    intro.classList.add("leaving");
+    setTimeout(() => { intro.remove(); go(then); }, 450);
+  };
+  document.getElementById("introGo").onclick = () => closeIntro("home");
+  document.getElementById("introHow").onclick = () => closeIntro("howto");
 
   persist();
   loadCreatureImages(CREATURES.map((c) => c.id)).then(() => {
     go("home");
-    try { if (!localStorage.getItem(STORE_KEY + ".seenHelp")) { dlg.showModal(); localStorage.setItem(STORE_KEY + ".seenHelp", "1"); } } catch (_) {}
   });
 })();
