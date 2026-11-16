@@ -40,8 +40,20 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><circle cx="12" cy="12" r="3.5"/></svg>AR Hunt</button>
     <button data-go="grownup">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="14" r="4"/><path d="M11 11.5 19 4M16 7l2.5 2.5M14 9l2 2"/></svg>Grown-ups</button>
-    <a class="tab-extra" href="words/">🔤 <b>Wordlings</b> — play the Dreamling word game →</a>
   </nav>
+  <!-- Wordlings: separate launcher below the tab bar -->
+  <a class="wl-launch" href="words/" aria-label="Play Wordlings, the Dreamling word game">
+    <svg class="w-icon" viewBox="0 0 64 64" aria-hidden="true">
+      <defs><linearGradient id="wGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c6bff"/><stop offset=".55" stop-color="#c06ee8"/><stop offset="1" stop-color="#ff5fa2"/></linearGradient>
+        <linearGradient id="wLetter" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6d6"/><stop offset="1" stop-color="#ffcf6b"/></linearGradient></defs>
+      <rect x="2" y="2" width="60" height="60" rx="18" fill="url(#wGrad)"/>
+      <rect x="2" y="2" width="60" height="30" rx="18" fill="#fff" opacity=".12"/>
+      <text x="32" y="45" text-anchor="middle" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="38" fill="url(#wLetter)" stroke="#5a2a8a" stroke-width="1.5" paint-order="stroke">W</text>
+      <path d="M50 10 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6 -3.6 -3.6 -1.6 3.6 -1.6z" fill="#fff"/>
+    </svg>
+    <span class="wl-launch-txt"><b>Wordlings</b><small>The Dreamling word game</small></span>
+    <span class="wl-launch-go">Play ›</span>
+  </a>
 
   <!-- Instructions -->
   <!-- How to Play: shown as its own page (opened from the home page or the ? button) -->
