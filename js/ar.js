@@ -233,6 +233,7 @@ const AR = (() => {
     $(".meter").hidden = true;
     if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
     showMenu(`🎉 You found ${state.creature.name}! “${state.creature.catchphrase}”`);
+    if (window.speakAs) speakAs(state.creature.id, `You found me! ${state.creature.catchphrase}`);
     state.onFound && state.onFound(state.creature);
   }
 
@@ -260,13 +261,13 @@ const AR = (() => {
     const say = (t) => { const n = $('[data-ar="text"]'); if (n) n.textContent = t; };
     if (e.target.closest(".ar-creature")) {
       if (state.phase === "seek") return reveal();
-      if (state.phase === "found") { animate("happy"); say(`${c.name}: “${c.facts[state.factIndex++ % c.facts.length]}”`); }
+      if (state.phase === "found") { const f = c.facts[state.factIndex++ % c.facts.length]; animate("happy"); say(`${c.name}: “${f}”`); speakAs(c.id, f); }
       return;
     }
     if (action === "close") return stop();
-    if (action === "wave") { animate("happy"); say(`${c.name} waves back at you! 👋`); }
-    if (action === "spin") { animate("spin"); say(`Wheee! ${c.name} does a twirl!`); }
-    if (action === "fact") { animate("happy"); say(`💡 ${c.facts[state.factIndex++ % c.facts.length]}`); }
+    if (action === "wave") { animate("happy"); say(`${c.name} waves back at you! 👋`); speakAs(c.id, "Hi! Hi! Hello!"); }
+    if (action === "spin") { animate("spin"); say(`Wheee! ${c.name} does a twirl!`); speakAs(c.id, "Wheeeee!"); }
+    if (action === "fact") { const f = c.facts[state.factIndex++ % c.facts.length]; animate("happy"); say(`💡 ${f}`); speakAs(c.id, f); }
   }
 
   function stop() {
@@ -274,6 +275,7 @@ const AR = (() => {
     window.removeEventListener("deviceorientation", onOrientation);
     window.removeEventListener("pointerup", onPointerUp);
     if (stream) stream.getTracks().forEach((t) => t.stop());
+    Voices.stop();
     stream = null;
     stage && stage.remove();
     const cb = state && state.onClose;

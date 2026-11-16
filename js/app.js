@@ -32,15 +32,8 @@
     }
   }
 
-  function speak(text) {
-    try {
-      if (!window.speechSynthesis) return;
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95; u.pitch = 1.2;
-      speechSynthesis.speak(u);
-    } catch (_) {}
-  }
+  // Each character speaks in its own voice (js/voices.js).
+  const speak = (text, id) => speakAs(id, text);
 
   // ---------- Router ----------
   let timerId = null;
@@ -178,7 +171,7 @@
           ${panels[tab]}
           ${plushCard(c)}
         </div>`;
-      app.querySelector("[data-say]").onclick = () => speak(`${c.name} the ${c.kind}. ${c.catchphrase} ${c.description}`);
+      app.querySelector("[data-say]").onclick = () => speak(`${c.catchphrase} ${c.description}`, c.id);
       app.querySelector("[data-ar]").onclick = () => startAR(id);
       app.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => screens.creature(id, b.dataset.tab));
       const q = app.querySelector("[data-quest]");
@@ -383,7 +376,7 @@
           </div>
         </div>`;
       const say = app.querySelector("[data-say]");
-      if (say) say.onclick = () => speak(say.dataset.say);
+      if (say) say.onclick = () => speak(say.dataset.say, c.id);
     };
 
     const render = () => {
@@ -466,7 +459,7 @@
         app.querySelector("#secrets").onclick = () => { go("creature", c.id); screens.creature(c.id, "secrets"); };
         app.querySelector("#seeAR").onclick = () => startAR(c.id);
         app.querySelector("#home").onclick = () => go("home");
-        speak(thanks);
+        speak(thanks, c.id);
       }
       const next = app.querySelector("[data-next]");
       if (next) next.onclick = () => { step++; render(); };

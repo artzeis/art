@@ -85,6 +85,23 @@ Animations are turned off for players whose device asks for reduced motion.
 - The first time kids spot each creature in AR, they earn +1 ⭐.
 - **Fallbacks:** without a camera, an illustrated forest is shown instead.
 
+## Character voices
+Every line a character says can be heard in that character's own voice (`js/voices.js`), using the
+device's built-in text-to-speech, so it works offline. Each character has its own pitch and speed, and
+gets a different installed voice where the device has several:
+
+| Character | Voice |
+|---|---|
+| Scribbi | very high and fast: giggly and bouncy |
+| Craggle | very deep and slow: a sleepy rumble |
+| Orbit | high and curious |
+| Tangle | quick and sneaky |
+| Nyxie | soft, calm and a little slow |
+| Glitch | low and speedy, robotic where the device has a robot voice |
+
+Characters speak on their profile page (🔊), during quests (🔊 Listen, and the thank-you at the end)
+and in AR (when found, and for waves, spins and fun facts).
+
 ## Rewards and progress
 - ⭐ Sparkle Stars from quests and AR sightings.
 - The Creature Journal fills in with "Friend ✔" badges. Helping all five unlocks the **Master Myth
