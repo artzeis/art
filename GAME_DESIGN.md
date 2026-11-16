@@ -59,10 +59,17 @@ Animations are turned off for players whose device asks for reduced motion.
      and outdoor challenges.
 2. **Choose a quest.** Kids pick a creature marked "Lost".
 3. **Intro.** The creature explains what it lost. The text can be read aloud.
-4. **Seeker Challenge.** An activity matched to the character: wiggling like a squiggle, freezing like a rock, spinning like a planet,
-   zig-zag walks, cat stretches, robot moves and so on. Some have a timer.
-   Treasures hidden outside get outdoor challenges instead, such as galloping across the yard, spotting
-   real birds, finding cloud shapes or lining up pebbles.
+4. **Seeker Challenge.** Kids choose a challenge **type** and turn the **difficulty dial**:
+   - **🏃 Physical** (move your body), **🧠 Mental** (use your brain) or **🤝 Teamwork** (play together).
+   - **Dial with 4 levels:** 🌱 Easy, 🌿 Medium, 🌳 Hard (+1 bonus ⭐) and 🔥 Super (+2 bonus ⭐). Tap a
+     segment or a label; the needle swings to the new level.
+   - Each type and level has its own set of challenges (`js/challenges.js`), from "jump 5 times" up to
+     "hold a plank for 30 seconds", "what is 12 × 3?" or "line up from shortest to tallest without
+     talking". Mental challenges have a 👀 Show answer button, some challenges have a timer, and
+     🔀 Another one swaps the challenge.
+   - Physical Easy also includes the character's own themed moves. When the treasure is outside, some
+     physical challenges use the yard ("run 3 laps around the yard").
+   - The chosen type and level are remembered for the next quest.
 5. **Riddle.** The generated riddle describes the hiding spot. Help comes in three levels: Riddle → 🔎 Clue →
    💡 Big Hint.
 6. **Show me!** Kids pick the treasure they found from four choices. This is a light check that they
@@ -97,7 +104,7 @@ gets a different installed voice where the device has several:
 | Orbit | Curious, dreamy, amazed | Bright; voice rises in wonder on questions and exclamations; "Ooooh!" |
 | Tangle | Clever, playful, cheeky | Quick and sly; asks questions a little quieter, like a secret; chuckles "Heh-heh-heh!" |
 | Nyxie | Mysterious, gentle, loyal | Soft, quiet and slow, with sleepy pauses; starts with a purr, "Mrrrow…" |
-| Glitch | Cheeky, speedy, fair | Flat, robotic and fast; "Bleep." between thoughts and "Bleep-bloop!" to finish |
+| Glitch | Cheeky, speedy, fair | Steady, even robot tone at a clear, easy-to-follow pace; "Bleep." between thoughts and "Bleep-bloop!" to finish |
 
 The little sounds are only added to longer lines, and never when the line already has one.
 

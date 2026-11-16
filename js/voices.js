@@ -50,15 +50,15 @@ const VOICE_STYLES = {
     prefer: ["Moira", "Serena", "Shelley", "Martha", "Microsoft Sonia", "Google UK English Female"],
     shape: (parts, long, text) => (long && !/^mr+/i.test(text) ? [{ text: "Mrrrow…", rate: 0.7, pitch: 0.9 }, ...parts] : parts),
   },
-  // Cheeky, speedy, fair — flat robot pitch, fast, beeps between thoughts.
+  // Cheeky, speedy, fair — steady robot tone (flat pitch, clear voice), short beeps between thoughts.
   glitch: {
-    pitch: 0.7, rate: 1.28, pause: 50, split: "sentence",
-    prefer: ["Zarvox", "Fred", "Microsoft David", "Google US English"],
+    pitch: 0.9, rate: 0.98, pause: 200, split: "sentence",
+    prefer: ["Fred", "Alex", "Daniel", "Microsoft David", "Google US English"],
     shape: (parts, long, text) => {
       const beeps = long && !/bleep/i.test(text);
       const out = [];
-      parts.forEach((p, i) => { out.push({ ...p, pitch: 0.7 }); if (beeps && i === 0 && parts.length > 1) out.push({ text: "Bleep.", pitch: 1.3, rate: 1.4 }); });
-      if (beeps) out.push({ text: "Bleep-bloop!", pitch: 1.2, rate: 1.4 });
+      parts.forEach((p, i) => { out.push({ ...p, pitch: 0.9 }); if (beeps && i === 0 && parts.length > 1) out.push({ text: "Bleep.", pitch: 1.3, rate: 1.1 }); });
+      if (beeps) out.push({ text: "Bleep-bloop!", pitch: 1.25, rate: 1.1 });
       return out;
     },
   },

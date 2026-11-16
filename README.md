@@ -27,5 +27,6 @@ folder on GitHub Pages works well for playing on a phone.
 - `assets/plush/` — plush product photos for the store cards
 - `js/app.js` — screens, quest flow, journal, grown-up setup
 - `js/ar.js` — AR mode: room scan, hiding and seeking
+- `js/challenges.js` — Physical / Mental / Teamwork challenges for each of the 4 difficulty levels
 - `js/riddles.js` — writes riddles from the grown-up's description of each hiding place
 - `js/voices.js` — each character's speaking voice (pitch, speed, preferred voices)

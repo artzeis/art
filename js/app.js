@@ -354,6 +354,25 @@
     };
   }
 
+  // Difficulty dial: a half-circle with 4 coloured segments and a needle.
+  function dialSVG(level, from = level) {
+    const P = (a, r) => [100 + r * Math.cos(a * Math.PI / 180), 100 - r * Math.sin(a * Math.PI / 180)].map((v) => v.toFixed(1)).join(" ");
+    const segs = CHALLENGE_LEVELS.map((l, i) => {
+      const a0 = 180 - i * 45 - 2, a1 = 180 - (i + 1) * 45 + 2;
+      return `<path data-seg="${l.level}" d="M ${P(a0, 78)} A 78 78 0 0 1 ${P(a1, 78)}" stroke="${l.color}" stroke-width="24" fill="none"
+        stroke-linecap="round" opacity="${l.level <= level ? 1 : 0.28}" style="cursor:pointer"/>`;
+    }).join("");
+    const angle = 180 - (from - 0.5) * 45;
+    return `<svg class="dial" viewBox="0 0 200 118" role="slider" tabindex="0" aria-label="Difficulty"
+        aria-valuemin="1" aria-valuemax="4" aria-valuenow="${level}" aria-valuetext="${CHALLENGE_LEVELS[level - 1].label}">
+      ${segs}
+      <g class="needle" style="transform: rotate(${-angle}deg)">
+        <line x1="100" y1="100" x2="160" y2="100" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <circle cx="100" cy="100" r="13" fill="#fff"/><circle cx="100" cy="100" r="6" fill="${CHALLENGE_LEVELS[level - 1].color}"/>
+    </svg>`;
+  }
+
   // ---------- Quest flow ----------
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
   const PATH = ["👋", "🏃", "🧩", "🎁", "🎉"];
@@ -361,7 +380,8 @@
     if (!hidden(c.id)) return go("creature", c.id);
     const spot = makeRiddle(save.hides[c.id].text, c, save.hides[c.id].seed || 0);
     const outside = spot.place ? spot.place === "outside" : save.area === "outside";
-    const challenge = pick(outside ? OUTDOOR_CHALLENGES[c.id] : c.challenges);
+    let ctype = save.ctype || "physical", clevel = save.clevel || 1, doneLevel = 1, showAnswer = false, dialFrom = clevel;
+    let challenge = pickChallenge(ctype, clevel, c, outside);
     let step = 0, helpLevel = 0;
 
     const frame = (body) => {
@@ -389,15 +409,50 @@
             <button class="btn primary" data-next>I'll help!</button>
           </div>`);
       } else if (step === 1) {
+        const lv = CHALLENGE_LEVELS[clevel - 1];
         frame(`
-          <span class="step-label">Step 1 · Seeker Challenge</span>
-          <p class="big">${challenge.text}</p>
-          ${challenge.seconds ? `<div class="timer" id="timer">${challenge.seconds}</div>` : ""}
+          <span class="step-label">Step 1 · Choose your challenge</span>
+          <div class="ctype" role="radiogroup" aria-label="Challenge type">
+            ${CHALLENGE_TYPES.map((t) => `
+              <button role="radio" aria-checked="${t.id === ctype}" class="${t.id === ctype ? "active" : ""}" data-ctype="${t.id}">
+                <span class="ico">${t.icon}</span><b>${t.label}</b><small>${t.sub}</small></button>`).join("")}
+          </div>
+          <div class="dial-wrap">
+            ${dialSVG(clevel, dialFrom)}
+            <div class="dial-levels" role="radiogroup" aria-label="Difficulty">
+              ${CHALLENGE_LEVELS.map((l) => `<button role="radio" aria-checked="${l.level === clevel}" class="${l.level === clevel ? "active" : ""}" style="--lc:${l.color}" data-level="${l.level}">${l.icon}<br>${l.label}</button>`).join("")}
+            </div>
+          </div>
+          <div class="challenge-box" style="--lc:${lv.color}">
+            <span class="level-tag">${lv.icon} ${lv.label}${lv.bonus ? ` · +${lv.bonus} bonus ⭐` : ""}</span>
+            <p class="big">${esc(challenge.text)}</p>
+            ${challenge.seconds ? `<div class="timer" id="timer">${challenge.seconds}</div>` : ""}
+            ${challenge.answer ? (showAnswer ? `<div class="hintbox">✅ <b>Answer:</b> ${esc(challenge.answer)}</div>` : `<button class="btn small-btn" id="showAnswer">👀 Show answer</button>`) : ""}
+          </div>
           <div class="row">
             <button class="btn" data-say="${esc(challenge.text)}">🔊 Listen</button>
             ${challenge.seconds ? `<button class="btn" id="startTimer">⏱️ Start timer</button>` : ""}
-            <button class="btn good" data-next>We did it!</button>
-          </div>`);
+            <button class="btn" id="another">🔀 Another one</button>
+          </div>
+          <button class="btn good block" data-next style="margin-top:10px">We did it!</button>`);
+        // Swing the needle from the old level to the new one.
+        const needle = app.querySelector(".needle");
+        requestAnimationFrame(() => requestAnimationFrame(() => { needle.style.transform = `rotate(${-(180 - (clevel - 0.5) * 45)}deg)`; }));
+        dialFrom = clevel;
+        const repick = () => { challenge = pickChallenge(ctype, clevel, c, outside, challenge.text); showAnswer = false; render(); };
+        app.querySelectorAll("[data-ctype]").forEach((b) => b.onclick = () => { ctype = save.ctype = b.dataset.ctype; persist(); repick(); });
+        const setLevel = (n) => { clevel = save.clevel = Math.max(1, Math.min(4, n)); persist(); repick(); };
+        app.querySelectorAll("[data-level]").forEach((b) => b.onclick = () => setLevel(+b.dataset.level));
+        app.querySelectorAll("[data-seg]").forEach((g) => g.onclick = () => setLevel(+g.dataset.seg));
+        const dial = app.querySelector(".dial");
+        dial.onkeydown = (e) => {
+          if (e.key === "ArrowRight" || e.key === "ArrowUp") { e.preventDefault(); setLevel(clevel + 1); }
+          if (e.key === "ArrowLeft" || e.key === "ArrowDown") { e.preventDefault(); setLevel(clevel - 1); }
+        };
+        app.querySelector("#another").onclick = repick;
+        const sa = app.querySelector("#showAnswer");
+        if (sa) sa.onclick = () => { showAnswer = true; render(); };
+        app.querySelector("[data-next]").onclick = () => { doneLevel = clevel; step++; render(); };
         const t = app.querySelector("#startTimer");
         if (t) t.onclick = () => {
           let left = challenge.seconds;
@@ -405,10 +460,12 @@
           clearInterval(timerId);
           timerId = setInterval(() => {
             left -= 1;
-            app.querySelector("#timer").textContent = left > 0 ? left : "🎉";
+            const el = app.querySelector("#timer");
+            if (el) el.textContent = left > 0 ? left : "🎉";
             if (left <= 0) { clearInterval(timerId); confetti(["✨"]); }
           }, 1000);
         };
+        return;
       } else if (step === 2) {
         const helps = [
           helpLevel >= 1 ? `<div class="hintbox">🔎 <b>Clue:</b> ${spot.clue}</div>` : "",
@@ -440,7 +497,8 @@
         });
       } else {
         const first = !save.found[c.id];
-        const gained = first ? 3 - Math.min(helpLevel, 2) : 0; // fewer hints = more stars
+        // Fewer hints = more stars, and harder challenges earn bonus stars.
+        const gained = first ? 3 - Math.min(helpLevel, 2) + CHALLENGE_LEVELS[doneLevel - 1].bonus : 0;
         if (first) { save.found[c.id] = Date.now(); save.stars += gained; persist(); }
         confetti();
         const thanks = `Thank you, thank you! You found my ${c.accessory}! We are friends forever now.`;
