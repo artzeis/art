@@ -20,7 +20,7 @@
   const shuffle = (arr) => arr.map((v) => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map((p) => p[1]);
   const vars = (c) => `--c:${c.color};--soft:${c.soft}`;
 
-  function confetti(emojis = ["⭐", "✨", "🖍️", "💎", "🌕", "🗝️", "🟩"]) {
+  function confetti(emojis = ["⭐", "✨", "🖍️", "💎", "🌕", "🗝️", "🟩", "🌙"]) {
     for (let i = 0; i < 28; i++) {
       const s = document.createElement("span");
       s.className = "confetti";
@@ -169,6 +169,7 @@
               `<button role="tab" aria-selected="${k === tab}" class="${k === tab ? "active" : ""}" data-tab="${k}">${l}</button>`).join("")}
           </div>
           ${panels[tab]}
+          ${c.moonForm ? moonCard(c, friend) : ""}
           ${plushCard(c)}
         </div>`;
       app.querySelector("[data-say]").onclick = () => speak(`${c.catchphrase} ${c.description}`, c.id);
@@ -230,6 +231,17 @@
       refresh();
     });
   }
+
+  // A character's special "Moon Form" picture, unlocked by finishing their quest.
+  const moonCard = (c, unlocked) => `
+    <div class="card moon-card ${unlocked ? "" : "locked"}">
+      <span class="step-label">🌙 ${unlocked ? "Unlocked!" : "Secret form"}</span>
+      <h2>${c.name}'s Moon Form</h2>
+      <div class="moon-art"><img src="${c.moonForm}" alt="${unlocked ? `${c.name} in Moon Form` : "A hidden shape"}" loading="lazy"></div>
+      <p class="muted small">${unlocked
+        ? `When the full moon rises, ${c.name} becomes a majestic Moonwolf with a glowing crescent and a cape full of stars. Look for ${c.name}'s Moon Form in the AR Hunt!`
+        : `Finish ${c.name}'s quest to reveal this secret form.`}</p>
+    </div>`;
 
   // ---------- Plush shop ----------
   // Store links live in STORE_LINKS (js/data.js). Opening one needs the grown-up gate.
@@ -400,10 +412,10 @@
   }
 
   // Challenge wheel: one coloured wedge per challenge type, pointer at the top.
-  function wheelSVG(rot) {
-    const n = CHALLENGE_TYPES.length, step = 360 / n;
+  function wheelSVG(types, rot) {
+    const n = types.length, step = 360 / n;
     const P = (a, r) => [100 + r * Math.sin(a * Math.PI / 180), 100 - r * Math.cos(a * Math.PI / 180)].map((v) => v.toFixed(1)).join(" ");
-    const wedges = CHALLENGE_TYPES.map((t, i) => {
+    const wedges = types.map((t, i) => {
       const a0 = i * step - step / 2, a1 = i * step + step / 2;
       return `<g data-wedge="${i}" style="cursor:pointer">
         <path d="M 100 100 L ${P(a0, 94)} A 94 94 0 0 1 ${P(a1, 94)} Z" fill="${t.color}" stroke="#140f33" stroke-width="3"/>
@@ -425,8 +437,13 @@
     if (!hidden(c.id)) return go("creature", c.id);
     const spot = makeRiddle(save.hides[c.id].text, c, save.hides[c.id].seed || 0);
     const outside = spot.place ? spot.place === "outside" : save.area === "outside";
-    let ctype = save.ctype || "physical", clevel = save.clevel || 1, doneLevel = 1, showAnswer = false, dialFrom = clevel;
-    let wheelRot = -CHALLENGE_TYPES.findIndex((t) => t.id === ctype) * 90, spinning = false;
+    // Each character can have its own wheel (Leo uses Wolf Pack challenges).
+    const types = challengeTypesFor(c);
+    const saved = c.challengeSet === "wolf" ? save.ctypeWolf : save.ctype;
+    let ctype = types.some((t) => t.id === saved) ? saved : types[0].id;
+    let clevel = save.clevel || 1, doneLevel = 1, showAnswer = false, dialFrom = clevel;
+    const rememberType = (id) => { if (c.challengeSet === "wolf") save.ctypeWolf = id; else save.ctype = id; persist(); };
+    let wheelRot = -types.findIndex((t) => t.id === ctype) * (360 / types.length), spinning = false;
     let challenge = pickChallenge(ctype, clevel, c, outside);
     let step = 0, helpLevel = 0;
 
@@ -460,7 +477,7 @@
           <span class="step-label">Step 1 · Spin for a challenge</span>
           <div class="wheel-wrap">
             <div class="wheel-pointer" aria-hidden="true"></div>
-            ${wheelSVG(wheelRot)}
+            ${wheelSVG(types, wheelRot)}
             <button class="spin-btn" id="spin" aria-label="Spin the wheel">SPIN</button>
           </div>
           <p class="center small muted" style="margin:-4px 0 6px">Spin the wheel, or tap a colour to choose.</p>
@@ -471,7 +488,7 @@
             </div>
           </div>
           <div class="challenge-box" style="--lc:${lv.color}">
-            <span class="level-tag">${CHALLENGE_TYPES.find((t) => t.id === ctype).icon} ${CHALLENGE_TYPES.find((t) => t.id === ctype).label} · ${lv.icon} ${lv.label}${lv.bonus ? ` · +${lv.bonus} bonus ⭐` : ""}</span>
+            <span class="level-tag">${types.find((t) => t.id === ctype).icon} ${types.find((t) => t.id === ctype).label} · ${lv.icon} ${lv.label}${lv.bonus ? ` · +${lv.bonus} bonus ⭐` : ""}</span>
             <p class="big">${esc(challenge.text)}</p>
             ${challenge.seconds ? `<div class="timer" id="timer">${challenge.seconds}</div>` : ""}
             ${challenge.answer ? (showAnswer ? `<div class="hintbox">✅ <b>Answer:</b> ${esc(challenge.answer)}</div>` : `<button class="btn small-btn" id="showAnswer">👀 Show answer</button>`) : ""}
@@ -492,7 +509,8 @@
         const spinTo = (k, turns) => {
           if (spinning) return;
           spinning = true;
-          const target = ((-k * 90 + (Math.random() * 50 - 25)) % 360 + 360) % 360;
+          const seg = 360 / types.length;
+          const target = ((-k * seg + (Math.random() * seg * 0.55 - seg * 0.275)) % 360 + 360) % 360;
           const delta = ((target - (wheelRot % 360)) % 360 + 360) % 360;
           wheelRot += turns * 360 + delta;
           wheel.classList.add("spinning");
@@ -502,8 +520,8 @@
             if (finished) return;
             finished = true;
             spinning = false;
-            const t = CHALLENGE_TYPES[k];
-            ctype = save.ctype = t.id; persist();
+            const t = types[k];
+            ctype = t.id; rememberType(ctype);
             challenge = pickChallenge(ctype, clevel, c, outside, challenge.text); showAnswer = false;
             render();
             if (navigator.vibrate) navigator.vibrate(40);
@@ -513,7 +531,7 @@
           // Backup in case the animation is switched off (reduced motion) and never "ends".
           setTimeout(done, matchMedia("(prefers-reduced-motion: reduce)").matches ? 60 : 3500);
         };
-        app.querySelector("#spin").onclick = () => spinTo(Math.floor(Math.random() * CHALLENGE_TYPES.length), 4);
+        app.querySelector("#spin").onclick = () => spinTo(Math.floor(Math.random() * types.length), 4);
         app.querySelectorAll("[data-wedge]").forEach((w) => w.onclick = () => spinTo(+w.dataset.wedge, 1));
         const setLevel = (n) => { clevel = save.clevel = Math.max(1, Math.min(4, n)); persist(); repick(); };
         app.querySelectorAll("[data-level]").forEach((b) => b.onclick = () => setLevel(+b.dataset.level));

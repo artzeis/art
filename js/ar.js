@@ -95,7 +95,7 @@ const AR = (() => {
       </div>
       <span class="arrow left" hidden>⬅️</span><span class="arrow right" hidden>➡️</span>
       <button class="ar-creature" aria-label="${creature.name}" style="opacity:0">
-        <div class="wrap"><span class="ar-shadow"></span>${creatureArt(creature.id)}</div>
+        <div class="wrap"><span class="ar-shadow"></span>${creature.moonForm ? `<img class="char-img" src="${creature.moonForm}" alt="" draggable="false">` : creatureArt(creature.id)}</div>
       </button>
       <div class="ar-msg"><div data-ar="text"><b>Step 1 · Scan the room</b><br>
         <span class="small">Hold the phone up and slowly look around the room so ${creature.name} can find a hiding spot.</span></div></div>`;

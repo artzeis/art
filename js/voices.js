@@ -46,6 +46,12 @@ const VOICE_STYLES = {
     prefer: ["Alex", "Tom", "Evan", "Nathan", "Lee", "Aaron", "Daniel", "Microsoft Eric", "Microsoft Steffan", "Microsoft Davis", "Google US English"],
     before: null, after: { text: "Bleep-bloop!", pitch: 1.2, rate: 1.1 }, skipIf: /bleep/i,
   },
+  // Loyal, gentle, brave — warm, friendly and steady, a happy howl first.
+  leo: {
+    pitch: 0.92, rate: 0.95,
+    prefer: ["Aaron", "Oliver", "Arthur", "Daniel", "Evan", "Tom", "Microsoft Andrew", "Microsoft Guy", "Google UK English Male"],
+    before: { text: "Awoooo!", pitch: 1.05, rate: 0.85 }, after: null, skipIf: /^awoo/i,
+  },
 };
 
 // Old robotic and novelty voices (mainly on Apple devices) that are never used.

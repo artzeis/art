@@ -19,6 +19,7 @@ creatures; you never capture them).
 | Tangle | Maze Keeper | 🗝️ Golden Key |
 | Nyxie | Moon Cat | ⭐ Wishing Star |
 | Glitch | Pixel Pal | 🟩 Power Pixel |
+| Leo | Moonwolf (a friendly wolf, inspired by a real dog named Leo) | 🌙 Moon Medallion |
 
 Each character has two versions: the **app character** used in the game, and a matching **pillow plush**
 sold separately. Every character page has a "Take ___ home!" card with the plush photo and a **Get the
@@ -35,6 +36,17 @@ Each creature has a profile in the Creature Journal, split into three easy tabs:
   creature's quest.
 
 Each creature also has a catchphrase and a 🔊 read-aloud button.
+
+### Leo the Moonwolf — a different kind of quest
+Leo has **his own challenge wheel** of wolf skills instead of Physical / Mental / Teamwork / Kindness.
+It uses the same 4-level dial:
+- **🐾 Tracking:** follow the trail, from step-in-my-footprints up to building a 5-clue treasure trail.
+- **🌙 Howl:** sound and song, from three big howls up to a 3-part "moon choir".
+- **🐺 Pack:** leading and following as a team, from a pack hug up to a silent birthday-order line-up.
+- **👂 Senses:** listening, sniffing and feeling, from counting sounds up to a blindfolded memory sniff.
+
+Leo also has a secret **Moon Form**: a majestic, realistic Moonwolf picture, shown as a dark silhouette
+until Leo's quest is finished, then revealed on Leo's page. In the AR Hunt, Leo appears in Moon Form.
 
 ## Look and feel
 An "enchanted night" theme: a deep indigo sky with a slowly moving aurora and twinkling stars, frosted-glass
@@ -113,6 +125,7 @@ rather than robotic**:
 | Tangle | Clever, playful, cheeky | Quick and sly, ends with a chuckle, "Heh-heh!" |
 | Nyxie | Mysterious, gentle, loyal | Soft and unhurried, starts with a purr, "Mrrrow…" |
 | Glitch | Cheeky, speedy, fair | Clear and upbeat, ends with a quick "Bleep-bloop!" |
+| Leo | Loyal, gentle, brave | Warm, friendly and steady, starts with a happy "Awoooo!" |
 
 **Voice check (Grown-up Corner):** lists the voice each character is using, with a ▶ button to hear
 each one, plus steps to download free high-quality voices (iPhone/iPad: Settings → Accessibility →

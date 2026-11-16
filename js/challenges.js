@@ -157,6 +157,119 @@ const CHALLENGE_BANK = {
   },
 };
 
+// ---------- Leo's own wheel: Wolf Pack challenges ----------
+// Leo is a friendly wolf, so Leo's quests use a completely different set of challenges.
+const WOLF_CHALLENGE_TYPES = [
+  { id: "tracking", icon: "🐾", label: "Tracking", sub: "Follow the trail", color: "#e0b45c" },
+  { id: "howl", icon: "🌙", label: "Howl", sub: "Sound & song", color: "#7c8cff" },
+  { id: "pack", icon: "🐺", label: "Pack", sub: "Lead & follow", color: "#59c3a5" },
+  { id: "senses", icon: "👂", label: "Senses", sub: "Listen, sniff, feel", color: "#ff7a7a" },
+];
+
+Object.assign(CHALLENGE_BANK, {
+  tracking: {
+    1: [
+      { text: "Follow the leader! Step exactly where your grown-up steps for 10 steps." },
+      { text: "Find 3 things that are grey and cream, just like Leo's fur." },
+      { text: "Close your eyes while someone hides a sock. Find it while they say \"warmer\" or \"colder\"." },
+      { text: "Look for real bird or animal footprints outside.", outside: true },
+    ],
+    2: [
+      { text: "Make a trail of 5 toys, then have a teammate follow it to the end." },
+      { text: "Wolf check: find something soft, something hard and something bumpy." },
+      { text: "Spot 3 things in the room that have moved since this morning." },
+      { text: "Follow a line of trees, fence posts or stepping stones without stepping off.", outside: true },
+    ],
+    3: [
+      { text: "Someone hides a toy and leaves 3 arrow clues (made of socks or spoons). Follow the clues!" },
+      { text: "Scent trail: a grown-up dabs a little soap or lemon on 3 things. Sniff them all out!" },
+      { text: "Walk backwards along a trail of 5 objects without knocking any over." },
+      { text: "Find 5 different kinds of leaves and match each one to its plant.", outside: true },
+    ],
+    4: [
+      { text: "Make your own treasure trail with 5 clues for someone else to follow." },
+      { text: "Memory track: study the room, then close your eyes while someone moves 1 thing. What changed?", seconds: 20 },
+      { text: "Draw a map of the room and mark 3 secret spots for the pack." },
+      { text: "Lead the pack on a mystery walk using only landmarks: \"go to the big tree, then the gate…\"", outside: true },
+    ],
+  },
+  howl: {
+    1: [
+      { text: "Howl like a wolf — Awoooo! Three big howls!" },
+      { text: "Make 3 animal sounds and let someone guess each animal." },
+      { text: "Whisper-howl: howl as quietly as you possibly can." },
+      { text: "Howl at the sky — can you hear an echo?", outside: true },
+    ],
+    2: [
+      { text: "Howl high, then howl low, then howl right in the middle!" },
+      { text: "Clap a rhythm and have someone copy it back to you." },
+      { text: "Sing \"Twinkle Twinkle Little Star\" — but only using wolf howls!" },
+      { text: "Copy a bird song you can hear outside.", outside: true },
+    ],
+    3: [
+      { text: "Pack howl! Everyone starts quiet, gets louder… then stops on the same beat." },
+      { text: "Make up a short wolf song about the moon and sing it." },
+      { text: "Echo game: howl a pattern (short-long-short) and everyone copies it exactly." },
+    ],
+    4: [
+      { text: "Howl conversation: have a whole chat with a teammate using only howls, then guess what they said!" },
+      { text: "Make up a 4-line poem or song about Leo and perform it." },
+      { text: "Moon choir: make a 3-part howl song with your team — low, middle and high voices." },
+    ],
+  },
+  pack: {
+    1: [
+      { text: "Wolf walk: everyone walks in a line behind the leader on hands and feet." },
+      { text: "Pack hug! Everyone squishes together in one big group hug." },
+      { text: "Take turns being the leader and doing a move for the pack to copy." },
+      { text: "Run as a pack to the fence and back — stay together the whole way!", outside: true },
+    ],
+    2: [
+      { text: "Pack circle: hold hands, all sit down together, then all stand up together." },
+      { text: "Leader of the pack: the leader calls \"run\", \"sit\" or \"howl\" and everyone does it fast!" },
+      { text: "Help a pack member finish something they find tricky." },
+    ],
+    3: [
+      { text: "Protect the pup: one wolf guards a teddy while the others try to gently tag it." },
+      { text: "Pack plan: cross the room together using only cushions as stepping stones (with a grown-up's OK)." },
+      { text: "Pack praise: each wolf says one thing the pack is great at." },
+    ],
+    4: [
+      { text: "Silent pack: line up in birthday order using only hand signals — no talking!" },
+      { text: "Wolf relay: each wolf carries a toy to the next. Time the whole pack, then try to beat it!" },
+      { text: "Pack promise: make up a kindness rule for your pack, write it down and everyone signs it." },
+    ],
+  },
+  senses: {
+    1: [
+      { text: "Close your eyes and listen. How many different sounds can you hear?", seconds: 15 },
+      { text: "Sniff 3 things in the kitchen (with a grown-up). Which smells best?" },
+      { text: "Find something cold, something warm and something fluffy." },
+      { text: "Listen for birds: how many different bird songs can you hear?", seconds: 20, outside: true },
+    ],
+    2: [
+      { text: "Mystery touch: close your eyes while someone hands you an object. What is it?" },
+      { text: "Night vision: with a grown-up, dim the lights and find 3 things." },
+      { text: "Wolf ears: everyone whispers a different word at once. Can you hear yours?" },
+    ],
+    3: [
+      { text: "Blindfold walk: a teammate guides you across the room using words only." },
+      { text: "Sound hunt: someone hides a phone playing quiet music. Find it by listening!" },
+      { text: "Smell test: guess 3 smells with your eyes closed (like orange, soap or cinnamon)." },
+    ],
+    4: [
+      { text: "Moon senses: eyes closed — name 5 sounds, 2 smells and 1 thing you can feel.", seconds: 30 },
+      { text: "Silent stalk: sneak up on a teammate with closed eyes. If they hear you and point, you're caught!" },
+      { text: "Memory sniff: smell 4 things, then name them again in a mixed-up order." },
+    ],
+  },
+});
+
+// Which wheel a character uses.
+function challengeTypesFor(creature) {
+  return creature && creature.challengeSet === "wolf" ? WOLF_CHALLENGE_TYPES : CHALLENGE_TYPES;
+}
+
 // Pick a challenge. Physical Easy also includes the character's own themed challenges.
 function pickChallenge(type, level, creature, outside, previousText) {
   let pool = (CHALLENGE_BANK[type] && CHALLENGE_BANK[type][level]) || [];

@@ -7,7 +7,8 @@ Each character has two pictures:
 | `assets/characters/<id>.png` | The **app character**, used everywhere in the game, including AR. Transparent background, about 760 px wide. |
 | `assets/plush/<id>.jpg` | The **pillow plush** product photo, shown on the plush store card. Square, 640 × 640. |
 
-The ids are `scribbi`, `craggle`, `orbit`, `tangle`, `nyxie` and `glitch`.
+The ids are `scribbi`, `craggle`, `orbit`, `tangle`, `nyxie`, `glitch` and `leo`.
+Leo also has `assets/characters/leo-moon.png`, his unlockable Moon Form, which is also used in AR.
 
 ## Adding or replacing a character's art
 1. Make the picture on a plain, light background, with one character per picture and the whole body visible.

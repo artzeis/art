@@ -294,6 +294,13 @@ ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
 .voice-tip ul { padding-left: 18px; margin: 6px 0 0; }
 .voice-tip li { margin: 4px 0; }
 
+/* ---------- Moon form ---------- */
+.moon-card { text-align: center; background: radial-gradient(70% 60% at 50% 40%, rgba(160, 180, 255, .25), transparent 70%), var(--glass); }
+.moon-card h2 { font-size: 1.35rem; }
+.moon-art { width: min(260px, 75%); margin: 6px auto 8px; }
+.moon-art img { width: 100%; display: block; filter: drop-shadow(0 12px 22px rgba(0,0,0,.45)); }
+.moon-card.locked .moon-art img { filter: brightness(0) drop-shadow(0 0 14px rgba(170, 190, 255, .7)); opacity: .55; }
+
 /* ---------- Plush shop ---------- */
 .shop { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: center; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 22%, transparent), var(--glass)); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
 .shop img { width: 140px; height: 140px; border-radius: 22px; object-fit: cover; box-shadow: 0 10px 24px rgba(0,0,0,.35); }

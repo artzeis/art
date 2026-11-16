@@ -10,6 +10,7 @@ const STORE_LINKS = {
   tangle: "",
   nyxie: "",
   glitch: "",
+  leo: "",
 };
 
 const CREATURES = [
@@ -265,6 +266,48 @@ const CREATURES = [
       { text: "Freeze-frame! Dance, dance, dance… then FREEZE when the timer ends.", seconds: 15 },
     ],
   },
+  {
+    id: "leo",
+    name: "Leo",
+    kind: "Moonwolf",
+    challengeSet: "wolf",               // Leo uses the Wolf Pack challenge wheel (js/challenges.js)
+    moonForm: "assets/characters/leo-moon.png", // unlocked after Leo's quest; also used in AR
+    color: "#e0b45c",
+    soft: "#f3ead8",
+    accessory: "Moon Medallion",
+    accessoryEmoji: "🌙",
+    tagline: "A friendly young wolf in a starry cape who welcomes everyone into the pack.",
+    catchphrase: "Awoooo! Welcome to the pack!",
+    description:
+      "Leo is a friendly young wolf with a soft grey-and-cream coat and a starry navy cape. Unlike the wolves in scary stories, Leo is gentle, loyal and loves everyone in the pack — and to Leo, everyone is in the pack! At night Leo's cape glows with stars, and when Leo howls at the moon, the moon howls back (very, very quietly).",
+    size: "As big as a giant cuddly beanbag",
+    age: "5 full moons",
+    home: "Forest edges, cosy dens and the rug by the front door",
+    food: "Blueberries, crunchy carrots and moon-shaped cookies",
+    personality: ["Loyal", "Gentle", "Brave"],
+    bestFriend: "The whole pack — and that means you!",
+    sound: "A happy, rolling 'Awoooo!'",
+    season: "Winter, for racing through the snow",
+    likes: "Howling at the moon, long walks, sniffing new things, belly rubs",
+    dislikes: "Anyone feeling left out",
+    power: "Can follow any trail — even one made of moonlight",
+    signs: ["Paw prints that sparkle", "A soft, happy howl at bedtime", "A trail of tiny gold stars"],
+    friendTips: ["Never leave anyone out", "Howl together at the moon", "Go exploring side by side"],
+    stats: { speed: 4, magic: 4, kindness: 5, sneaky: 3, strength: 4 },
+    facts: [
+      "Real wolves live in families called packs, and they look after each other.",
+      "A wolf's howl can be heard more than 10 kilometres away.",
+      "Leo's cape was stitched by the moon, using starlight thread.",
+      "Wolves can smell things far, far better than people can.",
+      "Leo's gold Moon Medallion glows brightest on a full moon.",
+      "Leo was inspired by a real fluffy dog named Leo!",
+    ],
+    intro:
+      "Awoooo! Hi, I'm Leo! I was howling at the moon and my Moon Medallion slipped off my cape. Without it, my cape can't glow. Will you join my pack and help me find it?",
+    challenges: [
+      { text: "Howl like a wolf — Awoooo! Three big howls!", seconds: 0 },
+    ],
+  },
 ];
 
 // Hiding-place ideas for the "Suggest" button in grown-up setup.
@@ -304,6 +347,9 @@ const OUTDOOR_CHALLENGES = {
   nyxie: [
     { text: "Find your shadow and pounce on it like a cat!", seconds: 0 },
     { text: "Look for something shaped like a moon or a star outside.", seconds: 0 },
+  ],
+  leo: [
+    { text: "Howl at the sky — can you hear an echo?", seconds: 0 },
   ],
   glitch: [
     { text: "Hop across 10 pretend 'pixel squares' like stepping stones.", seconds: 0 },
