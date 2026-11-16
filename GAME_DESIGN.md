@@ -18,7 +18,7 @@ creatures; you never capture them).
 | Scribbi | Doodle Sprite | 🖍️ Rainbow Crayon |
 | Craggle | Moss Rock | 💎 Glow Crystal |
 | Orbit | Little Planet | 🌕 Moon Marble |
-| Tangle | Maze Keeper | 🔐 Secret Decoder Wheel |
+| Tangle | Maze Keeper | 🗝️ Golden Key |
 | Nyxie | Moon Cat | ⭐ Wishing Star |
 | Glitch | Pixel Pal | 🟩 Power Pixel |
 | Leo | Moonwolf (a friendly wolf, inspired by a real dog named Leo) | 🌙 Moon Medallion |
@@ -133,11 +133,6 @@ star squeeze, whisper one happy thing to your grown-up, then goodnight.
 spot on its plush: a hook-and-loop dot, or a pocket for Scribbi's crayon. "It's back on my plush!", or
 "No plush yet — keep going" for families without the plush. Attachment details are in
 `manufacturing/treasures/README.md`.
-
-**🔐 Tangle's Secret Messages.** Tangle's treasure is a real Secret Decoder Wheel. Ten coded messages
-from the characters (home screen card, or Tangle's page) are cracked by turning the wheel's pointer to
-the key letter and reading each code letter across. An on-screen wheel works for families without the
-toy. Each message cracked earns +1 ⭐.
 
 ## Character voices
 Every line a character says can be heard in that character's own voice (`js/voices.js`). The game uses

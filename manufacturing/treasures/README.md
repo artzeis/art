@@ -8,8 +8,8 @@ prototyping and quoting.
 ## What's included
 | File | What it is |
 |---|---|
-| `stl/*.stl` | One 3D model per treasure (the decoder wheel is 3 parts: base, dial, cap). Units are **millimetres**. Each model is a single closed, watertight solid, sitting flat on z = 0. |
-| `previews/*.png` | A preview picture of each treasure with its size, plus a flat drawing of the decoder wheel's face. |
+| `stl/*.stl` | One 3D model per treasure. Units are **millimetres**. Each model is a single closed, watertight solid, sitting flat on z = 0. |
+| `previews/*.png` | A preview picture of each treasure with its size. |
 | `make_treasures.py` | The script that builds the models. Change sizes or details here and run it again to regenerate the files. |
 | `imagamigos_treasures.zip` | Everything above in one file to send to a manufacturer. |
 
@@ -19,7 +19,7 @@ prototyping and quoting.
 | 1 | Rainbow Crayon | Scribbi | 18 × 18 × 100 | 22 cm³ | 6 rainbow bands, divided by grooves (paint, or print in several colours); pink tip |
 | 2 | Glow Crystal | Craggle | 61 × 50 × 59 | 39 cm³ | Translucent teal or **glow-in-the-dark** plastic; grey rock base |
 | 3 | Moon Marble | Orbit | 50 × 50 × 47 | 64 cm³ | Pale grey / silver, with craters; flat underside so it stands up |
-| 4 | Secret Decoder Wheel | Tangle | 92 × 92 × 8 (assembled) | 32 cm³ | Gold base and pale-gold dial, letters engraved 0.8 mm; red pointer could be painted |
+| 4 | Golden Key | Tangle | 110 × 42 × 6 | 12 cm³ | Gold; Tangle's maze engraved in the round end |
 | 5 | Wishing Star | Nyxie | 62 × 59 × 10.5 | 15 cm³ | Yellow or gold, could be glow-in-the-dark; rounded points |
 | 6 | Power Pixel | Glitch | 40 × 41 × 41 | 63 cm³ | Mint green; raised pixel hearts on the top and front |
 | 7 | Moon Medallion | Leo | 60 × 71 × 6.4 | 14 cm³ | Gold, with a raised crescent moon and stars; loop for a ribbon |
@@ -33,7 +33,7 @@ Every treasure goes back onto its plush when it's found (the game asks kids to "
 | Rainbow Crayon | Slides into a **fabric pocket** (about 22 mm wide × 60 mm deep) | Scribbi's side |
 | Glow Crystal | 25 mm hook-and-loop dot in the recess under the rock base | The moss on top of Craggle's head |
 | Moon Marble | 20 mm hook-and-loop dot in the recess on the flat underside | Orbit's orange ring |
-| Secret Decoder Wheel | 25 mm hook-and-loop dot in the recess on the back | The middle of Tangle's tummy maze |
+| Golden Key | 25 mm hook-and-loop dot in the recess on the back of the round end | The middle of Tangle's tummy maze |
 | Wishing Star | 25 mm hook-and-loop dot in the recess on the back | On top, between Nyxie's ears |
 | Power Pixel | 25 mm hook-and-loop dot in the recess on the bottom | On top of Glitch's head |
 | Moon Medallion | 25 mm hook-and-loop dot in the recess on the back | Leo's cape, where the gold medallion sits |
@@ -45,27 +45,14 @@ Every treasure goes back onto its plush when it's found (the game asks kids to "
 - **Adhesive:** use a strong, toy-safe adhesive for the dots, or ask the factory to weld them in, and
   include the dots in the safety testing (pull and torque tests).
 
-## The Secret Decoder Wheel (Tangle)
-![Decoder wheel face](previews/decoder_wheel_face.png)
-- **Parts:** `decoder_wheel_base.stl` (92 mm, A–Z around the edge, centre post),
-  `decoder_wheel_dial.stl` (68 mm, A–Z plus a pointer, turns on the post) and `decoder_wheel_cap.stl`
-  (15 mm, presses onto the post).
-- **Assembly:** put the dial on the post, then fix the cap on the post **permanently** (glue,
-  ultrasonic weld or rivet). On its own, the cap is a small part, so it must never come off. Include a
-  torque and tension test for the cap.
-- **How to use it:** turn the dial so the pointer points at the key letter on the outer ring. Each code
-  letter on the dial sits right next to its real letter on the outer ring. The game's "Secret
-  Messages" section has coded messages from every character, plus an on-screen wheel.
-
 ## Child-safety design notes
 The models were designed with children's toy rules in mind, but **the finished products must still
 be tested by an accredited lab** before sale: ASTM F963 / CPSIA in the US, EN 71 in the EU and UK.
 - **No small parts:** every treasure is too large to fit inside the small-parts test cylinder
-  (31.7 mm wide, 57.1 mm deep) in any direction. The decoder wheel's cap is the exception, which is why it
-  must be permanently fixed to the wheel.
+  (31.7 mm wide, 57.1 mm deep) in any direction.
 - **Ball size:** the Moon Marble is 50 mm across, above the 44.5 mm small-ball limit.
 - **No sharp points or edges:** the crayon tip and crystal tips are blunted, the star points are
-  rounded, and the edges of the decoder wheel, medallion and cube are rounded or bevelled.
+  rounded, and the edges of the key, medallion and cube are rounded or bevelled.
 - **Ribbons and cords:** the medallion has a loop for a ribbon. For young children, keep any
   ribbon short (ASTM F963 cord-length limits apply) or leave it off.
 - **Materials:** use toy-safe plastics (PLA, ABS or PP) and non-toxic, lead-free paints and pigments

@@ -18,9 +18,7 @@ into a pocket on Scribbi's side instead. See README.md for where each one goes o
 """
 import math, os
 import numpy as np
-from manifold3d import Manifold, CrossSection, JoinType, OpType, FillRule
-from matplotlib.textpath import TextPath
-from matplotlib.font_manager import FontProperties
+from manifold3d import Manifold, CrossSection, JoinType, OpType
 import trimesh
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -44,27 +42,6 @@ def star_cs(R, r, points=5, rot=90):
 def velcro_recess(m, d=25.0, depth=1.0, at=(0, 0)):
     """Shallow round pocket on the underside (z = 0) for a hook-and-loop dot."""
     return m - cyl(depth + 0.01, d / 2).translate((at[0], at[1], -0.01))
-
-
-FONT = FontProperties(family="DejaVu Sans", weight="bold")
-
-
-def text_cs(txt, size):
-    """2D outline of some text, centred on the origin."""
-    polys = [p.tolist() for p in TextPath((0, 0), txt, size=size, prop=FONT).to_polygons()]
-    cs = CrossSection(polys, FillRule.EvenOdd)
-    x0, y0, x1, y1 = cs.bounds()
-    return cs.translate((-(x0 + x1) / 2, -(y0 + y1) / 2))
-
-
-def ring_of_letters(radius, size):
-    """A–Z around a circle, A at the top, read clockwise, letters upright to the outside."""
-    out = CrossSection()
-    for i, ch in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
-        ang = 90 - i * 360 / 26
-        g = text_cs(ch, size).rotate(ang - 90).translate((radius * math.cos(math.radians(ang)), radius * math.sin(math.radians(ang))))
-        out = out + g
-    return out
 
 
 def cyl(h, r, r2=None, seg=SEG):
@@ -124,56 +101,27 @@ def moon_marble():
     return velcro_recess(ball.translate((0, 0, R - cut)), d=20)
 
 
-# ---------------------------------------------------------------- 4. Secret Decoder Wheel (Tangle)
-# Three parts: a base with A–Z around the edge, a turning dial with A–Z and a pointer, and a cap that is
-# pressed onto the centre post. The cap must be PERMANENTLY fixed in production (glue, ultrasonic weld
-# or rivet) so the wheel can never come apart into small pieces.
-# How it works: turn the dial so its pointer (the dial's "A") points at the key letter on the base.
-# Each coded letter is found on the dial; the real letter is the base letter right next to it.
-BASE_T, DIAL_T, GAP, CAP_T = 3.2, 3.0, 0.3, 2.2
-POST_R, POST_H = 4.0, DIAL_T + GAP + 1.6
-
-
-def decoder_base():
-    disc = cyl(BASE_T - 0.8, 46) + cyl(0.8, 46, 45.2).translate((0, 0, BASE_T - 0.8))           # bevelled edge
-    letters = ring_of_letters(40.2, 6.2).extrude(1.0).translate((0, 0, BASE_T - 0.8))
-    ticks = CrossSection()
-    for i in range(26):
-        a = 90 - (i + 0.5) * 360 / 26
-        ticks = ticks + CrossSection.square((0.8, 4), True).translate((0, 44)).rotate(a - 90)
-    ticks = ticks.extrude(1.0).translate((0, 0, BASE_T - 0.6))
-    post = cyl(POST_H, POST_R).translate((0, 0, BASE_T))
-    return velcro_recess(disc - letters - ticks + post)
-
-
-def decoder_dial():
-    disc = cyl(DIAL_T, 34)
-    hole = cyl(DIAL_T + 1, POST_R + 0.35).translate((0, 0, -0.5))
-    pointer = rounded(CrossSection([[(-3.6, 33), (3.6, 33), (0, 37.6)]]), 0.6).extrude(DIAL_T)
-    letters = ring_of_letters(28.2, 5.4).extrude(1.0).translate((0, 0, DIAL_T - 0.7))
-    # little maze swirl in the middle, Tangle-style
-    swirl = (CrossSection.circle(18, SEG) - CrossSection.circle(16.4, SEG)
-             - CrossSection.square((4, 6), True).translate((0, 17))
-             + CrossSection.circle(12, SEG) - CrossSection.circle(10.4, SEG)
-             - CrossSection.square((4, 6), True).translate((0, -11)))
-    swirl = swirl.extrude(0.8).translate((0, 0, DIAL_T))
-    return disc + pointer - letters + swirl - hole
-
-
-def decoder_cap():
-    cap = cyl(CAP_T - 0.6, 7.5) + cyl(0.6, 7.5, 6.9).translate((0, 0, CAP_T - 0.6))
-    socket = cyl(1.6, POST_R + 0.05).translate((0, 0, -0.01))                                  # press fit onto the post
-    return cap - socket
-
-
-def decoder_wheel():
-    return {"base": decoder_base(), "dial": decoder_dial(), "cap": decoder_cap()}
-
-
-def decoder_assembled():
-    z_dial = BASE_T + GAP / 2
-    return (decoder_base() + decoder_dial().translate((0, 0, z_dial))
-            + decoder_cap().translate((0, 0, BASE_T + POST_H - 1.6)))
+# ---------------------------------------------------------------- 4. Golden Key (Tangle)
+def golden_key():
+    T = 6.0
+    bow = CrossSection.circle(21, SEG)
+    shaft = CrossSection.square((70, 9), True).translate((19 + 35, 0))
+    bit = (CrossSection.square((18, 15), True).translate((79, -11))
+           - CrossSection.square((4.5, 8), True).translate((75, -15))
+           - CrossSection.square((4.5, 8), True).translate((84, -16)))
+    collar = CrossSection.square((5, 14), True).translate((24, 0))
+    shape = rounded(bow + shaft + bit + collar, 1.4)
+    body = shape.extrude(T - 1.2)
+    top = shape.offset(-1.0, JoinType.Round).extrude(1.2).translate((0, 0, T - 1.2))   # bevelled top edge
+    # Tangle's maze, engraved 1.6 mm into the front of the bow (two broken rings and a centre dot),
+    # so the back stays solid for the hook-and-loop dot that attaches it to Tangle's tummy.
+    def ring(r_out, r_in, gap_at):
+        ringcs = CrossSection.circle(r_out, SEG) - CrossSection.circle(r_in, SEG)
+        gap = CrossSection.square((r_out + 2, 5), True).translate((r_out / 2 + 1, 0)).rotate(gap_at)
+        return ringcs - gap
+    maze = ring(16.5, 13.8, 0) + ring(10.2, 7.5, 180) + CrossSection.circle(3, SEG)
+    engraving = maze.extrude(2.0).translate((0, 0, T - 1.6))
+    return velcro_recess(body + top - engraving)
 
 
 # ---------------------------------------------------------------- 5. Wishing Star (Nyxie)
@@ -224,7 +172,7 @@ TREASURES = [
     ("rainbow_crayon", "Rainbow Crayon", "Scribbi", rainbow_crayon, "#ff3d8b"),
     ("glow_crystal", "Glow Crystal", "Craggle", glow_crystal, "#2fc4b2"),
     ("moon_marble", "Moon Marble", "Orbit", moon_marble, "#c9cdd8"),
-    ("decoder_wheel", "Secret Decoder Wheel", "Tangle", decoder_wheel, "#e5b53a"),
+    ("golden_key", "Golden Key", "Tangle", golden_key, "#e5b53a"),
     ("wishing_star", "Wishing Star", "Nyxie", wishing_star, "#ffd84a"),
     ("power_pixel", "Power Pixel", "Glitch", power_pixel, "#5ee6b5"),
     ("moon_medallion", "Moon Medallion", "Leo", moon_medallion, "#e0b45c"),
@@ -284,5 +232,5 @@ if __name__ == "__main__":
             size = t.bounds[1] - t.bounds[0]
             print(f"{fname:22s} {size[0]:6.1f} × {size[1]:6.1f} × {size[2]:6.1f} mm   "
                   f"volume {t.volume / 1000:6.1f} cm³   watertight={t.is_watertight}   pieces={len(t.split(only_watertight=False))}")
-        shown = to_trimesh(decoder_assembled()) if key == "decoder_wheel" else to_trimesh(parts[None])
+        shown = to_trimesh(parts[None])
         preview(shown, os.path.join(HERE, "previews", f"{key}.png"), colour, f"{name} ({who})")
