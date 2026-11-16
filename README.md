@@ -32,3 +32,6 @@ folder on GitHub Pages works well for playing on a phone.
 - `js/memories.js` — the Memory Book (photos saved on the device)
 - `js/calm.js` — "Calm down with Nyxie" steps and timing
 - `js/voices.js` — each character's speaking voice (pitch, speed, preferred voices)
+
+## Manufacturing
+- `manufacturing/treasures/` — 3D models (STL) of the seven treasures, previews, a spec sheet and a zip to send to a manufacturer.
