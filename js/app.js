@@ -15,6 +15,38 @@
     const h = save.hides[k];
     if (h && !h.stops) save.hides[k] = { stops: [{ text: h.text || "", seed: h.seed || 0 }] };
   });
+  // Riddle memory: the last 60 riddles used, so new hunts get riddles you haven't heard recently.
+  const recentRiddles = () => (save.recentRiddles = save.recentRiddles || []);
+  function freshSeed(text, c, what, start = 0, also = []) {
+    const used = new Set([...recentRiddles(), ...also]);
+    let best = start;
+    for (let k = 0; k < 64; k++) {
+      const sd = start + k, r = makeRiddle(text, c, sd, what);
+      if (!used.has(r.riddle)) return sd;
+      if (k >= r.variants) break;
+    }
+    return best;
+  }
+  function rememberRiddles(list) {
+    const log = recentRiddles();
+    list.forEach((r) => { const i = log.indexOf(r); if (i >= 0) log.splice(i, 1); log.push(r); });
+    save.recentRiddles = log.slice(-60);
+  }
+  // Give every stop of every trail a riddle that wasn't used recently (used for each new hunt).
+  function refreshAllRiddles() {
+    const picked = [];
+    CREATURES.forEach((c) => {
+      const stops = trailOf(c.id), last = stops.length - 1;
+      stops.forEach((st, i) => {
+        if (!st.text || !st.text.trim()) return;
+        const what = i < last ? "my next clue" : null;
+        st.seed = freshSeed(st.text, c, what, (st.seed || 0) + 1, picked);
+        picked.push(makeRiddle(st.text, c, st.seed, what).riddle);
+      });
+    });
+    rememberRiddles(picked);
+    persist();
+  }
   const trailOf = (id) => (save.hides[id] && save.hides[id].stops) || [];
   const hidden = (id) => { const t = trailOf(id); return t.length > 0 && t.every((st) => st.text && st.text.trim()); };
   const persist = () => {
@@ -407,7 +439,7 @@
       <div class="card" id="voiceCard"></div>
       <div class="card">
         <b>Play again</b>
-        <p class="small muted">Clears found characters so kids can hunt again. Stars are kept.</p>
+        <p class="small muted">Clears found characters so kids can hunt again, with brand-new riddles. Stars are kept.</p>
         <div class="row">
           <button class="btn" id="replay">🔄 New hunt</button>
           <button class="btn" id="wipe">🗑️ Reset everything</button>
@@ -459,7 +491,10 @@
       card.querySelectorAll(".hide-input").forEach((inp) => {
         const i = +inp.dataset.i;
         let t;
-        inp.oninput = () => { clearTimeout(t); t = setTimeout(() => { stops[i].text = inp.value.trim(); persist(); preview(c, i); }, 250); };
+        inp.oninput = () => { clearTimeout(t); t = setTimeout(() => {
+          stops[i].text = inp.value.trim();
+          if (stops[i].text) stops[i].seed = freshSeed(stops[i].text, c, i < stops.length - 1 ? "my next clue" : null, Math.floor(Math.random() * 16));
+          persist(); preview(c, i); }, 250); };
         inp.onkeydown = (e) => { if (e.key === "Enter") inp.blur(); };
       });
       card.querySelectorAll("[data-del]").forEach((b) => b.onclick = () => { stops.splice(+b.dataset.del, 1); persist(); drawCard(c); });
@@ -474,8 +509,9 @@
     app.querySelector("#suggest").onclick = () => {
       const pool = shuffle(ideasFor(area));
       let k = 0;
-      CREATURES.forEach((c) => { trailFor(c.id).forEach((st) => { st.text = pool[k++ % pool.length]; }); drawCard(c); });
-      persist();
+      CREATURES.forEach((c) => { trailFor(c.id).forEach((st) => { st.text = pool[k++ % pool.length]; }); });
+      refreshAllRiddles();
+      CREATURES.forEach((c) => drawCard(c));
     };
     app.querySelector("#saveSetup").onclick = () => {
       // Drop empty clue stops; keep the treasure stop.
@@ -483,6 +519,9 @@
         const stops = trailFor(c.id);
         save.hides[c.id].stops = stops.filter((st, i) => i === stops.length - 1 || st.text.trim());
       });
+      // Remember these riddles so the next hunts pick different ones.
+      rememberRiddles(CREATURES.flatMap((c) => { const st = trailOf(c.id), last = st.length - 1;
+        return st.filter((x) => x.text && x.text.trim()).map((x, i) => makeRiddle(x.text, c, x.seed || 0, i < last ? "my next clue" : null).riddle); }));
       persist();
       go("home");
     };
@@ -533,7 +572,8 @@
     };
     drawVoices();
     Voices.onChange(() => { if (document.getElementById("voiceCard")) drawVoices(); });
-    app.querySelector("#replay").onclick = () => { save.found = {}; persist(); setupScreen(); };
+    // New hunt: same hiding places are fine — every riddle is swapped for one you haven't heard recently.
+    app.querySelector("#replay").onclick = () => { save.found = {}; refreshAllRiddles(); setupScreen(); };
     app.querySelector("#wipe").onclick = () => {
       if (confirm("Reset all progress, stars and hiding places?")) { save = fresh(); persist(); setupScreen(); }
     };

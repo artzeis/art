@@ -61,6 +61,11 @@ Animations are turned off for players whose device asks for reduced motion.
    **Outside** or **Both**), hides each character's lost item, and **types where it is**, for example
    *"under the blue cushion on the sofa"*. "Suggest hiding places" fills in ideas for the chosen area.
    Outdoor play shows a safety reminder.
+   - **Lots of riddles, rarely repeated:** every hiding place has 4–5 different riddles
+     (`js/riddles.js` + `js/riddle-bank.js`) and 4 different endings, so 16–20 versions each, about
+     970 in total. Unknown objects get one of 4 letter-puzzle riddles. The game remembers the last 60
+     riddles used, and **🔄 New hunt** swaps every riddle for one you haven't heard recently, even with
+     the same hiding places.
    - **Riddle maker** (`js/riddles.js`): turns the description into a riddle, a clue and a big hint,
      right on the device. It recognises about 60 hiding objects (sofa, bookshelf, fridge, tree,
      slide…), the position word (under, behind, inside, on top of…), the room (kitchen, backyard…) and

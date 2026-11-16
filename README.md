@@ -28,6 +28,7 @@ folder on GitHub Pages works well for playing on a phone.
 - `js/app.js` — screens, quest flow, journal, grown-up setup
 - `js/ar.js` — AR mode: room scan, hiding and seeking
 - `js/challenges.js` — Physical / Mental / Teamwork / Kindness challenges for each of the 4 difficulty levels
+- `js/riddle-bank.js` — extra riddles for every hiding place (add more here)
 - `js/riddles.js` — writes riddles from the grown-up's description of each hiding place
 - `js/together.js` — the rotating "Play together" games at the end of each quest
 - `js/calm.js` — "Calm down with Nyxie" steps and timing

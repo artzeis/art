@@ -259,9 +259,18 @@ function makeRiddle(text, creature, seed = 0, what = null) {
   const plural = main && /[^s]s$/.test(main.k) && !["glass", "bus"].includes(main.k);
   const hidingWords = (prep ? prep.it : "close to it").replace(/ it$/, plural ? " them" : " it");
 
+  // Riddles for this object = the ones above + the extra bank (js/riddle-bank.js).
+  const bank = typeof RIDDLE_BANK !== "undefined" && main ? (RIDDLE_BANK[main.o.keys[0]] || []) : [];
+  const pool = main ? (main.o.unsafe ? main.o.riddles : [...main.o.riddles, ...bank]) : [];
+  const endings = typeof RIDDLE_ENDINGS !== "undefined" && !(main && main.o.unsafe) ? RIDDLE_ENDINGS : ["{T} is hiding {w}!"];
+  // The seed picks a riddle first, then an ending, so each seed gives a different combination.
+  const sd = Math.abs(seed);
+  const ending = (list) => list[Math.floor(sd / Math.max(1, pool.length || 4)) % list.length]
+    .replace("{T}", cap(treasure)).replace("{t}", treasure).replace("{w}", hidingWords);
+
   let riddle, clue, word = "";
   if (main) {
-    riddle = `${pick(main.o.riddles)} ${cap(treasure)} is hiding ${hidingWords}!`;
+    riddle = `${pool[sd % pool.length]} ${ending(endings)}`;
     const roomBit = room && !main.o.clue.toLowerCase().includes(room.r) ? `Go to the ${room.r === "outside" ? "outdoors" : room.r}. ` : "";
     clue = roomBit + main.o.clue;
   } else {
@@ -269,9 +278,12 @@ function makeRiddle(text, creature, seed = 0, what = null) {
     word = mainNoun(t, prep);
     if (word) {
       const L = word.length;
+      const A = word[0].toUpperCase(), Z = word[L - 1].toUpperCase();
       const forms = [
-        `I'm thinking of something that starts with the letter ${word[0].toUpperCase()} and ends with ${word[L - 1].toUpperCase()}. It has ${L} letters. ${cap(treasure)} is hiding ${hidingWords}!`,
-        `Spell it out! It begins with ${word[0].toUpperCase()}, it has ${L} letters, and ${treasure} is hiding ${hidingWords}. What is it?`,
+        `I'm thinking of something that starts with the letter ${A} and ends with ${Z}. It has ${L} letters. ${cap(treasure)} is hiding ${hidingWords}!`,
+        `Spell it out! It begins with ${A}, it has ${L} letters, and ${treasure} is hiding ${hidingWords}. What is it?`,
+        `Detective time! The secret word has ${L} letters. The first one is ${A}. Find that thing, and ${treasure} is ${hidingWords}!`,
+        `Here's a word puzzle: _${" _".repeat(L - 1)}. It starts with ${A} and ends with ${Z}. ${cap(treasure)} is hiding ${hidingWords}!`,
       ];
       riddle = pick(forms);
       clue = room ? `Go to the ${room.r === "outside" ? "outdoors" : room.r}.` : `The word starts with "${word.slice(0, 2).toUpperCase()}…".`;
@@ -287,7 +299,7 @@ function makeRiddle(text, creature, seed = 0, what = null) {
 
   return {
     riddle, clue, hint,
-    variants: main ? main.o.riddles.length : word ? 2 : 1,
+    variants: main ? pool.length * endings.length : word ? 4 : 1,
     place: main ? main.o.place : room ? room.place : null,
     unsafe: chosen.some((f) => f.o.unsafe),
     recognised: main ? main.k : word || null,
