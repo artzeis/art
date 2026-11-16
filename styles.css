@@ -204,6 +204,12 @@ main > * { animation: pop .25s ease-out; }
 label.field { display: block; margin: 12px 0; font-weight: 700; }
 select, input[type=number] { width: 100%; font: inherit; padding: 12px; border-radius: 16px; border: 2px solid #e2d9f3; margin-top: 6px; background: #fff; color: var(--ink); }
 
+.gate-display { margin: 8px auto 0; max-width: 220px; min-height: 64px; border-radius: 20px; background: #f6f2fd; border: 3px solid #e2d9f3; font-size: 2.4rem; font-weight: 800; letter-spacing: .15em; display: grid; place-items: center; }
+.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 0 auto; }
+.keypad button { border: 0; border-radius: 20px; padding: 14px 0 10px; font-size: 1.7rem; font-weight: 800; background: #efe7ff; color: var(--purple-dark); box-shadow: 0 5px 0 #d4c4f5; }
+.keypad button:active { transform: translateY(3px); box-shadow: 0 2px 0 #d4c4f5; }
+.keypad button.ok { background: var(--good); color: #fff; box-shadow: 0 5px 0 var(--good-dark); }
+
 /* ---------- Dialog ---------- */
 dialog.sheet { border: 0; border-radius: 30px; max-width: 560px; width: calc(100% - 32px); max-height: 88vh; padding: 22px; color: var(--ink); }
 dialog::backdrop { background: rgba(60, 40, 110, .45); }

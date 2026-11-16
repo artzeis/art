@@ -199,20 +199,40 @@
     },
 
     grownup() {
+      // Grown-up gate: a times-table question answered on a big on-screen keypad,
+      // so it works the same on every phone without the device keyboard.
       const a = 3 + Math.floor(Math.random() * 7), b = 3 + Math.floor(Math.random() * 7);
+      const answer = String(a * b);
+      let typed = "";
       app.innerHTML = `
         <h1 class="screen-title">🔑 Grown-up Corner</h1>
-        <div class="card">
-          <p>To make sure you're a grown-up, what is <b>${a} × ${b}</b>?</p>
-          <input type="number" inputmode="numeric" id="gate" aria-label="Answer" />
-          <p></p><button class="btn primary block" id="gateGo">Enter</button>
+        <div class="card center">
+          <p class="big">To make sure you're a grown-up, what is<br><b>${a} × ${b}</b> ?</p>
+          <div class="gate-display" id="gateShow" aria-live="polite">&nbsp;</div>
+          <p class="small" id="gateMsg">&nbsp;</p>
+          <div class="keypad">
+            ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `<button data-key="${n}">${n}</button>`).join("")}
+            <button data-key="del" aria-label="Delete">⌫</button>
+            <button data-key="0">0</button>
+            <button data-key="ok" class="ok" aria-label="Enter">✔</button>
+          </div>
         </div>`;
+      const show = app.querySelector("#gateShow"), msg = app.querySelector("#gateMsg");
+      const refresh = () => { show.innerHTML = typed || "&nbsp;"; };
       const check = () => {
-        if (Number(app.querySelector("#gate").value) === a * b) setupScreen();
-        else app.querySelector("#gate").animate([{ transform: "translateX(-6px)" }, { transform: "translateX(6px)" }, { transform: "none" }], 300);
+        if (typed === answer) return setupScreen();
+        msg.textContent = typed ? "Not quite — try again!" : "Tap the numbers first.";
+        show.animate([{ transform: "translateX(-8px)" }, { transform: "translateX(8px)" }, { transform: "none" }], 300);
+        typed = ""; refresh();
       };
-      app.querySelector("#gateGo").onclick = check;
-      app.querySelector("#gate").onkeydown = (e) => e.key === "Enter" && check();
+      app.querySelectorAll("[data-key]").forEach((btn) => btn.onclick = () => {
+        const k = btn.dataset.key;
+        msg.innerHTML = "&nbsp;";
+        if (k === "ok") return check();
+        if (k === "del") typed = typed.slice(0, -1);
+        else if (typed.length < 3) typed += k;
+        refresh();
+      });
     },
   };
 
