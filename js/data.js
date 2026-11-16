@@ -356,3 +356,54 @@ const OUTDOOR_CHALLENGES = {
     { text: "Race to a tree or the fence and back — beat your high score!", seconds: 0 },
   ],
 };
+
+// "Make something for me!" — after the treasure is found, the character asks the family to
+// create something together. Kids (and grown-ups) can snap a photo for the Memory Book.
+const CREATE_REQUESTS = {
+  scribbi: [
+    "Draw a brand-new doodle creature and give it a name!",
+    "Make a rainbow out of things you can find — one thing for every colour.",
+    "Make and decorate a paper crown together — I lost mine!",
+  ],
+  craggle: [
+    "Build me a cosy rock garden out of pebbles, toys or cushions.",
+    "Build the tallest tower you can — strong like a mountain!",
+    "Make a comfy nap spot for me out of blankets and pillows.",
+  ],
+  orbit: [
+    "Build a rocket ship out of boxes, chairs or blankets — big enough for a grown-up too!",
+    "Draw your very own planet and give it a name.",
+    "Make a space helmet out of anything you can find.",
+  ],
+  tangle: [
+    "Build a maze for a toy car or marble to roll through.",
+    "Draw a maze on paper and have your grown-up solve it.",
+    "Invent a secret code and write me a message in it.",
+  ],
+  nyxie: [
+    "Make a cosy moon bed for me with your softest things.",
+    "Draw the night sky with a constellation you made up.",
+    "Make a dream catcher out of paper, string or ribbon.",
+  ],
+  glitch: [
+    "Design a brand-new video game level on paper.",
+    "Build a robot out of boxes, cups or blocks.",
+    "Make up a dance move together and give it a game name, like 'The Power-Up'.",
+  ],
+  leo: [
+    "Build a den out of pillows and blankets — big enough for the whole pack!",
+    "Draw a map of your home and mark the best pack hideouts.",
+    "Make a paper moon medallion for every member of your pack.",
+  ],
+};
+
+// How to move between treasure-trail stops, in each character's style.
+const MOVE_LIKE = {
+  scribbi: "wiggle like a squiggle",
+  craggle: "roll like a slow, heavy rock",
+  orbit: "spin like a little planet",
+  tangle: "zig-zag like you're in a maze",
+  nyxie: "tiptoe like a cat at night",
+  glitch: "move like a video game robot",
+  leo: "lope like a wolf",
+};

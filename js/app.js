@@ -9,7 +9,14 @@
   let save = fresh();
   try { save = { ...fresh(), ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") }; } catch (_) {}
   save.hides = save.hides || {};
-  const hidden = (id) => !!(save.hides[id] && save.hides[id].text);
+  // Each hiding place is a treasure TRAIL: clue-card stops first, the treasure last.
+  // (Older saves had a single {text, seed} — turn those into a one-stop trail.)
+  Object.keys(save.hides).forEach((k) => {
+    const h = save.hides[k];
+    if (h && !h.stops) save.hides[k] = { stops: [{ text: h.text || "", seed: h.seed || 0 }] };
+  });
+  const trailOf = (id) => (save.hides[id] && save.hides[id].stops) || [];
+  const hidden = (id) => { const t = trailOf(id); return t.length > 0 && t.every((st) => st.text && st.text.trim()); };
   const persist = () => {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(save)); } catch (_) {}
     document.getElementById("starCount").textContent = save.stars;
@@ -80,12 +87,18 @@
             <p><b>Grown-up setup</b><br><span class="small muted">${ready} of ${CREATURES.length} treasures hidden · ${AREAS.find((a) => a[0] === (save.area || "inside")).slice(1, 3).join(" ")}</span></p>
             <button class="btn primary" data-go="grownup" style="margin-left:auto">Set up</button>
           </div>` : ""}
-        <div class="grid">
+        <div class="grid" id="homeGrid">
           ${CREATURES.map((c) => tile(c,
             save.found[c.id] ? `<span class="pill friend">Friend ✔</span>`
               : hidden(c.id) ? `<span class="pill">Help me ${c.accessoryEmoji}</span>`
               : `<span class="pill idle">Not hidden</span>`)).join("")}
+        </div>
+        <div class="card calm-cta">
+          <span class="calm-cta-moon">🌙</span>
+          <div><b>Wind down with Nyxie</b><br><span class="small muted">A 2-minute calm-down for after play or before bed</span></div>
+          <button class="btn purple" id="calmHome">Start</button>
         </div>`;
+      app.querySelector("#calmHome").onclick = () => Calm.start(() => go("home"));
       app.querySelectorAll("[data-open]").forEach((b) => b.onclick = () => {
         const id = b.dataset.open;
         if (hidden(id) && !save.found[id]) go("quest", id); else go("creature", id);
@@ -96,8 +109,12 @@
       app.innerHTML = `
         <h1 class="screen-title">Creature <span class="grad-text">Journal</span></h1>
         <p class="lead">Tap a creature to read all about them. Help them on a quest to unlock their secrets!</p>
-        <div class="grid">${CREATURES.map((c) => tile(c, save.found[c.id] ? `<span class="pill friend">Friend ✔</span>` : `<span class="pill seen">Read more</span>`)).join("")}</div>`;
+        <div class="grid">${CREATURES.map((c) => tile(c, save.found[c.id] ? `<span class="pill friend">Friend ✔</span>` : `<span class="pill seen">Read more</span>`)).join("")}</div>
+        <h2 class="screen-title" style="margin-top:26px">📸 Memory <span class="grad-text">Book</span></h2>
+        <p class="lead">Things you made together. Photos stay on this device.</p>
+        <div class="memory-grid" id="memories"><p class="muted">Loading…</p></div>`;
       app.querySelectorAll("[data-open]").forEach((b) => b.onclick = () => go("creature", b.dataset.open));
+      showMemories();
     },
 
     creature(id, tab = "story") {
@@ -163,6 +180,7 @@
           <div class="row actions">
             ${!friend && hidden(id) ? `<button class="btn primary" data-quest>🗺️ Start quest</button>` : ""}
             <button class="btn purple" data-ar>🔮 Find in AR</button>
+            <button class="btn" data-make>🎨 Make something</button>
           </div>
           <div class="tabs" role="tablist">
             ${[["story", "📖 Story"], ["powers", "⭐ Powers"], ["secrets", friend ? "🔓 Secrets" : "🔒 Secrets"]].map(([k, l]) =>
@@ -174,12 +192,25 @@
         </div>`;
       app.querySelector("[data-say]").onclick = () => speak(`${c.catchphrase} ${c.description}`, c.id);
       app.querySelector("[data-ar]").onclick = () => startAR(id);
+      app.querySelector("[data-make]").onclick = () => go("create", id);
       app.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => screens.creature(id, b.dataset.tab));
       const q = app.querySelector("[data-quest]");
       if (q) q.onclick = () => go("quest", id);
     },
 
     quest(id) { runQuest(byId[id]); },
+
+    create(id) {
+      const c = byId[id];
+      app.innerHTML = `
+        <div style="${vars(c)}"><div class="card">
+          <div class="quest-head"><div class="art bob">${creatureArt(c.id)}</div>
+            <div><h2>${c.name}</h2><span class="kind-chip">${c.kind}</span></div></div>
+          <span class="step-label">🎨 Make something for ${c.name}</span>
+          <div id="createBox"></div>
+        </div></div>`;
+      renderCreate(app.querySelector("#createBox"), c, { standalone: true, onDone: (made) => { if (made) confetti(); go("journal"); } });
+    },
 
     ar() {
       app.innerHTML = `
@@ -243,6 +274,36 @@
         : `Finish ${c.name}'s quest to reveal this secret form.`}</p>
     </div>`;
 
+  // ---------- Memory Book ----------
+  function showMemories() {
+    Memories.all().then((list) => {
+      const box = document.getElementById("memories");
+      if (!box) return;
+      if (!list.length) {
+        box.innerHTML = `<div class="card small muted" style="grid-column:1/-1">Nothing here yet! After finding a treasure, each character asks you to make something. Snap a photo and it will appear here. You can also tap 🎨 Make something on any character's page.</div>`;
+        return;
+      }
+      box.innerHTML = list.map((m) => { const c = byId[m.creature] || {}; return `
+        <button class="memory" style="${c.color ? vars(c) : ""}" data-mem="${m.id}">
+          <img src="${m.img}" alt="Made for ${esc(c.name || "a friend")}">
+          <span>For ${esc(c.name || "a friend")}</span>
+        </button>`; }).join("");
+      box.querySelectorAll("[data-mem]").forEach((b) => b.onclick = () => {
+        const m = list.find((x) => x.id === b.dataset.mem), c = byId[m.creature] || {};
+        const d = document.createElement("dialog");
+        d.className = "sheet center";
+        d.innerHTML = `<img src="${m.img}" alt="" style="width:100%;border-radius:18px">
+          <p><b>Made for ${esc(c.name || "a friend")}</b><br><span class="small muted">${esc(m.text)}<br>${new Date(m.date).toLocaleDateString()}</span></p>
+          <div class="row"><button class="btn" data-del>🗑️ Delete</button><button class="btn primary" data-close>Close</button></div>`;
+        document.body.appendChild(d);
+        const close = () => { d.close(); d.remove(); };
+        d.querySelector("[data-close]").onclick = close;
+        d.querySelector("[data-del]").onclick = () => { if (confirm("Delete this memory?")) { Memories.remove(m.id).then(() => { close(); showMemories(); }); } };
+        d.showModal();
+      });
+    });
+  }
+
   // ---------- Plush shop ----------
   // Store links live in STORE_LINKS (js/data.js). Opening one needs the grown-up gate.
   const plushCard = (c) => `
@@ -300,19 +361,14 @@
           <li>Hide each character's lost item somewhere ${area === "outside" ? "outside" : area === "both" ? "inside or outside" : "in the house"}.</li>
           <li>Type where you hid it, like <em>"under the blue cushion on the sofa"</em>.</li>
           <li>The app writes a riddle, a clue and a big hint from your words. Tap 🔄 for a different riddle.</li>
+          <li><b>Want a longer, more active hunt?</b> Tap ➕ to make a <b>treasure trail</b>: leave a clue card (or any sticky note) at each stop, and each riddle leads to the next one, with the treasure at the end.</li>
         </ol>
-        <button class="btn block" id="suggest">✨ Suggest hiding places</button>
+        <div class="row">
+          <button class="btn" id="suggest">✨ Suggest hiding places</button>
+          <button class="btn" id="printCards">🖨️ Print clue cards</button>
+        </div>
       </div>
-      ${CREATURES.map((c) => `
-        <div class="card hide-card" style="${vars(c)}">
-          <div class="hide-head">
-            <span class="hide-art">${creatureArt(c.id)}</span>
-            <div><b>${c.name}'s ${c.accessory}</b> ${c.accessoryEmoji}<br><span class="muted small">Where did you hide it?</span></div>
-          </div>
-          <input type="text" class="hide-input" data-hide="${c.id}" value="${esc((save.hides[c.id] || {}).text || "")}"
-            placeholder="e.g. ${esc(pick(ideasFor(area)))}" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="140">
-          <div class="riddle-preview" data-preview="${c.id}"></div>
-        </div>`).join("")}
+      ${CREATURES.map((c) => `<div class="card hide-card" style="${vars(c)}" data-card="${c.id}"></div>`).join("")}
       <button class="btn primary block" id="saveSetup" style="margin-bottom:16px">Save &amp; start playing</button>
       <div class="card">
         <h2 class="section-title">🔊 Voice check</h2>
@@ -345,41 +401,76 @@
         </div>
       </div>`;
 
-    const setHide = (id, text) => {
-      const prev = save.hides[id] || {};
-      text = text.trim();
-      if (text) save.hides[id] = { text, seed: prev.text === text ? prev.seed || 0 : prev.seed || 0 };
-      else delete save.hides[id];
-      persist();
+    // ---- one card per character: its treasure trail (clue stops + treasure) ----
+    const trailFor = (id) => {
+      if (!save.hides[id] || !save.hides[id].stops || !save.hides[id].stops.length) save.hides[id] = { stops: [{ text: "", seed: 0 }] };
+      return save.hides[id].stops;
     };
-    const preview = (id) => {
-      const box = app.querySelector(`[data-preview="${id}"]`);
-      const h = save.hides[id];
-      if (!h) { box.innerHTML = ""; return; }
-      const r = makeRiddle(h.text, byId[id], h.seed || 0);
+    const riddleFor = (c, stops, i) => makeRiddle(stops[i].text, c, stops[i].seed || 0, i < stops.length - 1 ? "my next clue" : null);
+    const preview = (c, i) => {
+      const stops = trailFor(c.id);
+      const box = app.querySelector(`[data-preview="${c.id}-${i}"]`);
+      if (!box) return;
+      if (!stops[i].text.trim()) { box.innerHTML = ""; return; }
+      const r = riddleFor(c, stops, i);
       box.innerHTML = `
         ${r.unsafe ? `<p class="hintbox hot small">⚠️ That spot might not be safe for kids. Please choose somewhere else.</p>` : ""}
         <p><b>🧩 Riddle:</b> ${esc(r.riddle)}</p>
         <p><b>🔎 Clue:</b> ${esc(r.clue)}</p>
         <p><b>💡 Big hint:</b> ${esc(r.hint)}</p>
-        ${r.variants > 1 ? `<button class="btn small-btn" data-reroll="${id}">🔄 Different riddle</button>` : ""}`;
-      if (r.variants > 1) box.querySelector("[data-reroll]").onclick = () => { h.seed = (h.seed || 0) + 1; persist(); preview(id); };
+        ${r.variants > 1 ? `<button class="btn small-btn" data-reroll>🔄 Different riddle</button>` : ""}`;
+      const rr = box.querySelector("[data-reroll]");
+      if (rr) rr.onclick = () => { stops[i].seed = (stops[i].seed || 0) + 1; persist(); preview(c, i); };
     };
-    app.querySelectorAll("[data-hide]").forEach((inp) => {
-      preview(inp.dataset.hide);
-      let t;
-      inp.oninput = () => { clearTimeout(t); t = setTimeout(() => { setHide(inp.dataset.hide, inp.value); preview(inp.dataset.hide); }, 250); };
-      inp.onkeydown = (e) => { if (e.key === "Enter") inp.blur(); };
-    });
+    const drawCard = (c, focusIndex) => {
+      const card = app.querySelector(`[data-card="${c.id}"]`);
+      const stops = trailFor(c.id), last = stops.length - 1;
+      card.innerHTML = `
+        <div class="hide-head">
+          <span class="hide-art">${creatureArt(c.id)}</span>
+          <div><b>${c.name}'s ${c.accessory}</b> ${c.accessoryEmoji}<br>
+            <span class="muted small">${stops.length > 1 ? `Treasure trail · ${stops.length} stops` : "Where did you hide it?"}</span></div>
+        </div>
+        ${stops.map((st, i) => `
+          <div class="stop-row ${i < last ? "clue" : "treasure"}">
+            <div class="stop-label">
+              <span>${i < last ? `📜 Clue card ${i + 1} — where did you leave it?` : stops.length > 1 ? `${c.accessoryEmoji} Treasure — the last stop` : ""}</span>
+              ${i < last ? `<button class="stop-del" data-del="${i}" aria-label="Remove clue stop ${i + 1}">✕</button>` : ""}
+            </div>
+            <input type="text" class="hide-input" data-i="${i}" value="${esc(st.text)}"
+              placeholder="e.g. ${esc(pick(ideasFor(area)))}" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="140">
+            <div class="riddle-preview" data-preview="${c.id}-${i}"></div>
+          </div>`).join("")}
+        ${stops.length < 5 ? `<button class="btn small-btn" data-addstop>➕ Add a clue stop before the treasure</button>` : ""}`;
+      stops.forEach((_, i) => preview(c, i));
+      card.querySelectorAll(".hide-input").forEach((inp) => {
+        const i = +inp.dataset.i;
+        let t;
+        inp.oninput = () => { clearTimeout(t); t = setTimeout(() => { stops[i].text = inp.value.trim(); persist(); preview(c, i); }, 250); };
+        inp.onkeydown = (e) => { if (e.key === "Enter") inp.blur(); };
+      });
+      card.querySelectorAll("[data-del]").forEach((b) => b.onclick = () => { stops.splice(+b.dataset.del, 1); persist(); drawCard(c); });
+      const add = card.querySelector("[data-addstop]");
+      if (add) add.onclick = () => { stops.splice(stops.length - 1, 0, { text: "", seed: 0 }); persist(); drawCard(c, stops.length - 2); };
+      if (focusIndex !== undefined) card.querySelector(`.hide-input[data-i="${focusIndex}"]`).focus();
+    };
+    CREATURES.forEach((c) => drawCard(c));
+
+    app.querySelector("#printCards").onclick = () => printClueCards();
     app.querySelectorAll("[data-area]").forEach((b) => b.onclick = () => { save.area = b.dataset.area; persist(); setupScreen(); });
     app.querySelector("#suggest").onclick = () => {
       const pool = shuffle(ideasFor(area));
-      app.querySelectorAll("[data-hide]").forEach((inp, i) => {
-        inp.value = pool[i % pool.length]; setHide(inp.dataset.hide, inp.value); preview(inp.dataset.hide);
-      });
+      let k = 0;
+      CREATURES.forEach((c) => { trailFor(c.id).forEach((st) => { st.text = pool[k++ % pool.length]; }); drawCard(c); });
+      persist();
     };
     app.querySelector("#saveSetup").onclick = () => {
-      app.querySelectorAll("[data-hide]").forEach((inp) => setHide(inp.dataset.hide, inp.value));
+      // Drop empty clue stops; keep the treasure stop.
+      CREATURES.forEach((c) => {
+        const stops = trailFor(c.id);
+        save.hides[c.id].stops = stops.filter((st, i) => i === stops.length - 1 || st.text.trim());
+      });
+      persist();
       go("home");
     };
     app.querySelectorAll("[data-voicetest]").forEach((b) => b.onclick = () => {
@@ -430,13 +521,83 @@
     </svg>`;
   }
 
+  // Printable clue cards for treasure-trail stops (any paper or sticky note works too).
+  function printClueCards() {
+    const cards = [];
+    CREATURES.forEach((c) => {
+      const stops = trailOf(c.id), clues = stops.length - 1;
+      for (let i = 0; i < clues; i++) cards.push({ c, i, clues });
+    });
+    if (!cards.length) cards.push(...CREATURES.map((c) => ({ c, i: 0, clues: 1, blank: true })));
+    const base = location.href.replace(/[^/]*$/, "");
+    const w = window.open("", "_blank");
+    if (!w) return alert("Please allow pop-ups to print the clue cards.");
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Myth Seekers clue cards</title>
+      <style>body{font-family:system-ui,sans-serif;margin:16px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+      .card{border:3px dashed #999;border-radius:18px;padding:16px;text-align:center;break-inside:avoid;min-height:230px}
+      .card img{height:110px}.card h2{margin:6px 0;font-size:20px}.card p{margin:4px 0;font-size:15px}
+      .tag{display:inline-block;background:#eee;border-radius:99px;padding:3px 10px;font-weight:700;font-size:13px}
+      @media print{.noprint{display:none}}</style></head><body>
+      <p class="noprint"><button onclick="print()">🖨️ Print</button> Cut out each card and leave it at that clue stop.</p>
+      <div class="grid">${cards.map(({ c, i, clues, blank }) => `<div class="card">
+        <img src="${base}assets/characters/${c.id}.png" alt="">
+        <h2>📜 You found a clue!</h2>
+        <span class="tag">${c.name}'s trail${blank ? "" : ` · clue ${i + 1} of ${clues}`}</span>
+        <p>Great tracking, Seeker! Go back to the app and tap<br><b>"We found the clue card!"</b></p></div>`).join("")}</div>
+      </body></html>`);
+    w.document.close();
+  }
+
+  // ---------- Make something together (+ Memory Book photo) ----------
+  function renderCreate(box, c, { onDone, standalone = false }) {
+    const reqs = CREATE_REQUESTS[c.id] || ["Make something wonderful together!"];
+    let idx = Math.floor(Math.random() * reqs.length), photo = null;
+    const draw = () => {
+      const req = reqs[idx];
+      const line = standalone ? `Will you make something for me? ${req}` : `Thank you so much! Will you do one more thing for me? ${req}`;
+      box.innerHTML = `
+        <div class="speech">${esc(line)}</div>
+        <p class="small muted">Make it together with your grown-up, then snap a photo to keep it in your 📸 Memory Book.</p>
+        ${photo ? `<div class="photo-slot"><img src="${photo}" alt="Your creation"></div>` : ""}
+        <div class="row">
+          <button class="btn" data-listen>🔊 Listen</button>
+          <button class="btn" data-other>🔀 Another idea</button>
+          <label class="btn purple file-btn">📷 ${photo ? "Retake" : "Take a photo"}<input type="file" accept="image/*" capture="environment" hidden></label>
+        </div>
+        <button class="btn good block" data-made style="margin-top:10px">🎨 We made it!</button>
+        <button class="btn block" data-skip style="margin-top:8px">Skip for now</button>`;
+      box.querySelector("[data-listen]").onclick = () => speak(line, c.id);
+      box.querySelector("[data-other]").onclick = () => { idx = (idx + 1) % reqs.length; draw(); speak(reqs[idx], c.id); };
+      box.querySelector("input[type=file]").onchange = async (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        try { photo = await shrinkPhoto(f); } catch (_) { alert("Sorry, that photo couldn't be opened."); }
+        draw();
+      };
+      box.querySelector("[data-made]").onclick = async () => {
+        if (photo) {
+          try { await Memories.add({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, creature: c.id, text: req, date: Date.now(), img: photo }); }
+          catch (_) { alert("The photo couldn't be saved on this device, but well done!"); }
+        }
+        onDone(true);
+      };
+      box.querySelector("[data-skip]").onclick = () => onDone(false);
+    };
+    draw();
+    if (!standalone) speak(`Thank you so much! Will you do one more thing for me? ${reqs[idx]}`, c.id);
+  }
+
   // ---------- Quest flow ----------
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
-  const PATH = ["👋", "🏃", "🧩", "🎁", "🎉"];
+  const PATH = ["👋", "🏃", "🧩", "🎁", "🎨", "🎉"];
   function runQuest(c) {
     if (!hidden(c.id)) return go("creature", c.id);
-    const spot = makeRiddle(save.hides[c.id].text, c, save.hides[c.id].seed || 0);
-    const outside = spot.place ? spot.place === "outside" : save.area === "outside";
+    // Treasure trail: one riddle per stop (clue cards first, the treasure last).
+    const trail = trailOf(c.id);
+    const riddles = trail.map((st, i) => makeRiddle(st.text, c, st.seed || 0, i < trail.length - 1 ? "my next clue" : null));
+    const finalSpot = riddles[riddles.length - 1];
+    const outside = finalSpot.place ? finalSpot.place === "outside" : save.area === "outside";
+    let stopIdx = 0, totalHints = 0, between = false, madeSomething = false;
     // Each character can have its own wheel (Leo uses Wolf Pack challenges).
     const types = challengeTypesFor(c);
     const saved = c.challengeSet === "wolf" ? save.ctypeWolf : save.ctype;
@@ -559,23 +720,45 @@
         };
         return;
       } else if (step === 2) {
+        const n = riddles.length, spot = riddles[stopIdx], isClue = stopIdx < n - 1;
+        if (between) {
+          // Just found a clue card — move to the next stop in the character's style.
+          const msg = `Great tracking! Now ${MOVE_LIKE[c.id] || "zoom"} to the next stop!`;
+          frame(`
+            <span class="step-label">📜 Clue ${stopIdx} of ${n - 1} found!</span>
+            <div class="trail-dots">${riddles.map((_, k) => `<i class="${k < stopIdx ? "on" : ""}">${k === n - 1 ? c.accessoryEmoji : "📜"}</i>`).join("")}</div>
+            <div class="speech">${esc(msg)}</div>
+            <div class="row">
+              <button class="btn" data-say="${esc(msg)}">🔊 Listen</button>
+              <button class="btn primary" id="nextRiddle">Next riddle ➜</button>
+            </div>`);
+          speak(msg, c.id);
+          app.querySelector("#nextRiddle").onclick = () => { between = false; helpLevel = 0; render(); };
+          return;
+        }
         const helps = [
           helpLevel >= 1 ? `<div class="hintbox">🔎 <b>Clue:</b> ${spot.clue}</div>` : "",
           helpLevel >= 2 ? `<div class="hintbox hot">💡 <b>Big hint:</b> ${spot.hint}</div>` : "",
         ].join("");
+        const intro = isClue
+          ? (stopIdx === 0 ? "My treasure trail starts here! Solve the riddle to find the first clue card." : "Here's the next riddle. Find the next clue card!")
+          : (n > 1 ? `Last stop! Solve this riddle to find my ${c.accessory}!` : `I think my ${c.accessory} is hiding here… solve my riddle!`);
         frame(`
-          <span class="step-label">Step 2 · The Riddle</span>
-          <div class="speech">I think my ${c.accessory} is hiding here… solve my riddle!</div>
+          <span class="step-label">${n > 1 ? `Stop ${stopIdx + 1} of ${n} · ${isClue ? "find the clue card" : "find the treasure"}` : "Step 2 · The Riddle"}</span>
+          ${n > 1 ? `<div class="trail-dots">${riddles.map((_, k) => `<i class="${k < stopIdx ? "on" : ""} ${k === stopIdx ? "now" : ""}">${k === n - 1 ? c.accessoryEmoji : "📜"}</i>`).join("")}</div>` : ""}
+          <div class="speech">${intro}</div>
           <p class="big"><b>${spot.riddle}</b></p>
           ${helps}
           <p></p>
           <div class="row">
             <button class="btn" data-say="${esc(spot.riddle)}">🔊 Listen</button>
             ${helpLevel < 2 ? `<button class="btn" id="moreHelp">${helpLevel ? "💡 Big hint" : "🔎 Clue"}</button>` : ""}
-            <button class="btn good" data-next>We found it!</button>
+            ${isClue ? `<button class="btn good" id="foundClue">📜 We found the clue card!</button>` : `<button class="btn good" data-next>We found it!</button>`}
           </div>`);
         const h = app.querySelector("#moreHelp");
-        if (h) h.onclick = () => { helpLevel++; render(); };
+        if (h) h.onclick = () => { helpLevel++; totalHints++; render(); };
+        const fc = app.querySelector("#foundClue");
+        if (fc) fc.onclick = () => { stopIdx++; between = true; confetti(["📜", "✨"]); render(); };
       } else if (step === 3) {
         const choices = shuffle(CREATURES.filter((x) => x.id !== c.id)).slice(0, 3).concat(c);
         frame(`
@@ -587,10 +770,15 @@
           if (b.dataset.pick === c.id) { step = 4; render(); }
           else { b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 400); }
         });
+      } else if (step === 4) {
+        frame(`<span class="step-label">Step 4 · Make something together</span><div id="createBox"></div>`);
+        renderCreate(app.querySelector("#createBox"), c, { onDone: (made) => { madeSomething = made; step = 5; render(); } });
+        return;
       } else {
         const first = !save.found[c.id];
-        // Fewer hints = more stars, and harder challenges earn bonus stars.
-        const gained = first ? 3 - Math.min(helpLevel, 2) + CHALLENGE_LEVELS[doneLevel - 1].bonus : 0;
+        // Fewer hints = more stars; harder challenges, longer trails and making something earn bonus stars.
+        const n = riddles.length;
+        const gained = first ? 3 - Math.min(2, Math.round(totalHints / n)) + CHALLENGE_LEVELS[doneLevel - 1].bonus + (n - 1) + (madeSomething ? 1 : 0) : 0;
         if (first) { save.found[c.id] = Date.now(); save.stars += gained; persist(); }
         confetti();
         const thanks = `Thank you, thank you! You found my ${c.accessory}! We are friends forever now.`;
@@ -605,7 +793,9 @@
             <button class="btn purple" id="seeAR">🔮 Visit in AR</button>
             ${STORE_LINKS[c.id] ? `<button class="btn" data-shop="${c.id}">🛍️ Get the plush</button>` : ""}
             <button class="btn primary" id="home">More quests</button>
-          </div>`);
+          </div>
+          <button class="btn block calm-btn" id="calmDown" style="margin-top:10px">🌙 Calm down with Nyxie</button>`);
+        app.querySelector("#calmDown").onclick = () => Calm.start(() => go("home"));
         app.querySelector("#secrets").onclick = () => { go("creature", c.id); screens.creature(c.id, "secrets"); };
         app.querySelector("#seeAR").onclick = () => startAR(c.id);
         app.querySelector("#home").onclick = () => go("home");

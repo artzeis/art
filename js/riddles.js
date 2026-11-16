@@ -223,14 +223,15 @@ const RIDDLE_PREPS = [
   ["on", "on it"], ["in", "inside it"], ["at", "close to it"],
 ];
 
-function makeRiddle(text, creature, seed = 0) {
+// `what` is what is hiding there, e.g. "my next clue" for a treasure-trail stop.
+function makeRiddle(text, creature, seed = 0, what = null) {
   const raw = String(text || "").trim();
   const t = " " + raw.toLowerCase().replace(/[^a-z0-9' ]+/g, " ").replace(/\s+/g, " ") + " ";
   const at = (word) => {
     const m = t.match(new RegExp(` ${word.replace(/ /g, " ")} `));
     return m ? m.index : -1;
   };
-  const treasure = creature ? `my ${creature.accessory}` : "the treasure";
+  const treasure = what || (creature ? `my ${creature.accessory}` : "the treasure");
 
   // Objects mentioned, with where they appear. Longer names win ("toy box" before "box").
   const found = [];

@@ -85,7 +85,7 @@ Animations are turned off for players whose device asks for reduced motion.
    - Physical Easy also includes the character's own themed moves. When the treasure is outside, some
      physical challenges use the yard ("run 3 laps around the yard").
    - The chosen type and level are remembered for the next quest.
-5. **Riddle.** The generated riddle describes the hiding spot. Help comes in three levels: Riddle → 🔎 Clue →
+5. **Riddle.** The generated riddle describes the hiding spot (or one riddle per stop on a treasure trail). Help comes in three levels: Riddle → 🔎 Clue →
    💡 Big Hint.
 6. **Show me!** Kids pick the treasure they found from four choices. This is a light check that they
    really found it.
@@ -106,6 +106,26 @@ Animations are turned off for players whose device asks for reduced motion.
    vibrates, and kids can Wave, Spin or hear a Fun fact.
 - The first time kids spot each creature in AR, they earn +1 ⭐.
 - **Fallbacks:** without a camera, an illustrated forest is shown instead.
+
+## Playing together: trails, making and calming down
+**📜 Treasure trails.** In setup, ➕ adds clue stops before the treasure (up to 5 stops in all). The
+grown-up leaves a clue card at each stop: a printed card (🖨️ Print clue cards) or any sticky note.
+Each stop gets its own riddle ("My next clue is hiding under it!"). After each clue card, the
+character says how to move to the next stop in their style: wiggle like a squiggle (Scribbi), roll like
+a slow, heavy rock (Craggle), spin like a little planet (Orbit), zig-zag like you're in a maze (Tangle),
+tiptoe like a cat (Nyxie), move like a robot (Glitch) or lope like a wolf (Leo). Each extra stop earns
++1 ⭐.
+
+**🎨 Make something together.** After the treasure is found, the character asks the family to build,
+draw or invent something: Leo's pillow den, Orbit's rocket ship, Tangle's marble maze, Nyxie's night sky
+with a made-up constellation, and so on. There are three ideas per character, and 🔀 swaps the idea.
+📷 takes a photo, which is saved to the **Memory Book** in the Creature Journal. Photos are stored only
+on the device. "We made it!" earns +1 ⭐. Any character's page also has 🎨 Make something, any time.
+
+**🌙 Calm down with Nyxie.** A 2½-minute guided wind-down, offered after every quest and on the home
+screen. Nyxie speaks each step softly: get cosy, moon breathing (the moon grows for 4 seconds while
+breathing in and shrinks for 6 seconds while breathing out), cat stretch, curl up like a crescent moon,
+star squeeze, whisper one happy thing to your grown-up, then goodnight.
 
 ## Character voices
 Every line a character says can be heard in that character's own voice (`js/voices.js`). The game uses

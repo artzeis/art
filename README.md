@@ -29,4 +29,6 @@ folder on GitHub Pages works well for playing on a phone.
 - `js/ar.js` — AR mode: room scan, hiding and seeking
 - `js/challenges.js` — Physical / Mental / Teamwork / Kindness challenges for each of the 4 difficulty levels
 - `js/riddles.js` — writes riddles from the grown-up's description of each hiding place
+- `js/memories.js` — the Memory Book (photos saved on the device)
+- `js/calm.js` — "Calm down with Nyxie" steps and timing
 - `js/voices.js` — each character's speaking voice (pitch, speed, preferred voices)
