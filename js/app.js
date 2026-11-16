@@ -325,8 +325,7 @@
     },
 
     grownup() {
-      app.innerHTML = `<h1 class="screen-title">🔑 Grown-up Corner</h1><div class="card center" id="gateBox"></div>`;
-      renderGate(app.querySelector("#gateBox"), setupScreen);
+      setupScreen(); // no lock question — the Grown-ups page opens straight away
     },
   };
 

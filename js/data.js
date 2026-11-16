@@ -367,3 +367,63 @@ const MOVE_LIKE = {
   glitch: "move like a video game robot",
   leo: "lope like a wolf",
 };
+
+// Real-world facts shown in AR mode — true facts about each character's THEME (not about the character).
+const AR_FACTS = {
+  scribbi: [ // art, colour and drawing
+    "The first crayons were made by mixing wax with coloured powder.",
+    "Mixing red and blue paint makes purple.",
+    "A rainbow always has its colours in the same order: red, orange, yellow, green, blue, indigo and violet.",
+    "Some of the oldest drawings in the world were painted on cave walls more than 40,000 years ago.",
+    "Bees can see colours that people can't, called ultraviolet.",
+    "The colour orange was named after the fruit.",
+  ],
+  craggle: [ // rocks, crystals and moss
+    "Some rocks are made from tiny shells and skeletons of sea creatures that lived long ago.",
+    "Diamonds are made of carbon squeezed deep underground — the same stuff as pencil lead.",
+    "Moss doesn't have roots. It soaks up water through its leaves.",
+    "The Grand Canyon's rocks show almost 2 billion years of Earth's history.",
+    "Pumice is a rock so full of air bubbles that it can float on water.",
+    "Volcanoes make new rock when hot, melted lava cools down.",
+  ],
+  orbit: [ // planets and space
+    "Saturn's rings are made of chunks of ice and rock.",
+    "A day on Venus is longer than a whole year on Venus.",
+    "Jupiter is so big that more than 1,000 Earths could fit inside it.",
+    "There's no air on the Moon, so astronauts' footprints can stay there for millions of years.",
+    "The Sun is a star — the closest one to Earth.",
+    "Light from the Sun takes about 8 minutes to reach us.",
+  ],
+  tangle: [ // mazes, puzzles and keys
+    "In many mazes, if you keep one hand on the wall and keep walking, you'll find the way out.",
+    "Some hedge mazes in England are more than 300 years old.",
+    "The Rubik's Cube was invented in 1974 and has more than 43 quintillion possible positions.",
+    "Ancient Romans used metal keys — some were small enough to wear as rings.",
+    "Jigsaw puzzles were first made in the 1760s to help children learn maps.",
+    "A maze with only one path and no choices is called a labyrinth.",
+  ],
+  nyxie: [ // the Moon, stars, night and cats
+    "The Moon doesn't make its own light — it shines by reflecting sunlight.",
+    "On a clear, dark night you can see about 2,500 stars with just your eyes.",
+    "Cats can see in light about six times dimmer than people need.",
+    "A cat's whiskers help it feel its way around in the dark.",
+    "The Moon is slowly moving away from Earth, about 4 centimetres every year.",
+    "Owls can turn their heads about three-quarters of the way around.",
+  ],
+  glitch: [ // video games, computers and pixels
+    "A pixel is one tiny dot of colour. Screens are made of millions of them.",
+    "One of the first video games, Pong, was a simple game of bouncing a ball between two paddles.",
+    "The word 'bug' for a computer problem became famous after a real moth got stuck in a computer in 1947.",
+    "Computers store everything using only two numbers: 0 and 1.",
+    "Early video games could only show a few colours at a time.",
+    "The first computer mouse was made of wood.",
+  ],
+  leo: [ // wolves
+    "Wolves live in families called packs, usually a mum, a dad and their pups.",
+    "A wolf's howl can be heard up to 10 kilometres away in open country.",
+    "Wolf pups are born deaf and blind, and they open their eyes when they're about two weeks old.",
+    "All pet dogs are related to wolves.",
+    "Wolves can run at about 60 kilometres an hour for short bursts.",
+    "Wolves howl to find each other and to tell other packs, 'this is our home'.",
+  ],
+};

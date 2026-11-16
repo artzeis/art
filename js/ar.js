@@ -260,7 +260,7 @@ const AR = (() => {
 
     // Plain-words hint: which way, and how warm.
     const warmth = dist < 25 ? "🔥 So close! Look for the sparkles!" : dist < 60 ? "♨️ Getting warmer!" : dist < 110 ? "🌤️ Warm…" : "❄️ Cold…";
-    const text = onScreen ? (dist < 25 ? `👀 There! Tap ${state.creature.name}!` : warmth) : (goLeft ? `⬅️ Turn left — ${warmth}` : `${warmth} — turn right ➡️`);
+    const text = onScreen ? `👀 There! Tap ${state.creature.name}!` : (goLeft ? `⬅️ Turn left — ${warmth}` : `${warmth} — turn right ➡️`);
     if (text !== state.hintKey) { state.hintKey = text; $(".ar-hint").textContent = text; }
 
     // Treasure-detector beeps: faster and higher when closer; a little buzz when very close.
@@ -318,20 +318,27 @@ const AR = (() => {
     el.classList.add(cls);
   }
 
+  // Real-world facts about the character's theme (AR_FACTS in js/data.js), in a shuffled order.
+  function arFact(c) {
+    const list = (typeof AR_FACTS !== "undefined" && AR_FACTS[c.id]) || c.facts;
+    if (!state.factOrder) state.factOrder = list.map((_, i) => i).sort(() => Math.random() - 0.5);
+    return list[state.factOrder[state.factIndex++ % list.length]];
+  }
+
   function onStageClick(e) {
     const action = e.target.closest("[data-ar]")?.dataset.ar;
     const c = state.creature;
     const say = (t) => { const n = $('[data-ar="text"]'); if (n) n.textContent = t; };
     if (e.target.closest(".ar-creature")) {
       if (state.phase === "seek") return reveal();
-      if (state.phase === "found") { const f = c.facts[state.factIndex++ % c.facts.length]; animate("happy"); say(`${c.name}: “${f}”`); speakAs(c.id, f); }
+      if (state.phase === "found") { const f = arFact(c); animate("happy"); say(`💡 Did you know? ${f}`); speakAs(c.id, `Did you know? ${f}`); }
       return;
     }
     if (action === "close") return stop();
     if (action === "mute") { muted = !muted; e.target.closest("[data-ar]").textContent = muted ? "🔇" : "🔊"; return; }
     if (action === "wave") { animate("happy"); say(`${c.name} waves back at you! 👋`); speakAs(c.id, "Hi! Hi! Hello!"); }
     if (action === "spin") { animate("spin"); say(`Wheee! ${c.name} does a twirl!`); speakAs(c.id, "Wheeeee!"); }
-    if (action === "fact") { const f = c.facts[state.factIndex++ % c.facts.length]; animate("happy"); say(`💡 ${f}`); speakAs(c.id, f); }
+    if (action === "fact") { const f = arFact(c); animate("happy"); say(`💡 Did you know? ${f}`); speakAs(c.id, `Did you know? ${f}`); }
   }
 
   function stop() {

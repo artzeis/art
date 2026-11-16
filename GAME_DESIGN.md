@@ -65,7 +65,7 @@ Animations are turned off for players whose device asks for reduced motion.
   **?** button at the top.
 
 ## Core loop
-1. **Setup (grown-up).** Behind a simple math gate, the grown-up chooses where to play (**Inside**,
+1. **Setup (grown-up).** The grown-up opens the Grown-ups tab (no lock question) and chooses where to play (**Inside**,
    **Outside** or **Both**), hides each character's lost item, and **types where it is**, for example
    *"under the blue cushion on the sofa"*. "Suggest hiding places" fills in ideas for the chosen area.
    Outdoor play shows a safety reminder.
@@ -125,6 +125,10 @@ Animations are turned off for players whose device asks for reduced motion.
   the creature peeks in from the screen edge before it's fully in view, and pointing near it for half a
   second counts as found. After 15 seconds the creature calls "I'm over here!", and after 30 seconds it
   slowly floats towards the player.
+- **Real facts in AR:** 💡 Fact (or tapping the creature) shares true facts about the character's theme,
+  not about the character: art and colour (Scribbi), rocks and crystals (Craggle), space (Orbit), mazes and puzzles
+  (Tangle), the Moon, night and cats (Nyxie), video games and computers (Glitch), and wolves (Leo).
+  They're in `AR_FACTS` in `js/data.js`.
 - The first time kids spot each creature in AR, they earn +1 ⭐.
 - **Fallbacks:** without a camera, an illustrated forest is shown instead.
 
