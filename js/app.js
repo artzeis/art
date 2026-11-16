@@ -1,4 +1,4 @@
-// Imagamigos — main app: screens, quest flow, journal, grown-up setup.
+// Imagination Treasure Quest — main app: screens, quest flow, journal, grown-up setup.
 (() => {
   const STORE_KEY = "mythSeekers.v2";
   const app = document.getElementById("app");
@@ -204,7 +204,7 @@
 
     quest(id) { runQuest(byId[id]); },
 
-    // ---------- Dreamwood Storybook ----------
+    // ---------- The Imagination Storybook ----------
     // story(): the contents page.  story(id): read a chapter ("prologue", a character id, or "finale").
     story(which) {
       const order = ["prologue", ...CREATURES.map((c) => c.id).filter((id) => STORY.chapters[id]), "finale"];
@@ -215,7 +215,7 @@
 
       if (!which || !unlocked(which)) {
         app.innerHTML = `
-          <h1 class="screen-title">📚 The Dreamwood <span class="grad-text">Storybook</span></h1>
+          <h1 class="screen-title">📚 The Imagination <span class="grad-text">Storybook</span></h1>
           <p class="lead">${esc(STORY.title)}: one big story in short chapters. Find a friend's treasure to unlock their chapter.</p>
           <div class="chapter-list">
             ${order.map((k) => {
@@ -621,7 +621,7 @@
     const base = location.href.replace(/[^/]*$/, "");
     const w = window.open("", "_blank");
     if (!w) return alert("Please allow pop-ups to print the clue cards.");
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Imagamigos clue cards</title>
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Imagination Treasure Quest clue cards</title>
       <style>body{font-family:system-ui,sans-serif;margin:16px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
       .card{border:3px dashed #999;border-radius:18px;padding:16px;text-align:center;break-inside:avoid;min-height:230px}
       .card img{height:110px}.card h2{margin:6px 0;font-size:20px}.card p{margin:4px 0;font-size:15px}

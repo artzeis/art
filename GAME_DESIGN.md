@@ -1,6 +1,6 @@
-# Imagamigos — Game Design Document
+# Imagination Treasure Quest — Game Design Document
 
-*Imagamigos = imagination + amigos (friends). Kids are called "amigo" by the characters.*
+*The game is called **Imagination Treasure Quest**. Its creatures are the **Imagamigos** (imagination + amigos, meaning friends), and the characters call kids "amigo".*
 
 ## Concept
 A real-world creature hunt for kids (about ages 4–10) built like Pokémon GO, but instead of catching
@@ -143,9 +143,9 @@ spot on its plush: a hook-and-loop dot, or a pocket for Scribbi's crayon. "It's 
 "No plush yet — keep going" for families without the plush. Attachment details are in
 `manufacturing/treasures/README.md`.
 
-## 📚 The Dreamwood Storybook
+## 📚 The Imagination Storybook
 One big story told in short chapters (`js/story.js`), in a **Stories** tab.
-- **The world:** the Imagamigos live in **Dreamwood**, a secret land on the other side of every pillow
+- **The world:** the Imagamigos live in **the Land of Imagination**, a secret place on the other side of every pillow
   (a nod to the pillow plush toys). One night **the Great Gust** blew their seven treasures through the
   pillow-doors into our world.
 - **Chapters unlock as you play:** the prologue is always open, and each character's chapter unlocks
