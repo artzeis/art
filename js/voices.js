@@ -52,7 +52,7 @@ const VOICE_STYLES = {
     prefer: ["Oliver", "Aaron", "Arthur", "Daniel", "Evan", "Tom", "Microsoft Andrew", "Microsoft Guy", "Google UK English Male"],
     before: { text: "Awoooo!", pitch: 1.05, rate: 0.85 }, after: null, skipIf: /^awoo/i,
   },
-  // Storyteller for the Imagination Storybook — warm, clear and a little slow. (Listed last so the
+  // Storyteller for the Dreamyville Storybook — warm, clear and a little slow. (Listed last so the
   // characters get first pick of the voices.)
   narrator: {
     pitch: 1.0, rate: 0.92, voice: "f",

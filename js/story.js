@@ -1,4 +1,4 @@
-// Imagination Treasure Quest — the Imagination Storybook.
+// Imagine Seek — the Dreamyville Storybook.
 //
 // One big story told in short chapters. The prologue is always open; each character's chapter
 // unlocks when their treasure is found (so chapters can be read in any order — each one stands on its
@@ -11,10 +11,10 @@ const STORY = {
   prologue: {
     title: "The Night of the Great Gust",
     text: [
-      "On the other side of every pillow is a secret place called the Land of Imagination. That's where the Imagamigos live: Scribbi, Craggle, Orbit, Tangle, Nyxie, Glitch and Leo.",
-      "Every night, while you sleep, they keep the Land of Imagination bright. Scribbi doodles the flowers, Nyxie hangs the stars, and Leo howls the moon awake.",
-      "But one night, something strange happened. A shooting star zipped across the sky… and then a huge, swirly wind roared through the Land of Imagination. The Great Gust! It spun the friends around, whooshed through the pillow-doors, and blew their seven treasures right into YOUR world.",
-      "Without their treasures, the Imagamigos are losing their magic. They need a real-life helper — an amigo — to find them. And that's you!",
+      "On the other side of every pillow is a secret town called Dreamyville. That's where the Imagamigos live: Scribbi, Craggle, Orbit, Tangle, Nyxie, Glitch and Leo.",
+      "Every night, while you sleep, they keep Dreamyville bright. Scribbi doodles the flowers, Nyxie hangs the stars, and Leo howls the moon awake.",
+      "But one night, something strange happened. A shooting star zipped across the sky… and then a huge, swirly wind roared through Dreamyville. The Great Gust! It spun the friends around, whooshed through the pillow-doors, and blew their seven treasures right into YOUR world.",
+      "Without their treasures, the Imagamigos are losing their magic. They need a real-life helper — a Seeker — to find them. And that's you!",
     ],
   },
   chapters: {
@@ -51,7 +51,7 @@ const STORY = {
     tangle: {
       title: "Tangle and the Door That Wasn't There",
       text: [
-        "Tangle knows every twist of the great Imagination Maze — every corner, every dead end, every secret shortcut. So when the Great Gust blew the Golden Key away, Tangle went to check the maze… and stopped.",
+        "Tangle knows every twist of the great Dreamyville Maze — every corner, every dead end, every secret shortcut. So when the Great Gust blew the Golden Key away, Tangle went to check the maze… and stopped.",
         "In the very middle stood a door that had NEVER been there before. A round, silver door with seven little shapes on it: a crayon, a crystal, a marble, a key, a star, a pixel and a moon.",
         "\"Heh… heh?\" said Tangle, for once not sure what was funny. Now the Golden Key is back, Tangle tried it in the lock. It fit… but the door didn't open. Not yet.",
       ],
@@ -61,7 +61,7 @@ const STORY = {
     nyxie: {
       title: "Nyxie and the Missing Star",
       text: [
-        "Every night, Nyxie hangs the stars in the sky over the Land of Imagination, one by one, with soft purple paws. Three thousand, two hundred and twelve stars — and Nyxie knows every one by name.",
+        "Every night, Nyxie hangs the stars in the Dreamyville sky, one by one, with soft purple paws. Three thousand, two hundred and twelve stars — and Nyxie knows every one by name.",
         "The Wishing Star was the favourite: the one that turns bad dreams into sweet ones. When the Great Gust blew it away, Nyxie looked up and counted… and counted again. Three thousand, two hundred and ELEVEN.",
         "Now the Wishing Star is home and sweet dreams are back. But Nyxie still counts three thousand, two hundred and eleven. A different star is missing — Pip-Pip, the smallest star of all.",
       ],
@@ -71,7 +71,7 @@ const STORY = {
     glitch: {
       title: "Glitch Gets a Signal",
       text: [
-        "Glitch was on level 999 of the hardest game in the Land of Imagination when the Great Gust blew the Power Pixel right out of the screen. GAME… PAUSED.",
+        "Glitch was on level 999 of the hardest game in Dreamyville when the Great Gust blew the Power Pixel right out of the screen. GAME… PAUSED.",
         "Without the Power Pixel, Glitch couldn't level up, couldn't teleport, and couldn't even do the victory dance. Bleep.",
         "With the Power Pixel back, Glitch powered up — and the screen began to flicker with a mystery signal: beep… beep… boop… and then a teeny-tiny whisper: \"…find… the… door…\"",
       ],

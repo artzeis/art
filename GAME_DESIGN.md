@@ -1,6 +1,6 @@
-# Imagination Treasure Quest — Game Design Document
+# Imagine Seek — Game Design Document
 
-*The game is called **Imagination Treasure Quest**. Its creatures are the **Imagamigos** (imagination + amigos, meaning friends), and the characters call kids "amigo".*
+*The game is called **Imagine Seek**. Its creatures are the **Imagamigos**, and the characters call kids "Seeker". The story world is **Dreamyville**.*
 
 ## Concept
 A real-world creature hunt for kids (about ages 4–10) built like Pokémon GO, but instead of catching
@@ -143,9 +143,9 @@ spot on its plush: a hook-and-loop dot, or a pocket for Scribbi's crayon. "It's 
 "No plush yet — keep going" for families without the plush. Attachment details are in
 `manufacturing/treasures/README.md`.
 
-## 📚 The Imagination Storybook
+## 📚 The Dreamyville Storybook
 One big story told in short chapters (`js/story.js`), in a **Stories** tab.
-- **The world:** the Imagamigos live in **the Land of Imagination**, a secret place on the other side of every pillow
+- **The world:** the Imagamigos live in **Dreamyville**, a secret town on the other side of every pillow
   (a nod to the pillow plush toys). One night **the Great Gust** blew their seven treasures through the
   pillow-doors into our world.
 - **Chapters unlock as you play:** the prologue is always open, and each character's chapter unlocks
@@ -197,8 +197,7 @@ need the service to speak them live, through a small server that keeps the servi
 
 ## Rewards and progress
 - ⭐ Sparkle Stars from quests and AR sightings.
-- The Creature Journal fills in with "Friend ✔" badges. Helping all seven unlocks the **Amigo
-  Champion** banner.
+- The Creature Journal fills in with "Friend ✔" badges. Helping all seven unlocks the **Super Seeker** banner.
 - Progress is saved on the device.
 
 ## Safety and accessibility

@@ -8,7 +8,7 @@ const CALM_STEPS = [
   { text: "Curl up small, like a sleepy crescent moon.", seconds: 15, icon: "🌙" },
   { text: "Star squeeze. Squeeze your hands into tight little fists… and let go. Again… and let go.", seconds: 16, icon: "⭐" },
   { text: "Think of one happy thing from today, and whisper it to your grown-up.", seconds: 20, icon: "💜" },
-  { text: "You did wonderfully, little amigo. Mrrrow… sweet dreams.", seconds: 8, icon: "✨", last: true },
+  { text: "You did wonderfully, little Seeker. Mrrrow… sweet dreams.", seconds: 8, icon: "✨", last: true },
 ];
 
 const Calm = (() => {

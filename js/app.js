@@ -1,4 +1,4 @@
-// Imagination Treasure Quest — main app: screens, quest flow, journal, grown-up setup.
+// Imagine Seek — main app: screens, quest flow, journal, grown-up setup.
 (() => {
   const STORE_KEY = "mythSeekers.v2";
   const app = document.getElementById("app");
@@ -77,7 +77,7 @@
             <div><span><b>${foundCount}/${CREATURES.length}</b><br><small>friends</small></span></div>
           </div>
           <div>
-            <h1>${allDone ? `<span class="grad-text">Amigo Champion!</span>` : `Who needs <span class="grad-text">your help</span> tonight?`}</h1>
+            <h1>${allDone ? `<span class="grad-text">Super Seeker!</span>` : `Who needs <span class="grad-text">your help</span> tonight?`}</h1>
             <p>${allDone ? "You helped every creature! Try the AR Hunt or start a new hunt."
               : "Magical friends lost their treasures. Pick one to begin a quest."}</p>
           </div>
@@ -204,7 +204,7 @@
 
     quest(id) { runQuest(byId[id]); },
 
-    // ---------- The Imagination Storybook ----------
+    // ---------- The Dreamyville Storybook ----------
     // story(): the contents page.  story(id): read a chapter ("prologue", a character id, or "finale").
     story(which) {
       const order = ["prologue", ...CREATURES.map((c) => c.id).filter((id) => STORY.chapters[id]), "finale"];
@@ -215,7 +215,7 @@
 
       if (!which || !unlocked(which)) {
         app.innerHTML = `
-          <h1 class="screen-title">📚 The Imagination <span class="grad-text">Storybook</span></h1>
+          <h1 class="screen-title">📚 The Dreamyville <span class="grad-text">Storybook</span></h1>
           <p class="lead">${esc(STORY.title)}: one big story in short chapters. Find a friend's treasure to unlock their chapter.</p>
           <div class="chapter-list">
             ${order.map((k) => {
@@ -621,7 +621,7 @@
     const base = location.href.replace(/[^/]*$/, "");
     const w = window.open("", "_blank");
     if (!w) return alert("Please allow pop-ups to print the clue cards.");
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Imagination Treasure Quest clue cards</title>
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Imagine Seek clue cards</title>
       <style>body{font-family:system-ui,sans-serif;margin:16px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
       .card{border:3px dashed #999;border-radius:18px;padding:16px;text-align:center;break-inside:avoid;min-height:230px}
       .card img{height:110px}.card h2{margin:6px 0;font-size:20px}.card p{margin:4px 0;font-size:15px}
@@ -632,7 +632,7 @@
         <img src="${base}assets/characters/${c.id}.png" alt="">
         <h2>📜 You found a clue!</h2>
         <span class="tag">${c.name}'s trail${blank ? "" : ` · clue ${i + 1} of ${clues}`}</span>
-        <p>Great tracking, amigo! Go back to the app and tap<br><b>"We found the clue card!"</b></p></div>`).join("")}</div>
+        <p>Great tracking, Seeker! Go back to the app and tap<br><b>"We found the clue card!"</b></p></div>`).join("")}</div>
       </body></html>`);
     w.document.close();
   }
@@ -645,7 +645,7 @@
   }
   function renderTogether(box, c, { onDone, standalone = false }) {
     let gi = nextGameIndex();
-    const hello = standalone ? "" : "Thank you, amigo! Let's play a game together. ";
+    const hello = standalone ? "" : "Thank you, Seeker! Let's play a game together. ";
     const draw = (speakNow) => {
       clearInterval(timerId);
       const g = TOGETHER_GAMES[gi];
@@ -744,7 +744,7 @@
         const tick = () => {
           if (!box.isConnected) return clearInterval(timerId);
           k++;
-          if (k >= pool.length) { running = false; clearInterval(timerId); show(); speak("Great listening, amigo!", c.id); return; }
+          if (k >= pool.length) { running = false; clearInterval(timerId); show(); speak("Great listening, Seeker!", c.id); return; }
           show();
           speak(tricks.has(k) ? `${pool[k]}!` : `${c.name} says… ${pool[k]}!`, c.id);
         };
