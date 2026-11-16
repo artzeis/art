@@ -106,6 +106,12 @@ Animations are turned off for players whose device asks for reduced motion.
    the creature peeks out from behind it with a sparkle and follows the phone's tilt.
 4. **Found.** Tapping the creature, or holding it in the middle of the screen, makes it pop out. The phone
    vibrates, and kids can Wave, Spin or hear a Fun fact.
+- **Made easy for kids:** a short scan (about 3–8 seconds); the creature hides 35–110° to one side, never
+  far behind; plain-words hints ("⬅️ Turn left — getting warmer!", "👀 There! Tap Orbit!"); a glowing
+  screen edge and big arrows; treasure-detector beeps and buzzes that speed up when close (🔊 to mute);
+  the creature peeks in from the screen edge before it's fully in view, and pointing near it for half a
+  second counts as found. After 15 seconds the creature calls "I'm over here!", and after 30 seconds it
+  slowly floats towards the player.
 - The first time kids spot each creature in AR, they earn +1 ⭐.
 - **Fallbacks:** without a camera, an illustrated forest is shown instead.
 
