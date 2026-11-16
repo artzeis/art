@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2a1b4d" />
+  <title>Myth Seekers</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" data-go="home" aria-label="Home">✨ Myth Seekers</button>
+    <div class="stars" aria-label="Sparkle stars earned"><span>⭐</span> <b id="starCount">0</b></div>
+    <button class="help-btn" id="helpBtn" aria-label="How to play">?</button>
+  </header>
+
+  <main id="app"></main>
+
+  <nav class="tabbar" aria-label="Main">
+    <button data-go="home"><span>🏡</span>Home</button>
+    <button data-go="journal"><span>📖</span>Creatures</button>
+    <button data-go="ar"><span>🔮</span>AR Mode</button>
+    <button data-go="grownup"><span>🔑</span>Grown-ups</button>
+  </nav>
+
+  <!-- Instructions modal -->
+  <dialog id="helpDialog" class="sheet">
+    <h2>How to Play</h2>
+    <ol class="howto">
+      <li><b>Grown-up setup.</b> Open <em>Grown-ups</em>, then hide each of the five included creature
+        accessories around your play area — the Flower Crown, Pointy Red Hat, Silver Leaf Bow, Golden
+        Feather and Lucky Horseshoe. Tell the app where you hid each one.</li>
+      <li><b>Pick a creature.</b> On the Home screen, kids choose a creature who has lost something.</li>
+      <li><b>Do the challenge.</b> Every creature asks for an activity first — flap, gallop, tiptoe or
+        listen — to prove you're a real Myth Seeker.</li>
+      <li><b>Solve the riddle.</b> The riddle points to the hiding spot. Stuck? Tap <em>Clue</em>, then
+        <em>Big Hint</em>.</li>
+      <li><b>Find it!</b> Bring back the accessory and answer the creature's question. You'll earn
+        ⭐ Sparkle Stars and the creature joins your Creature Journal.</li>
+      <li><b>Optional AR mode.</b> Tap <em>AR Mode</em> to look through the camera. Creatures hide
+        around you — turn slowly and follow the warm/cold meter, then tap a creature to play and learn.</li>
+    </ol>
+    <p class="safety">🛡️ Grown-ups: keep hiding spots safe and at kid height, and supervise AR mode —
+      watch where you walk while looking through a screen!</p>
+    <button class="btn primary" id="helpClose">Let's go!</button>
+  </dialog>
+
+  <script src="js/data.js"></script>
+  <script src="js/ar.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
