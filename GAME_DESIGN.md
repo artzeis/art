@@ -19,8 +19,20 @@ creatures; you never capture them).
 | Ember Sunfeather | Sunfeather Bird | 🪶 Golden Feather |
 | Thistle Swiftmane | Centaur | 🍀 Lucky Horseshoe |
 
-Each creature has a description, a home, favourite things, a magic power and four fun facts that stay
-locked until the kids help that creature.
+Each creature has a profile in the Creature Journal, split into three easy tabs:
+- **📖 Story:** size, age and home, the creature's story, then picture tiles for personality, favourite
+  food, best friend, what it sounds like, favourite season, its treasure, likes and dislikes.
+- **⭐ Powers:** its magic power, five power bars (Speed, Magic, Kindness, Sneaky, Strength),
+  "How to tell I'm nearby" signs and "How to be my friend" tips.
+- **🔒 Secrets:** six fun facts. One is free, and the other five unlock when kids finish that
+  creature's quest.
+
+Each creature also has a catchphrase and a 🔊 read-aloud button.
+
+## Look and feel
+Bright sky colours, the rounded Baloo 2 font, chunky buttons and big tap targets. Each creature has its
+own colour, used on its card, profile and quest. Quest progress is a path of five icons
+(👋 → 🏃 → 🧩 → 🎁 → 🎉). Animations are turned off for players whose device asks for reduced motion.
 
 ## Core loop
 1. **Setup (grown-up).** Behind a simple math gate, the grown-up hides each accessory and picks
