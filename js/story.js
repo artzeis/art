@@ -11,10 +11,10 @@ const STORY = {
   prologue: {
     title: "The Night of the Great Gust",
     text: [
-      "On the other side of every pillow is a secret town called Dreamyville. That's where the Imagamigos live: Scribbi, Craggle, Orbit, Tangle, Nyxie, Glitch and Leo.",
+      "On the other side of every pillow is a secret town called Dreamyville. That's where the Dreamlings live: Scribbi, Craggle, Orbit, Tangle, Nyxie, Glitch and Leo.",
       "Every night, while you sleep, they keep Dreamyville bright. Scribbi doodles the flowers, Nyxie hangs the stars, and Leo howls the moon awake.",
       "But one night, something strange happened. A shooting star zipped across the sky… and then a huge, swirly wind roared through Dreamyville. The Great Gust! It spun the friends around, whooshed through the pillow-doors, and blew their seven treasures right into YOUR world.",
-      "Without their treasures, the Imagamigos are losing their magic. They need a real-life helper — a Seeker — to find them. And that's you!",
+      "Without their treasures, the Dreamlings are losing their magic. They need a real-life helper — a Seeker — to find them. And that's you!",
     ],
   },
   chapters: {
@@ -86,13 +86,13 @@ const STORY = {
         "Now the Moon Medallion is back and the cape is shining again. Leo knows the trail leads somewhere — and that this is a job for the whole pack. \"Awoooo!\" Leo called. \"Everyone! Pack meeting!\"",
       ],
       clue: "The Gust's trail smells of peppermint, thunder and birthday cake. Who smells like that?",
-      meanwhile: "One by one, the Imagamigos came running — and every single one of them had a clue to share.",
+      meanwhile: "One by one, the Dreamlings came running — and every single one of them had a clue to share.",
     },
   },
   finale: {
     title: "The Moon Door",
     text: [
-      "All seven treasures are home. The Imagamigos gathered in the middle of Tangle's maze, in front of the round silver door.",
+      "All seven treasures are home. The Dreamlings gathered in the middle of Tangle's maze, in front of the round silver door.",
       "Scribbi held up the Rainbow Crayon. Craggle's crystal glowed. Orbit's marble spun. Tangle turned the Golden Key. Nyxie's star twinkled. Glitch's pixel buzzed. And Leo's medallion shone like the moon.",
       "One by one, the seven shapes on the door lit up… and the door began to open, just a crack. A smell of peppermint and thunder drifted out. And from somewhere on the other side, a teeny-tiny voice said: \"Hello? Is anybody there?\"",
     ],

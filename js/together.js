@@ -1,6 +1,6 @@
-// Imagamigos — "Play together": the last step of every quest.
+// Imagine Seek — "Play together": the last step of every quest.
 // A grown-up and a kid play a short, imaginative game together. The game type rotates each quest:
-//   🎭 Act it out → 🤫 Creature charades → 📣 Imagamigo says → 🎁 The Invisible Box → 🎨 Dream Workshop
+//   🎭 Act it out → 🤫 Creature charades → 📣 Dreamling says → 🎁 The Invisible Box → 🎨 Dream Workshop
 // (🔀 in the app switches to another game any time). Edit the content below freely.
 
 const TOGETHER_GAMES = [
@@ -8,7 +8,7 @@ const TOGETHER_GAMES = [
     how: "{name} sets a pretend scene. Play it out together — use your whole body!" },
   { id: "charades", icon: "🤫", name: "Creature charades",
     how: "Take turns: the actor peeks at the secret card, then acts it out with no words. Everyone else guesses!" },
-  { id: "says", icon: "📣", name: "Imagamigo says",
+  { id: "says", icon: "📣", name: "Dreamling says",
     how: "Only move when you hear \"{name} says\"! If {name} doesn't say it… stay still!" },
   { id: "box", icon: "🎁", name: "The Invisible Box",
     how: "Take turns: open the invisible box, pull something out and show what it is — how big, how heavy, how it moves. Everyone else guesses! Then pass the box on." },
@@ -66,7 +66,7 @@ const CHARADES = {
   leo: ["Leo howling at the moon", "Leo following a scent trail", "Leo doing the zoomies"],
 };
 
-// 📣 Imagamigo says — each character's own moves, mixed with everyday ones.
+// 📣 Dreamling says — each character's own moves, mixed with everyday ones.
 const SAYS_MOVES = {
   scribbi: ["draw a rainbow in the air", "wiggle like a squiggle", "wink at your grown-up"],
   craggle: ["move in slow motion", "be a perfectly still rock", "do a big, slow stretch"],

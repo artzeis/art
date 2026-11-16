@@ -1,6 +1,6 @@
 # Imagine Seek — Game Design Document
 
-*The game is called **Imagine Seek**. Its creatures are the **Imagamigos**, and the characters call kids "Seeker". The story world is **Dreamyville**.*
+*The game is called **Imagine Seek**. Its creatures are the **Dreamlings**, and the characters call kids "Seeker". The story world is **Dreamyville**.*
 
 ## Concept
 A real-world creature hunt for kids (about ages 4–10) built like Pokémon GO, but instead of catching
@@ -124,7 +124,7 @@ game **rotates** each quest, and 🔀 switches to another one any time:
    rescue or Orbit's no-gravity float.
 2. **🤫 Creature charades:** the actor peeks at a secret card ("Craggle napping in the sun") and acts it
    out with no words while the others guess.
-3. **📣 Imagamigo says:** a Simon Says round led by the character in their own voice. There are 10
+3. **📣 Dreamling says:** a Simon Says round led by the character in their own voice. There are 10
    moves, each character has its own moves, and about a third are tricks without "___ says".
 4. **🎁 The Invisible Box:** each character brings an invisible box (Orbit's is from outer space).
    Take turns pulling something imaginary out and acting it out while the others guess.
@@ -145,7 +145,7 @@ spot on its plush: a hook-and-loop dot, or a pocket for Scribbi's crayon. "It's 
 
 ## 📚 The Dreamyville Storybook
 One big story told in short chapters (`js/story.js`), in a **Stories** tab.
-- **The world:** the Imagamigos live in **Dreamyville**, a secret town on the other side of every pillow
+- **The world:** the Dreamlings live in **Dreamyville**, a secret town on the other side of every pillow
   (a nod to the pillow plush toys). One night **the Great Gust** blew their seven treasures through the
   pillow-doors into our world.
 - **Chapters unlock as you play:** the prologue is always open, and each character's chapter unlocks

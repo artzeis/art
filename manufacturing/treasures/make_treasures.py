@@ -1,5 +1,5 @@
 """
-Imagamigos — 3D models of the seven lost treasures.
+Imagine Seek — 3D models of the seven lost treasures.
 
 Run:  pip install manifold3d trimesh matplotlib
       python3 make_treasures.py

@@ -1,4 +1,4 @@
-// Imagamigos — Challenges.
+// Imagine Seek — Challenges.
 //
 // Before solving a riddle, kids spin the wheel for a challenge TYPE (Physical, Mental, Teamwork or
 // Kindness) — or tap a segment to choose — and turn the DIFFICULTY dial (4 levels). A random challenge from that type and level is shown.

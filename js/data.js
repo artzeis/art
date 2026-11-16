@@ -1,4 +1,4 @@
-// Imagamigos — game content: characters, hiding spots, riddles and challenges.
+// Imagine Seek — game content: characters, hiding spots, riddles and challenges.
 // Everything a designer would want to tune lives in this file.
 
 // ⭐ PLUSH STORE LINKS — paste each product's web address between the quotes.

@@ -1,6 +1,6 @@
 # Imagine Seek ✨
 
-A real-world treasure hunt game for kids. Help the Imagamigos (Scribbi, Craggle, Orbit, Tangle, Nyxie, Glitch and Leo)
+A real-world treasure hunt game for kids. Help the Dreamlings (Scribbi, Craggle, Orbit, Tangle, Nyxie, Glitch and Leo)
 find their lost treasures by solving riddles and completing activity challenges. There is
 also an optional AR hide-and-seek mode.
 

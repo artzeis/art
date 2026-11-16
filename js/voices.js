@@ -1,4 +1,4 @@
-// Imagamigos — character voices.
+// Imagine Seek — character voices.
 //
 // Characters speak with the device's built-in text-to-speech (free, works offline).
 // To sound natural rather than robotic:

@@ -1,4 +1,4 @@
-// Imagamigos — character artwork.
+// Imagine Seek — character artwork.
 // Each character's app picture lives at assets/characters/<id>.png (transparent background).
 // The matching plush product photo lives at assets/plush/<id>.jpg.
 const CREATURE_IMG = {};

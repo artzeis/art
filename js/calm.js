@@ -1,4 +1,4 @@
-// Imagamigos — "Calm down with Nyxie": a 2½-minute wind-down after active play or before bed.
+// Imagine Seek — "Calm down with Nyxie": a 2½-minute wind-down after active play or before bed.
 // Nyxie speaks each step softly; a glowing moon grows and shrinks to pace slow breathing.
 // Edit the steps below — seconds is how long each one lasts.
 const CALM_STEPS = [

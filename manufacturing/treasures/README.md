@@ -1,6 +1,6 @@
-# Imagamigos — Treasure Models (3D files for manufacturing)
+# Imagine Seek — Treasure Models (3D files for manufacturing)
 
-The seven "lost treasures" that kids hunt for in the Imagamigos game, as 3D files ready for
+The seven "lost treasures" that kids hunt for in the Imagine Seek game, as 3D files ready for
 prototyping and quoting.
 
 ![All seven treasures](previews/all_treasures.png)
@@ -11,7 +11,7 @@ prototyping and quoting.
 | `stl/*.stl` | One 3D model per treasure. Units are **millimetres**. Each model is a single closed, watertight solid, sitting flat on z = 0. |
 | `previews/*.png` | A preview picture of each treasure with its size. |
 | `make_treasures.py` | The script that builds the models. Change sizes or details here and run it again to regenerate the files. |
-| `imagamigos_treasures.zip` | Everything above in one file to send to a manufacturer. |
+| `imagine_seek_treasures.zip` | Everything above in one file to send to a manufacturer. |
 
 ## The treasures
 | # | Treasure | Character | Size (mm, W × D × H) | Volume | Suggested colour / material |
@@ -66,5 +66,5 @@ be tested by an accredited lab** before sale: ASTM F963 / CPSIA in the US, EN 71
 - **Mass production (injection moulding):** STL files are fine for quotes and prototypes. For moulds,
   factories usually rebuild the model in their own CAD software (STEP format) and add draft angles and
   parting lines. Share these files and the previews as the design reference.
-- **Branding:** a small raised or engraved "Imagamigos" mark can be added by the factory, for example on
+- **Branding:** a small raised or engraved "Imagine Seek" mark can be added by the factory, for example on
   the back of the medallion or the base of the crystal.

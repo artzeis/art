@@ -1,4 +1,4 @@
-# Imagamigos — Character Art
+# Imagine Seek — Character Art
 
 Each character has two pictures:
 
