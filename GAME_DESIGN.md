@@ -38,13 +38,16 @@ also shows a photo of the real Leo. Quest progress is a path of five icons (👋
 Animations are turned off for players whose device asks for reduced motion.
 
 ## Core loop
-1. **Setup (grown-up).** Behind a simple math gate, the grown-up hides each accessory and picks
-   the matching spot from a list of 13 (9 indoor, 4 outdoor). They can also tap "Suggest spots" and
-   hide each item where the app says.
+1. **Setup (grown-up).** Behind a simple math gate, the grown-up chooses where to play: **Inside**,
+   **Outside** or **Both**. They then hide each accessory and pick the matching spot from that area's
+   list (19 spots: 9 indoor, 10 outdoor). "Suggest spots" picks spots from the chosen area. Outdoor
+   play shows a safety reminder (fenced area, away from roads and water).
 2. **Choose a quest.** Kids pick a creature marked "Lost".
 3. **Intro.** The creature explains what it lost. The text can be read aloud.
 4. **Seeker Challenge.** An activity matched to the creature: gnome squats, silent elf walk, galloping
    like a centaur, flapping like a bird, a fairy statue freeze, and so on. Some have a timer.
+   Treasures hidden outside get outdoor challenges instead, such as galloping across the yard, spotting
+   real birds, finding cloud shapes or lining up pebbles.
 5. **Riddle.** The riddle describes the hiding spot. Help comes in three levels: Riddle → 🔎 Clue →
    💡 Big Hint.
 6. **Show me!** Kids pick the treasure they found from four choices. This is a light check that they

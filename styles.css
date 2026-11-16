@@ -244,6 +244,12 @@ label.field { display: block; margin: 14px 0; font-weight: 800; }
 select { width: 100%; font: inherit; padding: 13px 14px; border-radius: 16px; border: 1px solid var(--line); margin-top: 6px; background: #1d1747; color: var(--ink); }
 ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
 
+.area-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.area-pick button { border: 1px solid var(--line); background: var(--glass); border-radius: 20px; padding: 14px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; transition: all .2s; }
+.area-pick .ico { font-size: 1.9rem; }
+.area-pick small { color: var(--muted); font-size: .74rem; line-height: 1.2; }
+.area-pick button.active { background: rgba(143, 123, 255, .3); border-color: rgba(170, 150, 255, .8); box-shadow: 0 0 22px rgba(143, 123, 255, .35); }
+
 /* ---------- Dialog ---------- */
 dialog.sheet { border: 1px solid var(--line); border-radius: 30px; max-width: 560px; width: calc(100% - 28px); max-height: 88vh; padding: 24px; color: var(--ink); background: linear-gradient(180deg, #221a52, #140f33); box-shadow: 0 30px 80px rgba(0,0,0,.6); }
 dialog::backdrop { background: rgba(5, 3, 15, .7); backdrop-filter: blur(4px); }

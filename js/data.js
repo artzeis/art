@@ -338,4 +338,68 @@ const SPOTS = [
     clue: "Look near the door where you go outside.",
     hint: "Check the steps or porch.",
   },
+  {
+    id: "bush", label: "Under a bush / hedge", place: "outside",
+    riddle: "I'm round and green and full of leaves. Birds hide in me, but I'm not a tree. What am I?",
+    clue: "Find a leafy plant that's smaller than a tree.",
+    hint: "Look under or around a bush or hedge.",
+  },
+  {
+    id: "fence", label: "Along the fence", place: "outside",
+    riddle: "I stand in a long line all around the yard, keeping things in — I work very hard! What am I?",
+    clue: "Walk to the edge of the yard.",
+    hint: "Check along the bottom of the fence.",
+  },
+  {
+    id: "bench", label: "Outdoor bench / garden chair", place: "outside",
+    riddle: "I have a seat but I live outside. Grown-ups rest on me in the sunshine. What am I?",
+    clue: "Find somewhere to sit outdoors.",
+    hint: "Look under or beside an outdoor bench or chair.",
+  },
+  {
+    id: "playset", label: "Swings / slide / play set", place: "outside",
+    riddle: "Up you climb and down you whoosh, back and forth with a mighty push! Where am I?",
+    clue: "Where do you play outside?",
+    hint: "Check under the slide or near the swings.",
+  },
+  {
+    id: "planter", label: "Outdoor flowerpot / planter", place: "outside",
+    riddle: "I'm a pot that lives outside the door, with soil inside and flowers galore. What am I?",
+    clue: "Find a plant pot that lives outside.",
+    hint: "Look behind or under an outdoor flowerpot.",
+  },
+  {
+    id: "hose", label: "By the garden hose / watering can", place: "outside",
+    riddle: "I curl up like a snake but I'm not alive. When the garden is thirsty, I help it thrive! What am I?",
+    clue: "What do grown-ups use to water the plants?",
+    hint: "Look near the garden hose or watering can.",
+  },
 ];
+
+// Seeker Challenges used when a treasure is hidden outside (more room to move!).
+const OUTDOOR_CHALLENGES = {
+  fairy: [
+    { text: "Find 3 different flowers or leaves and give each one a gentle fairy wave.", seconds: 0 },
+    { text: "Twirl like a fairy floating on the breeze — 5 big spins!", seconds: 0 },
+  ],
+  gnome: [
+    { text: "Find 5 pebbles or sticks and line them up in a neat gnome row.", seconds: 0 },
+    { text: "Dig with gnome shovel hands as fast as you can!", seconds: 10 },
+  ],
+  elf: [
+    { text: "Stand still like a tree and listen. Name 3 outdoor sounds.", seconds: 20 },
+    { text: "Find the tallest tree you can see and point to the very top.", seconds: 0 },
+  ],
+  bird: [
+    { text: "Look up! Spot a real bird, a plane or anything flying in the sky.", seconds: 0 },
+    { text: "Flap your wings and fly all the way across the yard and back!", seconds: 0 },
+  ],
+  centaur: [
+    { text: "Gallop from one side of the yard to the other like a centaur!", seconds: 0 },
+    { text: "Look at the clouds. Find one shaped like an animal and say what it is.", seconds: 0 },
+  ],
+  leo: [
+    { text: "Sniff like a husky! Find something outside that smells nice.", seconds: 0 },
+    { text: "Do husky zoomies around the yard, then… sit! Stay!", seconds: 0 },
+  ],
+};

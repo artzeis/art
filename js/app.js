@@ -6,7 +6,7 @@
   const spotById = Object.fromEntries(SPOTS.map((s) => [s.id, s]));
 
   // ---------- Saved progress (per device) ----------
-  const fresh = () => ({ spots: {}, found: {}, arFound: {}, stars: 0 });
+  const fresh = () => ({ spots: {}, found: {}, arFound: {}, stars: 0, area: "inside" });
   let save = fresh();
   try { save = { ...fresh(), ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") }; } catch (_) {}
   const persist = () => {
@@ -83,7 +83,7 @@
         ${ready < CREATURES.length ? `
           <div class="setup-banner">
             <span style="font-size:1.8rem">🔑</span>
-            <p><b>Grown-up setup</b><br><span class="small muted">${ready} of ${CREATURES.length} treasures hidden</span></p>
+            <p><b>Grown-up setup</b><br><span class="small muted">${ready} of ${CREATURES.length} treasures hidden · ${AREAS.find((a) => a[0] === (save.area || "inside")).slice(1, 3).join(" ")}</span></p>
             <button class="btn primary" data-go="grownup" style="margin-left:auto">Set up</button>
           </div>` : ""}
         <div class="grid">
@@ -235,24 +235,38 @@
     },
   };
 
+  const AREAS = [
+    ["inside", "🏠", "Inside", "Rooms in the house"],
+    ["outside", "🌳", "Outside", "Yard, garden or park"],
+    ["both", "🏡", "Both", "Inside and outside"],
+  ];
+  const spotsFor = (area) => SPOTS.filter((s) => area === "both" || s.place === area);
+
   function setupScreen() {
-    const options = (sel) => ["inside", "outside"].map((place) => `
+    const area = save.area || "inside";
+    const options = (sel) => ["inside", "outside"].filter((p) => area === "both" || p === area).map((place) => `
       <optgroup label="${place === "inside" ? "Inside" : "Outside"}">
         ${SPOTS.filter((s) => s.place === place).map((s) => `<option value="${s.id}" ${sel === s.id ? "selected" : ""}>${s.label}</option>`).join("")}
       </optgroup>`).join("");
     app.innerHTML = `
       <h1 class="screen-title">🔑 Set Up the Hunt</h1>
       <div class="card">
+        <h2 class="section-title">Where are you playing?</h2>
+        <div class="area-pick" role="radiogroup">
+          ${AREAS.map(([id, ico, label, sub]) => `
+            <button role="radio" aria-checked="${id === area}" class="${id === area ? "active" : ""}" data-area="${id}">
+              <span class="ico">${ico}</span><b>${label}</b><small>${sub}</small></button>`).join("")}
+        </div>
+        ${area !== "inside" ? `<p class="safety small" style="margin:12px 0 0">🌳 Outside: stay in a safe, fenced area away from roads and water, and keep a grown-up nearby.</p>` : ""}
+      </div>
+      <div class="card">
         <ol class="setup-steps small">
           <li>Take out the creature accessories (and any ball for Leo).</li>
-          <li>Hide each one in a different spot in your play area.</li>
+          <li>Hide each one in a different spot ${area === "outside" ? "outside" : area === "both" ? "inside or outside" : "inside"}.</li>
           <li>Choose that spot below so the riddles lead kids to it.</li>
         </ol>
-        <p class="small muted">Not hidden yet? Tap a "Suggest" button and hide each one where the app says.</p>
-        <div class="row">
-          <button class="btn" data-rand="inside">🏠 Suggest (inside)</button>
-          <button class="btn" data-rand="all">🌳 Suggest (inside + outside)</button>
-        </div>
+        <p class="small muted">Not hidden yet? Tap "Suggest spots" and hide each one where the app says.</p>
+        <button class="btn block" id="suggest">✨ Suggest spots</button>
       </div>
       <div class="card">
         ${CREATURES.map((c) => `
@@ -270,14 +284,23 @@
         </div>
       </div>`;
 
-    app.querySelectorAll("[data-rand]").forEach((b) => b.onclick = () => {
-      const pool = shuffle(SPOTS.filter((s) => b.dataset.rand === "all" || s.place === "inside"));
-      app.querySelectorAll("[data-spot]").forEach((sel, i) => sel.value = pool[i].id);
+    const readSpots = () => app.querySelectorAll("[data-spot]").forEach((sel) => {
+      if (sel.value) save.spots[sel.dataset.spot] = sel.value; else delete save.spots[sel.dataset.spot];
     });
+    app.querySelectorAll("[data-area]").forEach((b) => b.onclick = () => {
+      readSpots();
+      save.area = b.dataset.area;
+      // Drop hiding spots that don't belong to the new play area.
+      const allowed = new Set(spotsFor(save.area).map((s) => s.id));
+      Object.keys(save.spots).forEach((k) => { if (!allowed.has(save.spots[k])) delete save.spots[k]; });
+      persist(); setupScreen();
+    });
+    app.querySelector("#suggest").onclick = () => {
+      const pool = shuffle(spotsFor(area));
+      app.querySelectorAll("[data-spot]").forEach((sel, i) => sel.value = pool[i % pool.length].id);
+    };
     app.querySelector("#saveSetup").onclick = () => {
-      app.querySelectorAll("[data-spot]").forEach((sel) => {
-        if (sel.value) save.spots[sel.dataset.spot] = sel.value; else delete save.spots[sel.dataset.spot];
-      });
+      readSpots();
       persist(); go("home");
     };
     app.querySelector("#replay").onclick = () => { save.found = {}; persist(); setupScreen(); };
@@ -292,7 +315,7 @@
   function runQuest(c) {
     const spot = spotById[save.spots[c.id]];
     if (!spot) return go("creature", c.id);
-    const challenge = pick(c.challenges);
+    const challenge = pick(spot.place === "outside" ? OUTDOOR_CHALLENGES[c.id] : c.challenges);
     let step = 0, helpLevel = 0;
 
     const frame = (body) => {
