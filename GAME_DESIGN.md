@@ -124,8 +124,8 @@ a slow, heavy rock (Craggle), spin like a little planet (Orbit), zig-zag like yo
 tiptoe like a cat (Nyxie), move like a robot (Glitch) or lope like a wolf (Leo). Each extra stop earns
 +1 ⭐.
 
-**🎲 Play together.** Every quest ends with a quick game for a grown-up and a kid (`js/together.js`). The
-game **rotates** each quest (four games), and 🔀 switches to another one any time:
+**🎲 Play together.** A quick game for a grown-up and a kid (`js/together.js`), from the 🎲 Play
+together button on each character's page. The game **rotates** each time (four games), and 🔀 switches to another one any time:
 1. **🎭 Act it out:** the character sets a pretend scene to play out, like Leo's "the floor is lava"
    rescue or Orbit's no-gravity float.
 2. **🤫 Creature charades:** the actor peeks at a secret card ("Craggle napping in the sun") and acts it
@@ -135,7 +135,7 @@ game **rotates** each quest (four games), and 🔀 switches to another one any t
 4. **🎁 The Invisible Box:** each character brings an invisible box (Orbit's is from outer space).
    Take turns pulling something imaginary out and acting it out while the others guess.
 
-"We did it!" earns +1 ⭐. Every character's page also has **🎲 Play together**, any time.
+"We did it!" earns +1 ⭐.
 
 **🌙 Calm down with Nyxie.** A 2½-minute guided wind-down, offered after every quest and on the home
 screen. Nyxie speaks each step softly: get cosy, moon breathing (the moon grows for 4 seconds while

@@ -731,7 +731,7 @@
 
   // ---------- Quest flow ----------
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
-  const PATH = ["👋", "🏃", "🧩", "🎁", "🎲", "🎉"];
+  const PATH = ["👋", "🏃", "🧩", "🎁", "🎉"];
   function runQuest(c) {
     if (!hidden(c.id)) return go("creature", c.id);
     // Treasure trail: one riddle per stop (clue cards first, the treasure last).
@@ -739,7 +739,7 @@
     const riddles = trail.map((st, i) => makeRiddle(st.text, c, st.seed || 0, i < trail.length - 1 ? "my next clue" : null));
     const finalSpot = riddles[riddles.length - 1];
     const outside = finalSpot.place ? finalSpot.place === "outside" : save.area === "outside";
-    let stopIdx = 0, totalHints = 0, between = false, madeSomething = false;
+    let stopIdx = 0, totalHints = 0, between = false;
     // Each character can have its own wheel (Leo uses Wolf Pack challenges).
     const types = challengeTypesFor(c);
     const saved = c.challengeSet === "wolf" ? save.ctypeWolf : save.ctype;
@@ -912,15 +912,11 @@
           if (b.dataset.pick === c.id) { step = 4; render(); }
           else { b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 400); }
         });
-      } else if (step === 4) {
-        frame(`<span class="step-label">Step 4 · Play together</span><div id="createBox"></div>`);
-        renderTogether(app.querySelector("#createBox"), c, { onDone: (made) => { madeSomething = made; step = 5; render(); } });
-        return;
       } else {
         const first = !save.found[c.id];
         // Fewer hints = more stars; harder challenges, longer trails and making something earn bonus stars.
         const n = riddles.length;
-        const gained = first ? 3 - Math.min(2, Math.round(totalHints / n)) + CHALLENGE_LEVELS[doneLevel - 1].bonus + (n - 1) + (madeSomething ? 1 : 0) : 0;
+        const gained = first ? 3 - Math.min(2, Math.round(totalHints / n)) + CHALLENGE_LEVELS[doneLevel - 1].bonus + (n - 1) : 0;
         if (first) { save.found[c.id] = Date.now(); save.stars += gained; persist(); }
         confetti();
         const thanks = `Thank you, thank you! You found my ${c.accessory}! We are friends forever now.`;
