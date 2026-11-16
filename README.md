@@ -1,4 +1,14 @@
-# Myth Seekers ✨
+# Games
+
+## Hello World Tour 🌍
+
+A travel quiz game for all ages about the countries of the world. Fly to a stop, answer one question
+(flag, continent, greeting, fun fact or capital), read the postcard, and collect passport stamps. It has
+three levels, from young kids to adults. Open `world/index.html`; see [world/DESIGN.md](world/DESIGN.md).
+
+---
+
+## Myth Seekers ✨
 
 A real-world treasure hunt game for kids. Help a Fairy, a Gnome, an Elf, a Sunfeather Bird and a
 Centaur find their lost accessories by solving riddles and completing activity challenges. There is
