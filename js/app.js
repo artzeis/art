@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const { bank, generator, custom, DIFFICULTIES } = window.CW;
+  const { bank, generator, custom, skins, ambient, DIFFICULTIES } = window.CW;
   const $ = (sel, el = document) => el.querySelector(sel);
   const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 
@@ -31,11 +31,29 @@
   // =====================================================
   // Color scheme
   // =====================================================
+  // Dark "neon" mode is the default; light "frost" mode is opt-in.
   function applyScheme(mode) {
-    const dark = mode === 'dark' || (mode == null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const dark = mode !== 'light';
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = dark ? '#14161d' : '#f6f1e7';
+    if (meta) meta.content = dark ? '#060913' : '#eef1fb';
+  }
+
+  // =====================================================
+  // Theme skins
+  // =====================================================
+  let currentSkin = null;
+  let skinKey = '';
+  function setSkin(desc) {
+    const key = JSON.stringify(desc);
+    if (key === skinKey) return;
+    skinKey = key;
+    currentSkin = skins.get(desc);
+    skins.apply(document.documentElement, currentSkin);
+    if (ambient) ambient.set(currentSkin);
+  }
+  function previewSkinDesc() {
+    return customText.trim() ? skins.forCustom(customText.trim(), bank) : { id: selTheme || 'animals' };
   }
   applyScheme(store.get('scheme', null));
   $('#themeToggle').addEventListener('click', () => {
@@ -49,6 +67,7 @@
   // =====================================================
   function show(view) {
     for (const id of ['setupView', 'loadingView', 'gameView']) $('#' + id).hidden = id !== view;
+    document.body.classList.toggle('in-game', view === 'gameView');
     document.body.classList.toggle('has-kb', view === 'gameView' && isTouch);
     $('#keyboard').hidden = !(view === 'gameView' && isTouch);
     window.scrollTo({ top: 0 });
@@ -67,7 +86,10 @@
       b.className = 'theme-card';
       b.setAttribute('role', 'radio');
       b.dataset.id = t.id;
-      b.innerHTML = `<span class="t-icon" aria-hidden="true">${t.icon}</span><span><span class="t-name"></span><span class="t-blurb"></span></span>`;
+      const sk = skins.get({ id: t.id });
+      skins.apply(b, sk);
+      b.innerHTML = `<span class="t-tag"></span><span class="t-icon" aria-hidden="true">${t.icon}</span><span><span class="t-name"></span><span class="t-blurb"></span></span>`;
+      b.querySelector('.t-tag').textContent = sk.tag;
       b.querySelector('.t-name').textContent = t.name;
       b.querySelector('.t-blurb').textContent = t.blurb;
       b.addEventListener('click', () => { selTheme = t.id; customText = ''; $('#customTheme').value = ''; syncSetup(); });
@@ -112,6 +134,9 @@
     $('#customWrap .custom-input').classList.toggle('active', !!customText);
     $('#clearCustom').hidden = !customText;
     store.set('prefs', { theme: selTheme || 'animals', custom: customText, difficulty });
+    // live preview of the chosen theme's design (debounced while typing)
+    clearTimeout(syncSetup.t);
+    syncSetup.t = setTimeout(() => { if (!$('#setupView').hidden) setSkin(previewSkinDesc()); }, customText ? 350 : 0);
   }
 
   $('#customTheme').addEventListener('input', (e) => {
@@ -171,18 +196,21 @@
     const minWait = new Promise((r) => setTimeout(r, 700));
 
     try {
-      let entries, title, icon, notice = '';
+      let entries, title, icon, skin, notice = '';
       if (text) {
         const res = await custom.buildCustomEntries(text, difficulty, cfg, bank);
         entries = res.entries;
         notice = res.notice;
         title = titleCase(text);
-        icon = '✨';
+        skin = skins.forCustom(text, bank);
+        const look = bank.themes.find((t) => t.id === skin.id);
+        icon = look ? look.icon : '✨';
       } else {
         const theme = bank.themes.find((t) => t.id === selTheme) || bank.themes[0];
         entries = theme.entries;
         title = theme.name;
         icon = theme.icon;
+        skin = { id: theme.id };
       }
 
       // Words used recently get pushed down the list so each puzzle feels fresh.
@@ -198,7 +226,7 @@
       const used = puzzle.words.map((w) => w.answer);
       store.set('recent', used.concat([...recent]).slice(0, 160));
 
-      Object.assign(puzzle, { title, icon, difficulty, notice, seed, created: Date.now() });
+      Object.assign(puzzle, { title, icon, skin, difficulty, notice, seed, created: Date.now() });
       const counter = store.get('counter', 0) + 1;
       store.set('counter', counter);
       puzzle.number = counter;
@@ -247,6 +275,7 @@
     G.reveals = G.reveals || 0;
 
     // header
+    setSkin(p.skin || { id: 'general' });
     $('#puzzleTitle').textContent = p.title;
     $('#puzzleIcon').textContent = p.icon;
     const badge = $('#puzzleBadge');
@@ -366,8 +395,10 @@
     // On phones the board sticks to the top, so only the clue bar sits above it.
     const above = window.innerWidth <= 640 ? $('#clueBar').offsetHeight + 16 : wrap.getBoundingClientRect().top + window.scrollY;
     const availH = window.innerHeight - above - padY - 44 - kbH;
-    const size = Math.floor(Math.max(18, Math.min(52, availW / G.W, Math.max(availH, 240) / G.H)));
+    const GAP = 0.08; // gap between tiles, as a fraction of the tile size
+    const size = Math.floor(Math.max(18, Math.min(54, availW / (G.W + (G.W - 1) * GAP), Math.max(availH, 240) / (G.H + (G.H - 1) * GAP))));
     document.documentElement.style.setProperty('--cell-size', size + 'px');
+    document.documentElement.style.setProperty('--gap', Math.max(2, Math.round(size * GAP)) + 'px');
   }
   window.addEventListener('resize', fitGrid);
 
@@ -813,7 +844,7 @@
     const dpr = window.devicePixelRatio || 1;
     cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
     ctx.scale(dpr, dpr);
-    const colors = ['#e5603b', '#f5b347', '#2f6f73', '#6cc3c4', '#e8a0bf', '#7aa95c'];
+    const colors = currentSkin ? [currentSkin.a1, currentSkin.a2, currentSkin.a3, '#ffffff'] : ['#818cf8', '#f472b6', '#34d399', '#ffffff'];
     const parts = Array.from({ length: 160 }, () => ({
       x: innerWidth / 2 + (Math.random() - 0.5) * 200, y: innerHeight * 0.35,
       vx: (Math.random() - 0.5) * 14, vy: -Math.random() * 14 - 4,
