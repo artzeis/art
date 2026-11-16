@@ -5,9 +5,6 @@
 // own but adds a clue to the shared mystery). When all seven are home, the "Moon Door" chapter unlocks
 // and ends on "To be continued…", leaving room for future chapters and new characters.
 //
-// Each chapter's `challenge` is that character's personal Story Challenge — the last challenge of
-// their quest — and can also be done any time from the storybook.
-//
 // To add more story later: add a chapter to STORY.next (it shows as "Coming soon" until `text` is filled).
 const STORY = {
   title: "The Great Gust",
@@ -30,7 +27,6 @@ const STORY = {
       ],
       clue: "In Scribbi's drawing, someone tiny is RIDING the Great Gust! Who could it be?",
       meanwhile: "Scribbi raced off to show Craggle. Craggle always knows the old stories.",
-      challenge: { title: "Paint Dreamwood back to life", text: "Dreamwood is still a little grey. Draw a picture of Dreamwood together with your grown-up — use every colour you can find — so Scribbi can doodle it bright again!" },
     },
     craggle: {
       title: "Craggle Remembers",
@@ -41,7 +37,6 @@ const STORY = {
       ],
       clue: "The old legend says: \"When seven treasures shine together, the Moon Door will open.\"",
       meanwhile: "Craggle told Tangle about the legend. Tangle's curly ears started spinning very fast.",
-      challenge: { title: "The slow, rumbly song", text: "Craggle remembers part of an old Dreamwood song, but not the words. Make up the missing words together, then sing it in your slowest, deepest rock voice. Hmmm-rrrumble!" },
     },
     orbit: {
       title: "Orbit and the Question-Mark Star",
@@ -52,7 +47,6 @@ const STORY = {
       ],
       clue: "The question-mark star zoomed straight toward the middle of Tangle's maze.",
       meanwhile: "Orbit asked Nyxie if any stars had been acting strange. Nyxie went very, very quiet.",
-      challenge: { title: "Chart the mystery star", text: "Draw the question-mark star and show where you think it was going. Then lie on the floor together and point to where it would be in the sky!" },
     },
     tangle: {
       title: "Tangle and the Door That Wasn't There",
@@ -63,7 +57,6 @@ const STORY = {
       ],
       clue: "The door has seven shapes — one for every treasure!",
       meanwhile: "Tangle drew the shapes and sent the drawing to Glitch, whose screen had started beeping strangely.",
-      challenge: { title: "Build the secret door", text: "Build a doorway with your grown-up out of pillows, chairs or blankets. Crawl through it together, then each make up what's on the other side!" },
     },
     nyxie: {
       title: "Nyxie and the Missing Star",
@@ -74,7 +67,6 @@ const STORY = {
       ],
       clue: "Pip-Pip, the smallest star, vanished on the very same night as the Great Gust.",
       meanwhile: "Nyxie whispered the news to Orbit, who gasped: \"The question-mark star!\"",
-      challenge: { title: "Make a dream shield", text: "Make a dream shield together — a drawing, a blanket fort or a pillow pile — then tell each other one sweet dream you'd like to have tonight." },
     },
     glitch: {
       title: "Glitch Gets a Signal",
@@ -85,7 +77,6 @@ const STORY = {
       ],
       clue: "Someone small sent the signal — someone who wants to be found.",
       meanwhile: "Glitch played the signal for Leo. Leo's ears shot straight up.",
-      challenge: { title: "The signal dance", text: "Glitch's signal goes beep, beep, BOOP! Make up a robot dance that matches it — a move for every beep and a big pose for the boop — then teach it to your grown-up." },
     },
     leo: {
       title: "Leo Follows the Trail",
@@ -96,7 +87,6 @@ const STORY = {
       ],
       clue: "The Gust's trail smells of peppermint, thunder and birthday cake. Who smells like that?",
       meanwhile: "One by one, the Imagamigos came running — and every single one of them had a clue to share.",
-      challenge: { title: "Pack meeting", text: "Leo needs the whole pack! Make a pack flag together — draw one symbol for every person in your family — then do your loudest pack howl. Awoooo!" },
     },
   },
   finale: {

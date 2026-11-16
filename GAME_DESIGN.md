@@ -153,17 +153,6 @@ One big story told in short chapters (`js/story.js`), in a **Stories** tab.
   says hello, and the chapter ends **"To be continued…"**. It asks kids what they think is behind the
   door, leaving room for future chapters and new characters (`STORY.next` lists "Coming soon" chapters).
 - **Read aloud:** a warm narrator voice reads each chapter paragraph by paragraph.
-- **Personal Story Challenges:** the last challenge of every quest is that character's own **Story
-  Challenge**, tied to their chapter:
-  - **Scribbi:** paint Dreamwood back to life.
-  - **Craggle:** make up the slow, rumbly song.
-  - **Orbit:** chart the mystery star.
-  - **Tangle:** build the secret door and crawl through.
-  - **Nyxie:** make a dream shield.
-  - **Glitch:** invent the signal dance.
-  - **Leo:** make a pack flag and howl together.
-
-  Photos go to the Memory Book. Story Challenges can also be done any time from the storybook.
 
 ## Character voices
 Every line a character says can be heard in that character's own voice (`js/voices.js`). The game uses

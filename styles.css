@@ -372,8 +372,6 @@ ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
 .story-clue { background: rgba(255, 207, 107, .12); border-color: rgba(255, 207, 107, .4); }
 .story-meanwhile { color: var(--muted); margin: 12px 0 0; }
 .story-ending { text-align: center; font-family: "Fredoka", system-ui; font-size: 1.4rem; margin: 16px 0 8px; }
-.story-chal h2 { font-size: 1.3rem; margin-top: 4px; }
-.story-chal-title { font-family: "Fredoka", system-ui; font-size: 1.25rem; margin-bottom: 8px; }
 .story-nav { margin-bottom: 16px; }
 .story-unlock { background: rgba(255, 95, 162, .12); border-color: rgba(255, 95, 162, .4); }
 

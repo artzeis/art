@@ -257,13 +257,6 @@
             ${ch.ending ? `<p class="story-ending">${esc(ch.ending)}</p>` : ""}
             ${ch.wonder ? `<div class="hintbox hot">💭 ${esc(ch.wonder)}</div>` : ""}
           </div>
-          ${ch.challenge ? `
-            <div class="card story-chal">
-              <span class="step-label">📖 ${esc(c.name)}'s Story Challenge</span>
-              <h2>${esc(ch.challenge.title)}</h2>
-              <p>${esc(ch.challenge.text)}</p>
-              <button class="btn primary" id="doChallenge">Do it together</button>
-            </div>` : ""}
           <div class="row story-nav">
             ${prev ? `<button class="btn" data-goto="${prev}">◀ ${prev === "prologue" ? "Prologue" : "Previous"}</button>` : ""}
             ${next ? `<button class="btn ${unlocked(next) ? "purple" : ""}" data-goto="${next}">${unlocked(next) ? "Next chapter ▶" : "🔒 Next chapter"}</button>` : ""}
@@ -271,20 +264,7 @@
         </div>`;
       app.querySelector("#toc").onclick = () => go("story");
       app.querySelector("#readAloud").onclick = () => speakAs("narrator", [ch.title, ...ch.text, ch.clue ? `Mystery clue: ${ch.clue}` : "", ch.meanwhile ? `Meanwhile… ${ch.meanwhile}` : "", ch.ending || "", ch.wonder || ""]);
-      const dc = app.querySelector("#doChallenge");
-      if (dc) dc.onclick = () => go("storyChallenge", which);
       app.querySelectorAll("[data-goto]").forEach((b) => b.onclick = () => go("story", unlocked(b.dataset.goto) ? b.dataset.goto : null));
-    },
-
-    storyChallenge(id) {
-      const c = byId[id], chap = STORY.chapters[id];
-      app.innerHTML = `
-        <div style="${vars(c)}"><div class="card">
-          <div class="quest-head"><div class="art bob">${creatureArt(c.id)}</div>
-            <div><h2>${c.name}</h2><span class="kind-chip">${c.kind}</span></div></div>
-          <div id="createBox"></div>
-        </div></div>`;
-      renderCreate(app.querySelector("#createBox"), c, { standalone: true, story: chap.challenge, onDone: (made) => { if (made) confetti(); go("story", id); } });
     },
 
     create(id) {
@@ -658,18 +638,14 @@
   }
 
   // ---------- Make something together (+ Memory Book photo) ----------
-  // `story` = the character's personal Story Challenge from their storybook chapter (js/story.js).
-  function renderCreate(box, c, { onDone, standalone = false, story = null }) {
-    const reqs = story ? [story.text] : (CREATE_REQUESTS[c.id] || ["Make something wonderful together!"]);
+  function renderCreate(box, c, { onDone, standalone = false }) {
+    const reqs = CREATE_REQUESTS[c.id] || ["Make something wonderful together!"];
     let idx = Math.floor(Math.random() * reqs.length), photo = null;
-    const lineFor = (req) => story
-      ? (standalone ? `${story.title}! ${req}` : `Thank you, amigo! Now help me with my story: ${story.title}! ${req}`)
-      : (standalone ? `Will you make something for me? ${req}` : `Thank you so much! Will you do one more thing for me? ${req}`);
+    const lineFor = (req) => standalone ? `Will you make something for me? ${req}` : `Thank you so much! Will you do one more thing for me? ${req}`;
     const draw = () => {
       const req = reqs[idx];
       const line = lineFor(req);
       box.innerHTML = `
-        ${story ? `<div class="story-chal-title">📖 ${esc(story.title)}</div>` : ""}
         <div class="speech">${esc(line)}</div>
         <p class="small muted">Make it together with your grown-up, then snap a photo to keep it in your 📸 Memory Book.</p>
         ${photo ? `<div class="photo-slot"><img src="${photo}" alt="Your creation"></div>` : ""}
@@ -678,7 +654,7 @@
           ${reqs.length > 1 ? `<button class="btn" data-other>🔀 Another idea</button>` : ""}
           <label class="btn purple file-btn">📷 ${photo ? "Retake" : "Take a photo"}<input type="file" accept="image/*" capture="environment" hidden></label>
         </div>
-        <button class="btn good block" data-made style="margin-top:10px">${story ? "🎉 We did it!" : "🎨 We made it!"}</button>
+        <button class="btn good block" data-made style="margin-top:10px">🎨 We made it!</button>
         <button class="btn block" data-skip style="margin-top:8px">Skip for now</button>`;
       box.querySelector("[data-listen]").onclick = () => speak(line, c.id);
       const other = box.querySelector("[data-other]");
@@ -691,7 +667,7 @@
       };
       box.querySelector("[data-made]").onclick = async () => {
         if (photo) {
-          try { await Memories.add({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, creature: c.id, text: story ? `${story.title}: ${req}` : req, date: Date.now(), img: photo }); }
+          try { await Memories.add({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, creature: c.id, text: req, date: Date.now(), img: photo }); }
           catch (_) { alert("The photo couldn't be saved on this device, but well done!"); }
         }
         onDone(true);
@@ -704,7 +680,7 @@
 
   // ---------- Quest flow ----------
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
-  const PATH = ["👋", "🏃", "🧩", "🎁", "📖", "🎉"];
+  const PATH = ["👋", "🏃", "🧩", "🎁", "🎨", "🎉"];
   function runQuest(c) {
     if (!hidden(c.id)) return go("creature", c.id);
     // Treasure trail: one riddle per stop (clue cards first, the treasure last).
@@ -902,9 +878,8 @@
           else { b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 400); }
         });
       } else if (step === 4) {
-        frame(`<span class="step-label">Step 4 · Story Challenge</span><div id="createBox"></div>`);
-        const chap = STORY.chapters[c.id];
-        renderCreate(app.querySelector("#createBox"), c, { story: chap && chap.challenge, onDone: (made) => { madeSomething = made; step = 5; render(); } });
+        frame(`<span class="step-label">Step 4 · Make something together</span><div id="createBox"></div>`);
+        renderCreate(app.querySelector("#createBox"), c, { onDone: (made) => { madeSomething = made; step = 5; render(); } });
         return;
       } else {
         const first = !save.found[c.id];
