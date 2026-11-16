@@ -315,15 +315,6 @@ ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
 .trail-dots i.on { opacity: 1; background: color-mix(in srgb, var(--c) 40%, transparent); }
 .trail-dots i.now { opacity: 1; border: 2px solid var(--c); box-shadow: 0 0 14px color-mix(in srgb, var(--c) 60%, transparent); }
 
-/* ---------- Make something / Memory Book ---------- */
-.file-btn { cursor: pointer; }
-.photo-slot img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 18px; margin: 4px 0 10px; }
-.memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-@media (max-width: 420px) { .memory-grid { grid-template-columns: repeat(2, 1fr); } }
-.memory { border: 1px solid color-mix(in srgb, var(--c, #8f7bff) 50%, transparent); background: var(--glass); border-radius: 18px; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
-.memory img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 13px; }
-.memory span { font-size: .78rem; font-weight: 800; color: var(--muted); }
-
 /* ---------- Calm down with Nyxie ---------- */
 .calm-cta { display: flex; gap: 14px; align-items: center; margin-top: 16px; background: linear-gradient(135deg, rgba(139, 92, 246, .25), rgba(79, 179, 255, .12)); border-color: rgba(170, 150, 255, .4); }
 .calm-cta-moon { font-size: 2rem; }

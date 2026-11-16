@@ -1,6 +1,6 @@
 // Imagine Seek — "Play together": the last step of every quest.
 // A grown-up and a kid play a short, imaginative game together. The game type rotates each quest:
-//   🎭 Act it out → 🤫 Creature charades → 📣 Dreamling says → 🎁 The Invisible Box → 🎨 Dream Workshop
+//   🎭 Act it out → 🤫 Creature charades → 📣 Dreamling says → 🎁 The Invisible Box
 // (🔀 in the app switches to another game any time). Edit the content below freely.
 
 const TOGETHER_GAMES = [
@@ -12,8 +12,6 @@ const TOGETHER_GAMES = [
     how: "Only move when you hear \"{name} says\"! If {name} doesn't say it… stay still!" },
   { id: "box", icon: "🎁", name: "The Invisible Box",
     how: "Take turns: open the invisible box, pull something out and show what it is — how big, how heavy, how it moves. Everyone else guesses! Then pass the box on." },
-  { id: "workshop", icon: "🎨", name: "Dream Workshop",
-    how: "Make something together, then snap a photo for your Memory Book." },
 ];
 
 // 🎭 Act it out — pretend scenes, three per character.

@@ -119,7 +119,7 @@ tiptoe like a cat (Nyxie), move like a robot (Glitch) or lope like a wolf (Leo).
 +1 ⭐.
 
 **🎲 Play together.** Every quest ends with a quick game for a grown-up and a kid (`js/together.js`). The
-game **rotates** each quest, and 🔀 switches to another one any time:
+game **rotates** each quest (four games), and 🔀 switches to another one any time:
 1. **🎭 Act it out:** the character sets a pretend scene to play out, like Leo's "the floor is lava"
    rescue or Orbit's no-gravity float.
 2. **🤫 Creature charades:** the actor peeks at a secret card ("Craggle napping in the sun") and acts it
@@ -128,8 +128,6 @@ game **rotates** each quest, and 🔀 switches to another one any time:
    moves, each character has its own moves, and about a third are tricks without "___ says".
 4. **🎁 The Invisible Box:** each character brings an invisible box (Orbit's is from outer space).
    Take turns pulling something imaginary out and acting it out while the others guess.
-5. **🎨 Dream Workshop** (formerly "Make something together"): build or draw something together, and
-   📷 save a photo to the **Memory Book** in the Creature Journal. Photos are stored only on the device.
 
 "We did it!" earns +1 ⭐. Every character's page also has **🎲 Play together**, any time.
 
@@ -137,11 +135,6 @@ game **rotates** each quest, and 🔀 switches to another one any time:
 screen. Nyxie speaks each step softly: get cosy, moon breathing (the moon grows for 4 seconds while
 breathing in and shrinks for 6 seconds while breathing out), cat stretch, curl up like a crescent moon,
 star squeeze, whisper one happy thing to your grown-up, then goodnight.
-
-**🧸 Give it back.** After "Show me!", the character asks for the treasure back, and each treasure has a
-spot on its plush: a hook-and-loop dot, or a pocket for Scribbi's crayon. "It's back on my plush!", or
-"No plush yet — keep going" for families without the plush. Attachment details are in
-`manufacturing/treasures/README.md`.
 
 ## 📚 The Dreamyville Storybook
 One big story told in short chapters (`js/story.js`), in a **Stories** tab.

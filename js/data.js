@@ -16,7 +16,6 @@ const STORE_LINKS = {
 const CREATURES = [
   {
     id: "scribbi",
-    returnTo: "Slide my Rainbow Crayon into the pocket on my side.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Scribbi",
     kind: "Doodle Sprite",
     color: "#ff3d8b",
@@ -59,7 +58,6 @@ const CREATURES = [
   },
   {
     id: "craggle",
-    returnTo: "Press my Glow Crystal onto the soft moss on top of my head.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Craggle",
     kind: "Moss Rock",
     color: "#2fc4b2",
@@ -102,7 +100,6 @@ const CREATURES = [
   },
   {
     id: "orbit",
-    returnTo: "Stick my Moon Marble onto my orange ring.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Orbit",
     kind: "Little Planet",
     color: "#4f74d6",
@@ -145,7 +142,6 @@ const CREATURES = [
   },
   {
     id: "tangle",
-    returnTo: "Press my Golden Key onto the very middle of my tummy maze.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Tangle",
     kind: "Maze Keeper",
     color: "#1fa463",
@@ -188,7 +184,6 @@ const CREATURES = [
   },
   {
     id: "nyxie",
-    returnTo: "Pop my Wishing Star on top, between my ears.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Nyxie",
     kind: "Moon Cat",
     color: "#8b5cf6",
@@ -231,7 +226,6 @@ const CREATURES = [
   },
   {
     id: "glitch",
-    returnTo: "Stick my Power Pixel on top of my head.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Glitch",
     kind: "Pixel Pal",
     color: "#9b4dff",
@@ -274,7 +268,6 @@ const CREATURES = [
   },
   {
     id: "leo",
-    returnTo: "Press my Moon Medallion back onto my cape.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Leo",
     kind: "Moonwolf",
     challengeSet: "wolf",               // Leo uses the Wolf Pack challenge wheel (js/challenges.js)
@@ -361,46 +354,6 @@ const OUTDOOR_CHALLENGES = {
   glitch: [
     { text: "Hop across 10 pretend 'pixel squares' like stepping stones.", seconds: 0 },
     { text: "Race to a tree or the fence and back — beat your high score!", seconds: 0 },
-  ],
-};
-
-// "Make something for me!" — after the treasure is found, the character asks the family to
-// create something together. Kids (and grown-ups) can snap a photo for the Memory Book.
-const CREATE_REQUESTS = {
-  scribbi: [
-    "Draw a brand-new doodle creature and give it a name!",
-    "Make a rainbow out of things you can find — one thing for every colour.",
-    "Make and decorate a paper crown together — I lost mine!",
-  ],
-  craggle: [
-    "Build me a cosy rock garden out of pebbles, toys or cushions.",
-    "Build the tallest tower you can — strong like a mountain!",
-    "Make a comfy nap spot for me out of blankets and pillows.",
-  ],
-  orbit: [
-    "Build a rocket ship out of boxes, chairs or blankets — big enough for a grown-up too!",
-    "Draw your very own planet and give it a name.",
-    "Make a space helmet out of anything you can find.",
-  ],
-  tangle: [
-    "Build a maze for a toy car or marble to roll through.",
-    "Draw a maze on paper and have your grown-up solve it.",
-    "Invent a secret code and write me a message in it.",
-  ],
-  nyxie: [
-    "Make a cosy moon bed for me with your softest things.",
-    "Draw the night sky with a constellation you made up.",
-    "Make a dream catcher out of paper, string or ribbon.",
-  ],
-  glitch: [
-    "Design a brand-new video game level on paper.",
-    "Build a robot out of boxes, cups or blocks.",
-    "Make up a dance move together and give it a game name, like 'The Power-Up'.",
-  ],
-  leo: [
-    "Build a den out of pillows and blankets — big enough for the whole pack!",
-    "Draw a map of your home and mark the best pack hideouts.",
-    "Make a paper moon medallion for every member of your pack.",
   ],
 };
 

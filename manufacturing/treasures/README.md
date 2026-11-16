@@ -27,7 +27,7 @@ prototyping and quoting.
 The colours match the characters in the game. Any colour can be swapped.
 
 ## Attaching treasures to the plush
-Every treasure goes back onto its plush when it's found (the game asks kids to "give it back").
+Every treasure can be stored on its matching plush, so it's always ready for the next hunt.
 | Treasure | How it attaches | Where on the plush |
 |---|---|---|
 | Rainbow Crayon | Slides into a **fabric pocket** (about 22 mm wide × 60 mm deep) | Scribbi's side |

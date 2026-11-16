@@ -112,11 +112,8 @@
         <h1 class="screen-title">Creature <span class="grad-text">Journal</span></h1>
         <p class="lead">Tap a creature to read all about them. Help them on a quest to unlock their secrets!</p>
         <div class="grid">${CREATURES.map((c) => tile(c, save.found[c.id] ? `<span class="pill friend">Friend ✔</span>` : `<span class="pill seen">Read more</span>`)).join("")}</div>
-        <h2 class="screen-title" style="margin-top:26px">📸 Memory <span class="grad-text">Book</span></h2>
-        <p class="lead">Things you made together. Photos stay on this device.</p>
-        <div class="memory-grid" id="memories"><p class="muted">Loading…</p></div>`;
+`;
       app.querySelectorAll("[data-open]").forEach((b) => b.onclick = () => go("creature", b.dataset.open));
-      showMemories();
     },
 
     creature(id, tab = "story") {
@@ -340,36 +337,6 @@
         ? `When the full moon rises, ${c.name} becomes a majestic Moonwolf with a glowing crescent and a cape full of stars. Look for ${c.name}'s Moon Form in the AR Hunt!`
         : `Finish ${c.name}'s quest to reveal this secret form.`}</p>
     </div>`;
-
-  // ---------- Memory Book ----------
-  function showMemories() {
-    Memories.all().then((list) => {
-      const box = document.getElementById("memories");
-      if (!box) return;
-      if (!list.length) {
-        box.innerHTML = `<div class="card small muted" style="grid-column:1/-1">Nothing here yet! When a quest ends with the 🎨 Dream Workshop, you make something together. Snap a photo and it will appear here. You can also tap 🎲 Play together on any character's page.</div>`;
-        return;
-      }
-      box.innerHTML = list.map((m) => { const c = byId[m.creature] || {}; return `
-        <button class="memory" style="${c.color ? vars(c) : ""}" data-mem="${m.id}">
-          <img src="${m.img}" alt="Made for ${esc(c.name || "a friend")}">
-          <span>For ${esc(c.name || "a friend")}</span>
-        </button>`; }).join("");
-      box.querySelectorAll("[data-mem]").forEach((b) => b.onclick = () => {
-        const m = list.find((x) => x.id === b.dataset.mem), c = byId[m.creature] || {};
-        const d = document.createElement("dialog");
-        d.className = "sheet center";
-        d.innerHTML = `<img src="${m.img}" alt="" style="width:100%;border-radius:18px">
-          <p><b>Made for ${esc(c.name || "a friend")}</b><br><span class="small muted">${esc(m.text)}<br>${new Date(m.date).toLocaleDateString()}</span></p>
-          <div class="row"><button class="btn" data-del>🗑️ Delete</button><button class="btn primary" data-close>Close</button></div>`;
-        document.body.appendChild(d);
-        const close = () => { d.close(); d.remove(); };
-        d.querySelector("[data-close]").onclick = close;
-        d.querySelector("[data-del]").onclick = () => { if (confirm("Delete this memory?")) { Memories.remove(m.id).then(() => { close(); showMemories(); }); } };
-        d.showModal();
-      });
-    });
-  }
 
   // ---------- Plush shop ----------
   // Store links live in STORE_LINKS (js/data.js). Opening one needs the grown-up gate.
@@ -662,14 +629,6 @@
         <button class="btn good block" data-done style="margin-top:12px">🎉 We did it!</button>
         <button class="btn block" data-skip2 style="margin-top:8px">Skip for now</button>`;
 
-      if (g.id === "workshop") {
-        // The Dream Workshop is the make-something game, with a photo for the Memory Book.
-        box.innerHTML = head + `<div id="wsBox"></div><div class="row" style="margin-top:10px">${switchBtn}</div>`;
-        renderCreate(box.querySelector("#wsBox"), c, { onDone, standalone, quiet: !speakNow && standalone });
-        wire();
-        return;
-      }
-
       if (g.id === "act") {
         const scenes = ACT_SCENES[c.id] || ACT_SCENES.leo;
         let si = Math.floor(Math.random() * scenes.length);
@@ -770,47 +729,6 @@
     draw(false);
   }
 
-  // ---------- Dream Workshop: make something together (+ Memory Book photo) ----------
-  function renderCreate(box, c, { onDone, standalone = false, quiet = false }) {
-    const reqs = CREATE_REQUESTS[c.id] || ["Make something wonderful together!"];
-    let idx = Math.floor(Math.random() * reqs.length), photo = null;
-    const lineFor = (req) => standalone ? `Will you make something for me? ${req}` : `Thank you so much! Will you do one more thing for me? ${req}`;
-    const draw = () => {
-      const req = reqs[idx];
-      const line = lineFor(req);
-      box.innerHTML = `
-        <div class="speech">${esc(line)}</div>
-        <p class="small muted">Make it together with your grown-up, then snap a photo to keep it in your 📸 Memory Book.</p>
-        ${photo ? `<div class="photo-slot"><img src="${photo}" alt="Your creation"></div>` : ""}
-        <div class="row">
-          <button class="btn" data-listen>🔊 Listen</button>
-          ${reqs.length > 1 ? `<button class="btn" data-other>🔀 Another idea</button>` : ""}
-          <label class="btn purple file-btn">📷 ${photo ? "Retake" : "Take a photo"}<input type="file" accept="image/*" capture="environment" hidden></label>
-        </div>
-        <button class="btn good block" data-made style="margin-top:10px">🎨 We made it!</button>
-        <button class="btn block" data-skip style="margin-top:8px">Skip for now</button>`;
-      box.querySelector("[data-listen]").onclick = () => speak(line, c.id);
-      const other = box.querySelector("[data-other]");
-      if (other) other.onclick = () => { idx = (idx + 1) % reqs.length; draw(); speak(reqs[idx], c.id); };
-      box.querySelector("input[type=file]").onchange = async (e) => {
-        const f = e.target.files && e.target.files[0];
-        if (!f) return;
-        try { photo = await shrinkPhoto(f); } catch (_) { alert("Sorry, that photo couldn't be opened."); }
-        draw();
-      };
-      box.querySelector("[data-made]").onclick = async () => {
-        if (photo) {
-          try { await Memories.add({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, creature: c.id, text: req, date: Date.now(), img: photo }); }
-          catch (_) { alert("The photo couldn't be saved on this device, but well done!"); }
-        }
-        onDone(true);
-      };
-      box.querySelector("[data-skip]").onclick = () => onDone(false);
-    };
-    draw();
-    if (!quiet) speak(lineFor(reqs[idx]), c.id);
-  }
-
   // ---------- Quest flow ----------
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
   const PATH = ["👋", "🏃", "🧩", "🎁", "🎲", "🎉"];
@@ -821,7 +739,7 @@
     const riddles = trail.map((st, i) => makeRiddle(st.text, c, st.seed || 0, i < trail.length - 1 ? "my next clue" : null));
     const finalSpot = riddles[riddles.length - 1];
     const outside = finalSpot.place ? finalSpot.place === "outside" : save.area === "outside";
-    let stopIdx = 0, totalHints = 0, between = false, madeSomething = false, givingBack = false;
+    let stopIdx = 0, totalHints = 0, between = false, madeSomething = false;
     // Each character can have its own wheel (Leo uses Wolf Pack challenges).
     const types = challengeTypesFor(c);
     const saved = c.challengeSet === "wolf" ? save.ctypeWolf : save.ctype;
@@ -983,22 +901,6 @@
         if (h) h.onclick = () => { helpLevel++; totalHints++; render(); };
         const fc = app.querySelector("#foundClue");
         if (fc) fc.onclick = () => { stopIdx++; between = true; confetti(["📜", "✨"]); render(); };
-      } else if (step === 3 && givingBack) {
-        // Give the treasure back: it attaches to the character's plush (hook-and-loop dot or pocket).
-        const line = `Yay, that's it! Now give it back to me. ${c.returnTo || ""}`;
-        frame(`
-          <span class="step-label">🧸 Give it back!</span>
-          <div class="speech">${esc(line)}</div>
-          <p class="small muted">Got the ${esc(c.name)} plush? Pop the treasure back where it belongs.</p>
-          <div class="row">
-            <button class="btn" data-say="${esc(line)}">🔊 Listen</button>
-            <button class="btn good" id="gaveBack">🧸 It's back on my plush!</button>
-          </div>
-          <button class="btn block" id="noPlush" style="margin-top:8px">No plush yet — keep going</button>`);
-        speak(line, c.id);
-        app.querySelector("#gaveBack").onclick = () => { confetti(["🧸", c.accessoryEmoji, "✨"]); step = 4; render(); };
-        app.querySelector("#noPlush").onclick = () => { step = 4; render(); };
-        return;
       } else if (step === 3) {
         const choices = shuffle(CREATURES.filter((x) => x.id !== c.id)).slice(0, 3).concat(c);
         frame(`
@@ -1007,7 +909,7 @@
           <div class="choices">${shuffle(choices).map((x) =>
             `<button class="choice" data-pick="${x.id}"><span class="e">${x.accessoryEmoji}</span>${x.accessory}</button>`).join("")}</div>`);
         app.querySelectorAll("[data-pick]").forEach((b) => b.onclick = () => {
-          if (b.dataset.pick === c.id) { givingBack = true; render(); }
+          if (b.dataset.pick === c.id) { step = 4; render(); }
           else { b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 400); }
         });
       } else if (step === 4) {
