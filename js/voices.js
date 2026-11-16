@@ -12,44 +12,44 @@
 const VOICE_STYLES = {
   // Silly, creative, wiggly — bright young voice, a bit quick, giggles.
   scribbi: {
-    pitch: 1.25, rate: 1.06,
-    prefer: ["Ava", "Samantha", "Zoe", "Allison", "Nicky", "Microsoft Ana", "Microsoft Aria", "Microsoft Jenny", "Google US English"],
+    pitch: 1.25, rate: 1.06, voice: "f",
+    prefer: ["Zoe", "Ava", "Joelle", "Samantha", "Allison", "Nicky", "Noelle", "Microsoft Ana", "Microsoft Aria", "Microsoft Jenny", "Google US English"],
     before: null, after: { text: "Hee-hee!", pitch: 1.4, rate: 1.1 }, skipIf: /hee/i,
   },
   // Chill, steady, wise — deep, calm, slow, a thoughtful "Hmmm…" first.
   craggle: {
-    pitch: 0.78, rate: 0.84,
-    prefer: ["Daniel", "Evan", "Tom", "Arthur", "Aaron", "Oliver", "Microsoft Guy", "Microsoft Ryan", "Microsoft Christopher", "Google UK English Male"],
+    pitch: 0.78, rate: 0.84, voice: "m",
+    prefer: ["Malcolm", "Daniel", "Evan", "Tom", "Arthur", "Aaron", "Oliver", "Microsoft Guy", "Microsoft Ryan", "Microsoft Christopher", "Google UK English Male"],
     before: { text: "Hmmm…", rate: 0.75 }, after: null, skipIf: /^h+m+/i,
   },
   // Curious, dreamy, amazed — warm, bright and wide-eyed.
   orbit: {
-    pitch: 1.18, rate: 1.0,
-    prefer: ["Karen", "Tessa", "Allison", "Susan", "Victoria", "Microsoft Natasha", "Microsoft Libby", "Microsoft Jenny", "Google UK English Female"],
+    pitch: 1.18, rate: 1.0, voice: "f",
+    prefer: ["Isha", "Karen", "Tessa", "Allison", "Susan", "Matilda", "Victoria", "Microsoft Natasha", "Microsoft Libby", "Microsoft Jenny", "Google UK English Female"],
     before: { text: "Ooooh!", pitch: 1.3 }, after: null, skipIf: /^(boop|ooo)/i,
   },
   // Clever, playful, cheeky — quick and sly, with a chuckle.
   tangle: {
-    pitch: 1.05, rate: 1.1,
-    prefer: ["Rishi", "Nathan", "Alex", "Aaron", "Lee", "Microsoft Brian", "Microsoft Andrew", "Microsoft Guy", "Google US English"],
+    pitch: 1.05, rate: 1.1, voice: "m",
+    prefer: ["Nathan", "Rishi", "Lee", "Alex", "Aaron", "Microsoft Brian", "Microsoft Andrew", "Microsoft Guy", "Google US English"],
     before: null, after: { text: "Heh-heh!", pitch: 1.1, rate: 1.05 }, skipIf: /heh/i,
   },
   // Mysterious, gentle, loyal — soft, calm and unhurried, starts with a purr.
   nyxie: {
-    pitch: 0.96, rate: 0.88, volume: 0.9,
-    prefer: ["Moira", "Serena", "Kate", "Martha", "Fiona", "Stephanie", "Microsoft Sonia", "Microsoft Libby", "Google UK English Female"],
+    pitch: 0.96, rate: 0.88, volume: 0.9, voice: "f",
+    prefer: ["Serena", "Moira", "Kate", "Jamie", "Martha", "Fiona", "Stephanie", "Microsoft Sonia", "Microsoft Libby", "Google UK English Female"],
     before: { text: "Mrrrow…", rate: 0.8 }, after: null, skipIf: /^mr+/i,
   },
   // Cheeky, speedy, fair — clear, upbeat game-show style, with a quick beep to finish.
   glitch: {
-    pitch: 1.0, rate: 1.04,
-    prefer: ["Alex", "Tom", "Evan", "Nathan", "Lee", "Aaron", "Daniel", "Microsoft Eric", "Microsoft Steffan", "Microsoft Davis", "Google US English"],
+    pitch: 1.0, rate: 1.04, voice: "m",
+    prefer: ["Evan", "Alex", "Tom", "Nathan", "Lee", "Aaron", "Daniel", "Microsoft Eric", "Microsoft Steffan", "Microsoft Davis", "Google US English"],
     before: null, after: { text: "Bleep-bloop!", pitch: 1.2, rate: 1.1 }, skipIf: /bleep/i,
   },
   // Loyal, gentle, brave — warm, friendly and steady, a happy howl first.
   leo: {
-    pitch: 0.92, rate: 0.95,
-    prefer: ["Aaron", "Oliver", "Arthur", "Daniel", "Evan", "Tom", "Microsoft Andrew", "Microsoft Guy", "Google UK English Male"],
+    pitch: 0.92, rate: 0.95, voice: "m",
+    prefer: ["Oliver", "Aaron", "Arthur", "Daniel", "Evan", "Tom", "Microsoft Andrew", "Microsoft Guy", "Google UK English Male"],
     before: { text: "Awoooo!", pitch: 1.05, rate: 0.85 }, after: null, skipIf: /^awoo/i,
   },
 };
@@ -57,6 +57,10 @@ const VOICE_STYLES = {
 // Old robotic and novelty voices (mainly on Apple devices) that are never used.
 const ROBOTIC_VOICES = /^(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|eddy|flo|fred|good news|grandma|grandpa|hysterical|jester|junior|kathy|organ|princess|ralph|reed|rocko|sandy|shelley|superstar|trinoids|whisper|wobble|zarvox)\b/i;
 const QUALITY_VOICES = /premium|enhanced|natural|neural|online|siri/i;
+// Rough guide to which voices sound higher/lighter or lower/deeper, used to match characters.
+const LIGHT_VOICES = /^(ava|zoe|joelle|noelle|samantha|allison|nicky|susan|karen|tessa|moira|serena|kate|fiona|martha|stephanie|victoria|isha|matilda|jamie|catherine|veena|microsoft (ana|aria|jenny|natasha|libby|sonia|emma|michelle|clara)|google uk english female|google us english)/i;
+const DEEP_VOICES = /^(daniel|evan|tom|arthur|aaron|oliver|nathan|rishi|lee|alex|malcolm|gordon|microsoft (guy|ryan|christopher|brian|andrew|eric|steffan|davis|david|william)|google uk english male)/i;
+const CHOICE_KEY = "mythSeekers.voiceChoices";
 
 const Voices = (() => {
   let assigned = null;
@@ -67,31 +71,47 @@ const Voices = (() => {
     .filter((v) => /^en(-|_|$)/i.test(v.lang) && !ROBOTIC_VOICES.test(v.name))
     .sort((a, b) => score(b) - score(a) || a.name.localeCompare(b.name));
 
-  // Each character gets its best preferred voice the device has (highest quality first),
-  // a different one from the other characters where possible.
+  // Voices a grown-up picked by hand in Voice check (saved on this device).
+  let choices = {};
+  try { choices = JSON.parse(localStorage.getItem(CHOICE_KEY) || "{}"); } catch (_) {}
+  const saveChoices = () => { try { localStorage.setItem(CHOICE_KEY, JSON.stringify(choices)); } catch (_) {} };
+
+  // Automatic choice: every voice on the device is scored for each character —
+  //   high-quality (Enhanced / Premium / Natural) voices count most, so voices you download are used,
+  //   then a voice that suits the character (lighter or deeper), then the character's favourite names.
+  // Each character gets a different voice where possible. Hand-picked voices always win.
   function assign() {
     const list = englishVoices();
     if (!list.length) return null;
+    const all = window.speechSynthesis ? speechSynthesis.getVoices() : [];
     const used = new Set();
     const map = {};
+    Object.entries(choices).forEach(([id, name]) => {
+      const v = all.find((x) => x.name === name);
+      if (v && VOICE_STYLES[id]) { map[id] = v; used.add(v.name); }
+    });
     Object.entries(VOICE_STYLES).forEach(([id, st]) => {
-      // Among this character's preferred voices, a high-quality one wins; otherwise the earliest in the list.
+      if (map[id]) return;
       let v = null, best = -Infinity;
-      st.prefer.forEach((pref, i) => {
-        list.forEach((x) => {
-          if (used.has(x.name) || !x.name.toLowerCase().startsWith(pref.toLowerCase())) return;
-          const sc = (QUALITY_VOICES.test(x.name) ? 100 : 0) - i;
-          if (sc > best) { best = sc; v = x; }
-        });
+      list.forEach((x) => {
+        if (used.has(x.name)) return;
+        let sc = QUALITY_VOICES.test(x.name) ? 100 : 0;
+        if (st.voice === "f" && LIGHT_VOICES.test(x.name)) sc += 30;
+        if (st.voice === "m" && DEEP_VOICES.test(x.name)) sc += 30;
+        const pi = st.prefer.findIndex((pref) => x.name.toLowerCase().startsWith(pref.toLowerCase()));
+        if (pi >= 0) sc += 20 - pi;
+        if (/^en-(us|gb)/i.test(x.lang)) sc += 1;
+        if (sc > best) { best = sc; v = x; }
       });
-      v = v || list.find((x) => !used.has(x.name)) || list[0];
+      v = v || list[0];
       used.add(v.name);
       map[id] = v;
     });
     return map;
   }
+  const listeners = [];
   if (window.speechSynthesis) {
-    speechSynthesis.onvoiceschanged = () => { assigned = assign(); };
+    speechSynthesis.onvoiceschanged = () => { assigned = assign(); listeners.forEach((f) => f()); };
     assigned = assign();
   }
 
@@ -129,6 +149,11 @@ const Voices = (() => {
   const stop = () => { token++; try { window.speechSynthesis && speechSynthesis.cancel(); } catch (_) {} };
   const voiceFor = (id) => { if (!assigned) assigned = assign(); return assigned && assigned[id]; };
   const hasQualityVoices = () => englishVoices().some((v) => QUALITY_VOICES.test(v.name));
-  return { speakAs, stop, voiceFor, hasQualityVoices };
+  // For the Voice check menus: all usable English voices, best first, marked ⭐ when high-quality.
+  const options = () => englishVoices().map((v) => ({ name: v.name, lang: v.lang, quality: QUALITY_VOICES.test(v.name) }));
+  const choose = (id, name) => { if (name) choices[id] = name; else delete choices[id]; saveChoices(); assigned = assign(); };
+  const chosen = (id) => choices[id] || "";
+  const onChange = (f) => listeners.push(f);
+  return { speakAs, stop, voiceFor, hasQualityVoices, options, choose, chosen, onChange };
 })();
 const speakAs = Voices.speakAs;

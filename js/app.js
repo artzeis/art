@@ -370,28 +370,7 @@
       </div>
       ${CREATURES.map((c) => `<div class="card hide-card" style="${vars(c)}" data-card="${c.id}"></div>`).join("")}
       <button class="btn primary block" id="saveSetup" style="margin-bottom:16px">Save &amp; start playing</button>
-      <div class="card">
-        <h2 class="section-title">🔊 Voice check</h2>
-        <p class="small muted" style="margin-top:0">Tap ▶ to hear each character.</p>
-        <div class="voice-list">
-          ${CREATURES.map((c) => { const v = Voices.voiceFor(c.id); return `
-            <div class="voice-row" style="${vars(c)}">
-              <span class="hide-art">${creatureArt(c.id)}</span>
-              <div><b>${c.name}</b><br><span class="small muted">${v ? esc(v.name) : "Default voice"}</span></div>
-              <button class="btn small-btn" data-voicetest="${c.id}" aria-label="Hear ${c.name}">▶</button>
-            </div>`; }).join("")}
-        </div>
-        ${Voices.hasQualityVoices()
-          ? `<p class="small" style="margin-bottom:0">✅ High-quality voices found on this device.</p>`
-          : `<details class="small voice-tip"><summary><b>Make the voices sound more natural (free)</b></summary>
-              <p>Download a high-quality voice on this device, then reopen the game:</p>
-              <ul>
-                <li><b>iPhone / iPad:</b> Settings → Accessibility → Spoken Content → Voices → English → download voices marked <em>Enhanced</em> or <em>Premium</em> (for example Ava, Zoe, Evan, Nathan).</li>
-                <li><b>Mac:</b> System Settings → Accessibility → Spoken Content → System Voice → Manage Voices.</li>
-                <li><b>Android:</b> Settings → search "Text-to-speech" → Google → Install voice data → English → pick a high-quality voice.</li>
-                <li><b>Windows:</b> open the game in Microsoft Edge to use its built-in Natural voices.</li>
-              </ul></details>`}
-      </div>
+      <div class="card" id="voiceCard"></div>
       <div class="card">
         <b>Play again</b>
         <p class="small muted">Clears found characters so kids can hunt again. Stars are kept.</p>
@@ -473,10 +452,53 @@
       persist();
       go("home");
     };
-    app.querySelectorAll("[data-voicetest]").forEach((b) => b.onclick = () => {
-      const c = byId[b.dataset.voicetest];
-      speak(`Hi! I'm ${c.name}. ${c.catchphrase}`, c.id);
-    });
+    // ---- Voice check: hear each character, and choose which voice each one uses ----
+    const drawVoices = () => {
+      const card = app.querySelector("#voiceCard");
+      if (!card) return;
+      const opts = Voices.options();
+      card.innerHTML = `
+        <h2 class="section-title">🔊 Voice check</h2>
+        <p class="small muted" style="margin-top:0">Tap ▶ to hear each character. Pick a voice from the menu to change it —
+          voices you've downloaded in your device settings are listed here (⭐ = high quality).</p>
+        <div class="voice-list">
+          ${CREATURES.map((c) => { const v = Voices.voiceFor(c.id); const mine = Voices.chosen(c.id); return `
+            <div class="voice-row" style="${vars(c)}">
+              <span class="hide-art">${creatureArt(c.id)}</span>
+              <div class="voice-pick">
+                <b>${c.name}</b>
+                <select data-voicepick="${c.id}" aria-label="Voice for ${c.name}">
+                  <option value="">✨ Auto${!mine && v ? `: ${esc(v.name.replace(/\s*\(.*\)\s*/, ""))}${/premium|enhanced|natural|neural|online/i.test(v.name) ? " ⭐" : ""}` : ""}</option>
+                  ${opts.map((o) => `<option value="${esc(o.name)}" ${mine === o.name ? "selected" : ""}>${o.quality ? "⭐ " : ""}${esc(o.name)} · ${esc(o.lang)}</option>`).join("")}
+                </select>
+              </div>
+              <button class="btn small-btn" data-voicetest="${c.id}" aria-label="Hear ${c.name}">▶</button>
+            </div>`; }).join("")}
+        </div>
+        ${!opts.length ? `<p class="small muted">No voices found yet. If you just downloaded voices, close the browser completely and open the game again.</p>` : ""}
+        ${Voices.hasQualityVoices()
+          ? `<p class="small" style="margin-bottom:0">✅ High-quality voices found on this device.</p>`
+          : `<details class="small voice-tip"><summary><b>Make the voices sound more natural (free)</b></summary>
+              <p>Download a high-quality voice on this device, then close and reopen the game:</p>
+              <ul>
+                <li><b>iPhone / iPad:</b> Settings → Accessibility → Spoken Content → Voices → English → download voices marked <em>Enhanced</em> or <em>Premium</em> (for example Ava, Zoe, Evan, Nathan).</li>
+                <li><b>Mac:</b> System Settings → Accessibility → Spoken Content → System Voice → Manage Voices.</li>
+                <li><b>Android:</b> Settings → search "Text-to-speech" → Google → Install voice data → English → pick a high-quality voice.</li>
+                <li><b>Windows:</b> open the game in Microsoft Edge to use its built-in Natural voices.</li>
+              </ul></details>`}`;
+      card.querySelectorAll("[data-voicetest]").forEach((b) => b.onclick = () => {
+        const c = byId[b.dataset.voicetest];
+        speak(`Hi! I'm ${c.name}. ${c.catchphrase}`, c.id);
+      });
+      card.querySelectorAll("[data-voicepick]").forEach((sel) => sel.onchange = () => {
+        const c = byId[sel.dataset.voicepick];
+        Voices.choose(c.id, sel.value);
+        drawVoices();
+        speak(`Hi! I'm ${c.name}. ${c.catchphrase}`, c.id);
+      });
+    };
+    drawVoices();
+    Voices.onChange(() => { if (document.getElementById("voiceCard")) drawVoices(); });
     app.querySelector("#replay").onclick = () => { save.found = {}; persist(); setupScreen(); };
     app.querySelector("#wipe").onclick = () => {
       if (confirm("Reset all progress, stars and hiding places?")) { save = fresh(); persist(); setupScreen(); }

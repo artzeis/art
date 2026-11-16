@@ -147,8 +147,12 @@ rather than robotic**:
 | Glitch | Cheeky, speedy, fair | Clear and upbeat, ends with a quick "Bleep-bloop!" |
 | Leo | Loyal, gentle, brave | Warm, friendly and steady, starts with a happy "Awoooo!" |
 
-**Voice check (Grown-up Corner):** lists the voice each character is using, with a ▶ button to hear
-each one, plus steps to download free high-quality voices (iPhone/iPad: Settings → Accessibility →
+**Voice check (Grown-up Corner):** a ▶ button to hear each character and a **voice menu** to choose
+which voice each one uses. The menu lists every voice on the device, so voices downloaded in the
+device's settings can be picked (⭐ = high quality), and the choice is remembered. On **Auto**, the game
+scores every voice for each character: high-quality voices first, then voices that suit the
+character (lighter for Scribbi, Orbit and Nyxie, deeper for Craggle, Tangle, Glitch and Leo).
+Voice check also has steps to download free high-quality voices (iPhone/iPad: Settings → Accessibility →
 Spoken Content → Voices; Android: Text-to-speech settings; Windows: use Microsoft Edge).
 
 For voices that sound like real actors, the next step would be recorded or AI-generated audio from a

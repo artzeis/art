@@ -290,6 +290,8 @@ ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
 .voice-list { display: grid; gap: 8px; }
 .voice-row { display: grid; grid-template-columns: 48px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 16px; background: rgba(255,255,255,.04); border: 1px solid var(--line); }
 .voice-row .hide-art { width: 48px; height: 48px; }
+.voice-pick { min-width: 0; }
+.voice-pick select { margin-top: 4px; padding: 8px 10px; font-size: .85rem; border-radius: 12px; }
 .voice-tip { margin-top: 12px; background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
 .voice-tip ul { padding-left: 18px; margin: 6px 0 0; }
 .voice-tip li { margin: 4px 0; }
