@@ -1,8 +1,8 @@
 /* Wordweave service worker: caches the app so it opens instantly and works offline. */
-const CACHE = 'wordweave-v3';
+const CACHE = 'wordweave-v4';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/styles.css',
-  'js/config.js', 'js/skins.js', 'js/ambient.js', 'js/wordbank.js', 'js/generator.js', 'js/custom-theme.js', 'js/app.js',
+  'js/config.js', 'js/skins.js', 'js/ambient.js', 'js/sound.js', 'js/progress.js', 'js/demo.js', 'js/wordbank.js', 'js/generator.js', 'js/custom-theme.js', 'js/app.js',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'
 ];
 

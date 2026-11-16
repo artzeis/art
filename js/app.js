@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const { bank, generator, custom, skins, ambient, DIFFICULTIES } = window.CW;
+  const { bank, generator, custom, skins, ambient, sound, progress, demo, DIFFICULTIES } = window.CW;
   const $ = (sel, el = document) => el.querySelector(sel);
   const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 
@@ -51,7 +51,32 @@
     currentSkin = skins.get(desc);
     skins.apply(document.documentElement, currentSkin);
     if (ambient) ambient.set(currentSkin);
+    sound.setTheme(currentSkin.id);
   }
+
+  // Live preview in the hero uses words from the theme being previewed.
+  let demoKey = '';
+  function refreshDemo() {
+    const desc = previewSkinDesc();
+    const text = customText.trim();
+    const key = text ? 'c:' + text.toLowerCase() : desc.id;
+    if (key === demoKey) return;
+    demoKey = key;
+    const theme = bank.themes.find((t) => t.id === desc.id) || bank.general;
+    $('#demoTheme').textContent = text ? `${theme.icon} ${titleCase(text)}` : `${theme.icon} ${theme.name}`;
+    demo.start($('#heroDemo'), theme.entries);
+  }
+
+  // Sound toggle
+  function paintSoundBtn() {
+    const on = sound.isOn();
+    const b = $('#soundBtn');
+    b.classList.toggle('muted-on', !on);
+    b.setAttribute('aria-pressed', String(on));
+    b.setAttribute('aria-label', on ? 'Sound on' : 'Sound off');
+  }
+  $('#soundBtn').addEventListener('click', () => { sound.toggle(); paintSoundBtn(); });
+  paintSoundBtn();
   function previewSkinDesc() {
     return customText.trim() ? skins.forCustom(customText.trim(), bank) : { id: selTheme || 'animals' };
   }
@@ -92,7 +117,8 @@
       b.querySelector('.t-tag').textContent = sk.tag;
       b.querySelector('.t-name').textContent = t.name;
       b.querySelector('.t-blurb').textContent = t.blurb;
-      b.addEventListener('click', () => { selTheme = t.id; customText = ''; $('#customTheme').value = ''; syncSetup(); });
+      b.addEventListener('click', () => { selTheme = t.id; customText = ''; $('#customTheme').value = ''; sound.play('click'); syncSetup(); });
+      addTilt(b);
       grid.appendChild(b);
     }
 
@@ -118,7 +144,7 @@
       b.dataset.id = key;
       b.innerHTML = `<span class="d-top"><span class="d-name">${d.label}</span><span class="d-dots">${[0, 1, 2].map((k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('')}</span></span>
         <span class="d-blurb">${d.blurb}</span><span class="d-size">Up to ${d.size}×${d.size} · ~${d.target} words</span>`;
-      b.addEventListener('click', () => { difficulty = key; syncSetup(); });
+      b.addEventListener('click', () => { difficulty = key; sound.play('click'); syncSetup(); });
       dg.appendChild(b);
     });
 
@@ -126,6 +152,20 @@
     syncSetup();
     renderResume();
     renderStats();
+  }
+
+  // 3D tilt + light sheen that follows the pointer
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  function addTilt(el) {
+    if (!finePointer) return;
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      el.style.transform = `perspective(700px) rotateX(${(0.5 - y) * 12}deg) rotateY(${(x - 0.5) * 14}deg) translateY(-4px)`;
+      el.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+      el.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+    });
+    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
   }
 
   function syncSetup() {
@@ -136,7 +176,7 @@
     store.set('prefs', { theme: selTheme || 'animals', custom: customText, difficulty });
     // live preview of the chosen theme's design (debounced while typing)
     clearTimeout(syncSetup.t);
-    syncSetup.t = setTimeout(() => { if (!$('#setupView').hidden) setSkin(previewSkinDesc()); }, customText ? 350 : 0);
+    syncSetup.t = setTimeout(() => { if (!$('#setupView').hidden) { setSkin(previewSkinDesc()); refreshDemo(); } }, customText ? 450 : 0);
   }
 
   $('#customTheme').addEventListener('input', (e) => {
@@ -165,13 +205,62 @@
     if (saved) loadGame(saved);
   });
 
-  function renderStats() {
-    const s = store.get('stats', { solved: 0, best: {} });
-    const parts = [];
-    if (s.solved) parts.push(`🏆 ${s.solved} puzzle${s.solved === 1 ? '' : 's'} solved`);
-    if (s.streak > 1) parts.push(`🔥 ${s.streak}-day streak`);
-    $('#statsLine').textContent = parts.join('   ·   ');
+  function getStats() {
+    return Object.assign({ solved: 0, best: {}, xp: 0, badges: [], themes: [], daily: {} }, store.get('stats', {}));
   }
+
+  function renderStats() {
+    const s = getStats();
+    const lv = progress.levelFor(s.xp);
+    $('#levelNum').textContent = lv.level;
+    $('#levelRing').style.setProperty('--p', Math.round((lv.into / lv.need) * 100));
+    $('#playerTitle').textContent = lv.title;
+    $('#xpFill').style.width = (lv.into / lv.need) * 100 + '%';
+    $('#xpText').textContent = `${lv.into} / ${lv.need} XP to level ${lv.level + 1}`;
+    $('#statSolved').textContent = s.solved || 0;
+    $('#statStreak').textContent = s.streak || 0;
+    $('#statBadges').textContent = `${(s.badges || []).length}/${progress.BADGES.length}`;
+    const strip = $('#badgeStrip');
+    strip.innerHTML = '';
+    for (const b of progress.BADGES) {
+      const got = (s.badges || []).includes(b.id);
+      const el = document.createElement('span');
+      el.className = 'badge-chip' + (got ? ' got' : '');
+      el.textContent = b.icon;
+      el.title = `${b.name}${got ? '' : ' (locked)'} — ${b.desc}`;
+      el.setAttribute('aria-label', el.title);
+      strip.appendChild(el);
+    }
+    renderDaily();
+  }
+
+  function renderDaily() {
+    const d = progress.daily(bank);
+    const s = getStats();
+    const card = $('#dailyCard');
+    skins.apply(card, skins.get({ id: d.theme.id }));
+    $('#dailyDate').textContent = d.label;
+    $('#dailyIcon').textContent = d.theme.icon;
+    $('#dailyTheme').textContent = d.theme.name;
+    const solvedTime = s.daily && s.daily[d.key];
+    const saved = store.get('current', null);
+    const inProgress = saved && !saved.done && saved.puzzle.daily === d.key;
+    $('#dailyMeta').textContent = solvedTime != null
+      ? `Solved in ${fmtTime(solvedTime)} — come back tomorrow for a new one!`
+      : 'Same puzzle for everyone today · Medium · +100 XP bonus';
+    $('#dailyBtn').textContent = solvedTime != null ? 'Play it again' : inProgress ? 'Continue daily' : "Play today's puzzle";
+    card.classList.toggle('done', solvedTime != null);
+  }
+
+  function playDaily() {
+    const d = progress.daily(bank);
+    const saved = store.get('current', null);
+    if (saved && !saved.done && saved.puzzle.daily === d.key) { loadGame(saved); return; }
+    startNew({ daily: true });
+  }
+  $('#dailyBtn').addEventListener('click', playDaily);
+  $('#heroDaily').addEventListener('click', playDaily);
+  $('#heroPlay').addEventListener('click', () => $('.setup-card').scrollIntoView({ behavior: 'smooth', block: 'start' }));
 
   $('#brandHome').addEventListener('click', goHome);
   function goHome() {
@@ -186,9 +275,12 @@
   // =====================================================
   const LOADING_LINES = ['Gathering words…', 'Crossing letters…', 'Writing clues…', 'Weaving the grid…'];
 
-  async function startNew() {
-    const cfg = DIFFICULTIES[difficulty];
-    const text = customText.trim();
+  async function startNew(opts = {}) {
+    const dailyInfo = opts.daily ? progress.daily(bank) : null;
+    const diffKey = dailyInfo ? dailyInfo.difficulty : difficulty;
+    // The daily puzzle must come out identical on every device, so it gets a fixed seed and no time cut-off.
+    const cfg = dailyInfo ? Object.assign({}, DIFFICULTIES[diffKey], { timeBudget: 1e9 }) : DIFFICULTIES[diffKey];
+    const text = dailyInfo ? '' : customText.trim();
     show('loadingView');
     let li = 0;
     $('#loadingText').textContent = LOADING_LINES[0];
@@ -206,19 +298,19 @@
         const look = bank.themes.find((t) => t.id === skin.id);
         icon = look ? look.icon : '✨';
       } else {
-        const theme = bank.themes.find((t) => t.id === selTheme) || bank.themes[0];
+        const theme = dailyInfo ? dailyInfo.theme : (bank.themes.find((t) => t.id === selTheme) || bank.themes[0]);
         entries = theme.entries;
-        title = theme.name;
+        title = dailyInfo ? `Daily · ${theme.name}` : theme.name;
         icon = theme.icon;
         skin = { id: theme.id };
       }
 
       // Words used recently get pushed down the list so each puzzle feels fresh.
       const recent = new Set(store.get('recent', []));
-      entries = entries.map((e) => Object.assign({}, e, { priority: (e.priority || 0) - (recent.has(e.answer) ? 3.5 : 0) }));
+      if (!dailyInfo) entries = entries.map((e) => Object.assign({}, e, { priority: (e.priority || 0) - (recent.has(e.answer) ? 3.5 : 0) }));
 
       await new Promise((r) => setTimeout(r, 30)); // let the loader paint
-      const seed = (Date.now() ^ Math.floor(Math.random() * 2 ** 32)) >>> 0;
+      const seed = dailyInfo ? dailyInfo.seed : (Date.now() ^ Math.floor(Math.random() * 2 ** 32)) >>> 0;
       const puzzle = generator.generate(entries, cfg, seed);
       await minWait;
       if (!puzzle || puzzle.words.length < 4) throw new Error('Could not build a puzzle from that theme.');
@@ -226,7 +318,7 @@
       const used = puzzle.words.map((w) => w.answer);
       store.set('recent', used.concat([...recent]).slice(0, 160));
 
-      Object.assign(puzzle, { title, icon, skin, difficulty, notice, seed, created: Date.now() });
+      Object.assign(puzzle, { title, icon, skin, difficulty: diffKey, notice, seed, created: Date.now(), custom: !!text, daily: dailyInfo ? dailyInfo.key : null });
       const counter = store.get('counter', 0) + 1;
       store.set('counter', counter);
       puzzle.number = counter;
@@ -239,7 +331,8 @@
         elapsed: 0,
         reveals: 0,
         done: false,
-        autocheck: cfg.autocheck
+        autocheck: cfg.autocheck,
+        maxCombo: 0
       });
     } catch (err) {
       console.error(err);
@@ -273,6 +366,11 @@
     });
     G = Object.assign({}, saved, { W, H, cellWords, sel: -1, dir: 'across', notifiedFull: false });
     G.reveals = G.reveals || 0;
+    G.maxCombo = G.maxCombo || 0;
+    G.combo = 0;
+    G.lastWordAt = 0;
+    G.correctWords = new Set();
+    p.words.forEach((w, wi) => { if (w.cells.every((i) => G.fill[i] === p.solution[i])) G.correctWords.add(wi); });
 
     // header
     setSkin(p.skin || { id: 'general' });
@@ -466,16 +564,62 @@
     G.clueEls[wi].classList.toggle('done', w.cells.every((i) => G.fill[i]));
   }
 
-  function afterChange(idxs) {
+  function afterChange(idxs, opts = {}) {
     const words = new Set();
     for (const i of idxs) {
       paintCell(i);
       for (const d of ['across', 'down']) { const wi = wordIdx(i, d); if (wi >= 0) words.add(wi); }
     }
     words.forEach(paintClueDone);
+    // celebrate words that just became correct (but not the very last one — the win takes over)
+    const allDone = G.puzzle.solution.every((ch, i) => !ch || G.fill[i] === ch);
+    words.forEach((wi) => {
+      const ok = G.puzzle.words[wi].cells.every((i) => G.fill[i] === G.puzzle.solution[i]);
+      if (ok && !G.correctWords.has(wi)) {
+        G.correctWords.add(wi);
+        if (!opts.quiet && !allDone) celebrateWord(wi);
+      } else if (!ok) G.correctWords.delete(wi);
+    });
     updateProgress();
     scheduleSave();
     checkComplete();
+  }
+
+  // ---------- word-complete effects & combos ----------
+  function celebrateWord(wi) {
+    const w = G.puzzle.words[wi];
+    const now = Date.now();
+    G.combo = now - G.lastWordAt < 25000 ? G.combo + 1 : 1;
+    G.lastWordAt = now;
+    G.maxCombo = Math.max(G.maxCombo || 0, G.combo);
+
+    w.cells.forEach((i, n) => {
+      const el = G.cellEls[i];
+      el.style.setProperty('--d', n * 45 + 'ms');
+      el.classList.remove('word-pop'); void el.offsetWidth; el.classList.add('word-pop');
+      setTimeout(() => el.classList.remove('word-pop'), 900 + n * 45);
+    });
+    const li = G.clueEls[wi];
+    li.classList.remove('just-done'); void li.offsetWidth; li.classList.add('just-done');
+
+    // floating word label above the word's middle tile
+    const wrap = $('.board-col');
+    const mid = G.cellEls[w.cells[Math.floor(w.cells.length / 2)]];
+    const wr = wrap.getBoundingClientRect(), cr = mid.getBoundingClientRect();
+    const f = document.createElement('div');
+    f.className = 'float-word';
+    f.textContent = `${w.answer} +${10 * G.combo}`;
+    f.style.left = cr.left - wr.left + cr.width / 2 + 'px';
+    f.style.top = cr.top - wr.top + 'px';
+    wrap.appendChild(f);
+    setTimeout(() => f.remove(), 1400);
+
+    if (G.combo >= 2) {
+      sound.play('combo', G.combo);
+      const c = $('#comboPop');
+      c.textContent = `COMBO ×${G.combo}`;
+      c.classList.remove('show'); void c.offsetWidth; c.classList.add('show');
+    } else sound.play('word');
   }
 
   function updateProgress() {
@@ -553,6 +697,7 @@
     if (changed) {
       const el = G.cellEls[idx];
       el.classList.remove('typed'); void el.offsetWidth; el.classList.add('typed');
+      sound.play('type');
       afterChange([idx]);
     }
     if (G.done) return;
@@ -586,6 +731,7 @@
     if (G.done || G.revealed[idx] || !G.fill[idx]) return;
     G.fill[idx] = '';
     G.wrong[idx] = false;
+    sound.play('erase');
     afterChange([idx]);
   }
 
@@ -626,7 +772,8 @@
       if (!G.fill[i]) { empty++; continue; }
       if (G.fill[i] !== G.puzzle.solution[i]) { G.wrong[i] = true; wrong++; }
     }
-    afterChange(cells);
+    afterChange(cells, { quiet: true });
+    sound.play(wrong ? 'wrong' : 'good');
     if (wrong) toast(`${wrong} letter${wrong === 1 ? '' : 's'} need${wrong === 1 ? 's' : ''} another look`);
     else if (empty) toast('Looking good so far! ✓');
     else toast('All correct! ✓');
@@ -645,7 +792,7 @@
         changed.push(i);
       }
       if (changed.length) G.reveals += scope === 'puzzle' ? changed.length : 1;
-      afterChange(cells);
+      afterChange(cells, { quiet: true });
     };
     if (scope === 'puzzle') confirmBox('Reveal the whole puzzle? This ends the game.', run);
     else run();
@@ -658,7 +805,7 @@
     if (G.autocheck) {
       const filled = scopeCells('puzzle').filter((i) => G.fill[i]);
       filled.forEach((i) => { G.wrong[i] = G.fill[i] !== G.puzzle.solution[i]; });
-      afterChange(filled);
+      afterChange(filled, { quiet: true });
     } else scheduleSave();
   });
 
@@ -675,7 +822,8 @@
       all.forEach((i) => { G.fill[i] = ''; G.wrong[i] = false; G.revealed[i] = false; });
       G.elapsed = 0; G.reveals = 0; G.done = false; G.notifiedFull = false;
       $('#grid').classList.remove('solved');
-      afterChange(all);
+      G.combo = 0; G.maxCombo = 0;
+      afterChange(all, { quiet: true });
       select(G.puzzle.words[0].cells[0], G.puzzle.words[0].dir);
       startTimer();
     });
@@ -703,35 +851,102 @@
     G.done = true;
     stopTimer();
     saveNow();
+    const p = G.puzzle;
     const assisted = G.reveals > 0;
-    const stats = store.get('stats', { solved: 0, best: {} });
+    const stats = getStats();
+    const before = progress.levelFor(stats.xp);
     let bestMsg = '';
     if (!assisted) {
       stats.solved = (stats.solved || 0) + 1;
-      const prev = stats.best[G.puzzle.difficulty];
+      const prev = stats.best[p.difficulty];
       if (!prev || G.elapsed < prev) {
-        stats.best[G.puzzle.difficulty] = G.elapsed;
-        bestMsg = prev ? `⚡ New personal best for ${DIFFICULTIES[G.puzzle.difficulty].label}!` : '';
-      } else bestMsg = `Your best ${DIFFICULTIES[G.puzzle.difficulty].label} time: ${fmtTime(prev)}`;
+        stats.best[p.difficulty] = G.elapsed;
+        bestMsg = prev ? `⚡ New personal best for ${DIFFICULTIES[p.difficulty].label}!` : '';
+      } else bestMsg = `Your best ${DIFFICULTIES[p.difficulty].label} time: ${fmtTime(prev)}`;
       const today = new Date().toDateString();
       const yesterday = new Date(Date.now() - 864e5).toDateString();
       if (stats.lastDay !== today) stats.streak = stats.lastDay === yesterday ? (stats.streak || 0) + 1 : 1;
       stats.lastDay = today;
-      store.set('stats', stats);
+      const themeKey = p.custom ? 'custom:' + p.title.toLowerCase() : (p.skin && p.skin.id) || p.title;
+      if (!stats.themes.includes(themeKey)) stats.themes.push(themeKey);
+      if (p.daily && stats.daily[p.daily] == null) stats.daily[p.daily] = Math.round(G.elapsed);
     }
+    const dailyFirst = !!p.daily && !assisted && stats.daily[p.daily] === Math.round(G.elapsed);
+    const gain = progress.xpFor({ difficulty: p.difficulty, elapsed: G.elapsed, reveals: G.reveals, maxCombo: G.maxCombo, daily: dailyFirst });
+    stats.xp = (stats.xp || 0) + gain.total;
+    const earned = progress.newBadges(stats, { difficulty: p.difficulty, elapsed: G.elapsed, reveals: G.reveals, custom: p.custom, daily: !!p.daily, maxCombo: G.maxCombo });
+    stats.badges = (stats.badges || []).concat(earned);
+    store.set('stats', stats);
+    const after = progress.levelFor(stats.xp);
+
     $('#grid').classList.add('solved');
     G.cellEls.forEach((el, i) => { el.style.animationDelay = ((i % G.W) + Math.floor(i / G.W)) * 25 + 'ms'; });
+    sound.play('win');
     if (!assisted) confetti();
     setTimeout(() => {
       $('#winTitle').textContent = assisted ? 'Puzzle complete!' : 'Puzzle solved!';
-      $('.win-burst').textContent = assisted ? '🧩' : '🎉';
-      $('#winSub').textContent = `${G.puzzle.icon} ${G.puzzle.title} · ${DIFFICULTIES[G.puzzle.difficulty].label}`;
+      $('.win-burst').textContent = assisted ? '🧩' : (p.icon || '🎉');
+      $('#winSub').textContent = `${p.title} · ${DIFFICULTIES[p.difficulty].label}`;
       $('#winTime').textContent = fmtTime(G.elapsed);
-      $('#winWords').textContent = G.puzzle.words.length;
+      $('#winWords').textContent = p.words.length;
       $('#winHelp').textContent = G.reveals;
       $('#winBest').textContent = assisted ? 'Solve one without reveals to set a best time.' : bestMsg;
+      const parts = [`Solve +${gain.base}`];
+      if (gain.speed) parts.push(`Speed +${gain.speed}`);
+      if (gain.combo) parts.push(`Combo +${gain.combo}`);
+      if (gain.dailyBonus) parts.push(`Daily +${gain.dailyBonus}`);
+      if (gain.assisted) parts.push('Reveals ×0.4');
+      $('#xpBreakdown').textContent = parts.join('  ·  ');
+      const wb = $('#winBadges');
+      wb.innerHTML = '';
+      for (const id of earned) {
+        const b = progress.BADGES.find((x) => x.id === id);
+        const el = document.createElement('div');
+        el.className = 'new-badge';
+        el.innerHTML = '<span class="nb-icon"></span><span><b></b><small></small></span>';
+        el.querySelector('.nb-icon').textContent = b.icon;
+        el.querySelector('b').textContent = `Badge unlocked: ${b.name}`;
+        el.querySelector('small').textContent = b.desc;
+        wb.appendChild(el);
+      }
       openModal('winModal');
+      animateXp(before, after, gain.total);
     }, assisted ? 300 : 900);
+  }
+
+  function animateXp(before, after, total) {
+    const gainEl = $('#xpGain'), fill = $('#winXpFill'), lvl = $('#winLevel');
+    const leveled = after.level > before.level;
+    lvl.textContent = `Lv ${before.level} · ${before.title}`;
+    lvl.classList.remove('up');
+    fill.style.transition = 'none';
+    fill.style.width = (before.into / before.need) * 100 + '%';
+    void fill.offsetWidth;
+    fill.style.transition = '';
+    const start = performance.now(), dur = 1200;
+    (function tick(t) {
+      const k = Math.min(1, (t - start) / dur);
+      const e = 1 - Math.pow(1 - k, 3);
+      gainEl.textContent = `+${Math.round(total * e)} XP`;
+      if (k < 1) requestAnimationFrame(tick);
+    })(start);
+    setTimeout(() => {
+      if (leveled) {
+        fill.style.width = '100%';
+        setTimeout(() => {
+          fill.style.transition = 'none';
+          fill.style.width = '0%';
+          void fill.offsetWidth;
+          fill.style.transition = '';
+          fill.style.width = (after.into / after.need) * 100 + '%';
+          lvl.textContent = `LEVEL UP! Lv ${after.level} · ${after.title}`;
+          lvl.classList.add('up');
+          sound.play('levelup');
+        }, 650);
+      } else {
+        fill.style.width = (after.into / after.need) * 100 + '%';
+      }
+    }, 150);
   }
 
   $('#winAgain').addEventListener('click', () => { closeModal('winModal'); startNew(); });
@@ -845,11 +1060,15 @@
     cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
     ctx.scale(dpr, dpr);
     const colors = currentSkin ? [currentSkin.a1, currentSkin.a2, currentSkin.a3, '#ffffff'] : ['#818cf8', '#f472b6', '#34d399', '#ffffff'];
-    const parts = Array.from({ length: 160 }, () => ({
+    const EXTRA = { space: ['★', '✦'], ocean: ['🫧', '🐚'], technology: ['0', '1', '</>'], science: ['⚛', '⬢'], history: ['👑', '✦'], arts: ['🎨', '✏️'], general: ['✦', '★'], custom: ['✦', '✧'] };
+    const glyphs = currentSkin && currentSkin.fx.glyphs && !currentSkin.fx.tint ? currentSkin.fx.glyphs
+      : (currentSkin && (EXTRA[currentSkin.id] || (currentSkin.fx.glyphs))) || ['✦'];
+    const parts = Array.from({ length: 170 }, (_, n) => ({
       x: innerWidth / 2 + (Math.random() - 0.5) * 200, y: innerHeight * 0.35,
       vx: (Math.random() - 0.5) * 14, vy: -Math.random() * 14 - 4,
       s: 6 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3,
-      c: colors[(Math.random() * colors.length) | 0]
+      c: colors[(Math.random() * colors.length) | 0],
+      g: n % 4 === 0 ? glyphs[(Math.random() * glyphs.length) | 0] : null
     }));
     const start = performance.now();
     (function frame(t) {
@@ -859,7 +1078,12 @@
         p.vy += 0.35; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
         ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
         ctx.globalAlpha = Math.max(0, 1 - age / 3200);
-        ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
+        ctx.fillStyle = p.c;
+        if (p.g) {
+          ctx.font = `700 ${p.s * 2.6}px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji","JetBrains Mono",sans-serif`;
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(p.g, 0, 0);
+        } else ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
         ctx.restore();
       }
       if (age < 3200) requestAnimationFrame(frame);

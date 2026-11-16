@@ -17,6 +17,10 @@ Choose a theme from the list (or type your own), choose a difficulty, and play r
 - **Comfortable play**: click or tap squares, type to fill, use the arrow keys, press Space to switch direction and Tab for the next clue. The current clue bar has previous/next buttons and the clue list stays in sync with the grid.
 - **Help when you need it**: check or reveal a letter, word or the whole puzzle, plus an optional auto-check mode.
 - **A look for every theme**: a futuristic glass-and-neon interface where each theme brings its own colors, display font, background pattern and animated background. Examples: twinkling stars and shooting stars for Space, rising bubbles for Ocean, falling binary digits for Technology, drifting leaves for Nature, golden dust for History, and floating notes for Music. Pick a theme and the whole page changes to match. Custom themes borrow the closest built-in look or get their own color.
+- **Daily Puzzle**: one puzzle a day, identical for everyone, with a different theme each day and a +100 XP bonus.
+- **Levels, XP and badges**: earn XP for every solve (bonuses for speed, word combos and dailies), climb ten ranks from *Rookie Weaver* to *Grand Weaver*, and unlock 9 badges.
+- **Juicy feedback**: finished words light up with a floating "+WORD" label, quick solves chain into combos, and every theme has its own synthesized sound effects (mute from the top bar).
+- **Live preview**: the start screen shows a mini crossword solving itself with words from the theme you've picked. Theme cards tilt in 3D under the pointer, and confetti uses theme symbols.
 - **Extras**: a timer with pause, a progress bar, automatic saving (resume later), best times and a daily streak, a celebration with confetti, a print layout, neon (dark) and frost (light) modes, and an on-screen keyboard on touch devices.
 
 ## Running it
@@ -52,6 +56,9 @@ js/config.js          Difficulty presets
 js/wordbank.js        Built-in themes, answers and clues
 js/skins.js           Per-theme design: colors, fonts, background patterns
 js/ambient.js         Animated theme backgrounds (particle engine)
+js/sound.js           Synthesized theme sound effects
+js/progress.js        XP, levels, badges and the Daily Puzzle
+js/demo.js            Self-solving preview on the start screen
 js/generator.js       Crossword layout engine
 js/custom-theme.js    Custom-theme word lookup (Datamuse + local fallback)
 js/app.js             UI, input, game state, saving
