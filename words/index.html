@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0a1d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Wordlings" />
+  <title>Wordlings — a Dreamling word game</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="wordlings.css" />
+</head>
+<body>
+  <header class="wl-top">
+    <a class="wl-back" href="../">← Imagine Seek</a>
+    <span class="wl-brand">🔤 <span>Wordlings</span></span>
+    <button class="wl-icon-btn" id="rulesBtn" aria-label="How to play">?</button>
+  </header>
+  <main id="wl"></main>
+
+  <dialog id="rulesDlg" class="wl-sheet">
+    <h2>How to play Wordlings</h2>
+    <ol class="wl-rules">
+      <li><b>Make a word.</b> Slide your finger from letter to letter — any direction, even diagonally — or tap them one by one. Words need 3 or more letters, and each bubble can be used once per word.</li>
+      <li><b>Pop!</b> Tap <b>Play</b>. The bubbles you used pop, the letters above drop down, and new letters float in from the top. The board keeps changing!</li>
+      <li><b>Score.</b> Rare letters are worth more. ⭐ <b>Star</b> bubbles double the whole word, 🌙 <b>Moon</b> bubbles triple their letter, and 💎 <b>Gem</b> bubbles add 5. Long words get a bonus: 5 letters +3, 6 letters +6, 7 letters +10, 8 or more +15.</li>
+      <li><b>Dream Power.</b> Everyone plays with a Dreamling partner, and each Dreamling has one special power you can use once per game.</li>
+      <li><b>Stuck?</b> 💡 Hint shows the start of a good word (3 per game). 🌀 Shake mixes up the board but skips your turn.</li>
+      <li><b>Win.</b> After the last round, the highest score wins!</li>
+    </ol>
+    <h3>Dream Powers</h3>
+    <ul class="wl-powers" id="powerList"></ul>
+    <button class="wl-btn primary block" id="rulesClose">Got it!</button>
+  </dialog>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/art.js"></script>
+  <script src="../js/voices.js"></script>
+  <script src="wordlings.js"></script>
+</body>
+</html>

@@ -224,3 +224,29 @@ need the service to speak them live, through a small server that keeps the servi
 - Seasonal creatures (Snow Sprite, Pumpkin Gnome) and party mode for several teams.
 - Custom riddles written by the grown-up for their own spots.
 - Real anchored AR (WebXR plane detection) so creatures sit on actual tables and floors.
+
+## 🔤 Wordlings — the Dreamling word game (`words/`)
+A separate word game with the same characters, linked from a bar under the main app's tab bar.
+- **Modes:** play **vs a Dreamling** (the computer; Easy, Medium or Hard), or **with friends**
+  (2–4 players passing one phone). Rounds: 5, 8 or 12.
+- **Board:** a 6×6 grid of letter bubbles. Trace a word of 3+ letters through neighbouring bubbles in
+  any direction (slide or tap). Used bubbles pop, the letters above fall, and new letters drop in, so
+  the board changes every turn. A "Qu" bubble counts as two letters.
+- **Scoring:** letter values from 1 (common) to 8 (Z, Qu). ⭐ Star bubbles double the word, 🌙 Moon
+  bubbles triple their letter, 💎 Gem bubbles add 5. Length bonus: 5 letters +3, 6 +6, 7 +10, 8+ +15.
+- **Dream Powers** (one per player, once per game, chosen by your Dreamling partner):
+  - Scribbi **Doodle**: change a letter.
+  - Craggle **Boulder Bonus**: next word +10.
+  - Orbit **Spin**: shuffle the board.
+  - Tangle **Twist**: swap two letters.
+  - Nyxie **Moonbeam**: next word ×2.
+  - Glitch **Respawn**: all-new letters.
+  - Leo **Sniff**: lights up a great word.
+- **Help:** 💡 Hint (3 per game) lights the first two letters of a good word. 🌀 Shake mixes the board
+  but skips your turn. If the board gets too hard, it refreshes automatically.
+- **Computer player:** finds every word on the board. Easy plays short common words, Medium plays
+  decent words, and Hard plays the top-scoring ones. It uses its Dream Power and announces its word in
+  its own voice.
+- **Words:** the SCOWL word lists (free to use; licence in `words/dict/LICENSE-SCOWL.txt`), with rude
+  and unsuitable words removed. The computer only plays common, kid-friendly words.
+

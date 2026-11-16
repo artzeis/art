@@ -34,5 +34,8 @@ folder on GitHub Pages works well for playing on a phone.
 - `js/calm.js` — "Calm down with Nyxie" steps and timing
 - `js/voices.js` — each character's speaking voice (pitch, speed, preferred voices)
 
+## Wordlings (word game)
+- `words/` — Wordlings, the Dreamling word game (`index.html`, `wordlings.js`, `wordlings.css`, word lists in `dict/`).
+
 ## Manufacturing
 - `manufacturing/treasures/` — 3D models (STL) of the seven treasures, previews, a spec sheet and a zip to send to a manufacturer.
