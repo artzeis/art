@@ -350,6 +350,27 @@ ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
 .calm-icon { font-size: 2rem; }
 .calm-text { font-family: "Fredoka", system-ui; font-size: 1.35rem; line-height: 1.45; margin: 6px 0 10px; }
 
+/* ---------- Secret messages / decoder wheel ---------- */
+.codes-cta { background: linear-gradient(135deg, rgba(31, 164, 99, .3), rgba(229, 181, 58, .18)); border-color: rgba(229, 181, 58, .45); }
+.dw { width: min(320px, 92%); display: block; margin: 0 auto; }
+.dw-outer { fill: #e5b53a; }
+.dw-inner { fill: #f6d77c; }
+.dw-o { fill: #4a3508; font-family: "Fredoka", system-ui; font-weight: 700; }
+.dw-i { fill: #1f6b45; font-family: "Fredoka", system-ui; font-weight: 700; }
+.dw-pointer { fill: #ff4f4f; }
+.dw-maze { fill: none; stroke: #1fa463; stroke-width: 4; stroke-dasharray: 60 14; }
+.dw-hub { fill: #d9a92e; }
+.dw-dial { transform-origin: 150px 150px; transform-box: view-box; transition: transform .45s cubic-bezier(.3, 1.3, .5, 1); }
+.dw-controls { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 10px; }
+.dw-controls .btn { padding: 10px 18px; }
+.dw-read { font-weight: 800; }
+.dw-read b { font-family: "Fredoka", system-ui; font-size: 1.4rem; color: #ffd36b; }
+.code-head { display: flex; gap: 12px; align-items: center; }
+.code-head .hide-art { width: 48px; height: 48px; flex: none; }
+.code-head .key { font-family: "Fredoka", system-ui; font-size: 1.15rem; color: #ffd36b; }
+.code { font-family: "Fredoka", system-ui; font-size: 1.5rem; letter-spacing: .18em; line-height: 1.6; margin: 10px 0; word-spacing: .35em; }
+.code span { white-space: nowrap; }
+
 /* ---------- Plush shop ---------- */
 .shop { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: center; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 22%, transparent), var(--glass)); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
 .shop img { width: 140px; height: 140px; border-radius: 22px; object-fit: cover; box-shadow: 0 10px 24px rgba(0,0,0,.35); }

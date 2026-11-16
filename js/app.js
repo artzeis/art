@@ -27,7 +27,7 @@
   const shuffle = (arr) => arr.map((v) => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map((p) => p[1]);
   const vars = (c) => `--c:${c.color};--soft:${c.soft}`;
 
-  function confetti(emojis = ["⭐", "✨", "🖍️", "💎", "🌕", "🗝️", "🟩", "🌙"]) {
+  function confetti(emojis = ["⭐", "✨", "🖍️", "💎", "🌕", "🔐", "🟩", "🌙"]) {
     for (let i = 0; i < 28; i++) {
       const s = document.createElement("span");
       s.className = "confetti";
@@ -97,8 +97,14 @@
           <span class="calm-cta-moon">🌙</span>
           <div><b>Wind down with Nyxie</b><br><span class="small muted">A 2-minute calm-down for after play or before bed</span></div>
           <button class="btn purple" id="calmHome">Start</button>
+        </div>
+        <div class="card calm-cta codes-cta">
+          <span class="calm-cta-moon">🔐</span>
+          <div><b>Tangle's Secret Messages</b><br><span class="small muted">Crack the codes with the Decoder Wheel · ${Object.keys(save.decoded || {}).length}/${CODE_MESSAGES.length} cracked</span></div>
+          <button class="btn primary" id="codesHome">Open</button>
         </div>`;
       app.querySelector("#calmHome").onclick = () => Calm.start(() => go("home"));
+      app.querySelector("#codesHome").onclick = () => go("decoder");
       app.querySelectorAll("[data-open]").forEach((b) => b.onclick = () => {
         const id = b.dataset.open;
         if (hidden(id) && !save.found[id]) go("quest", id); else go("creature", id);
@@ -181,6 +187,7 @@
             ${!friend && hidden(id) ? `<button class="btn primary" data-quest>🗺️ Start quest</button>` : ""}
             <button class="btn purple" data-ar>🔮 Find in AR</button>
             <button class="btn" data-make>🎨 Make something</button>
+            ${c.id === "tangle" ? `<button class="btn primary" data-codes>🔐 Secret messages</button>` : ""}
           </div>
           <div class="tabs" role="tablist">
             ${[["story", "📖 Story"], ["powers", "⭐ Powers"], ["secrets", friend ? "🔓 Secrets" : "🔒 Secrets"]].map(([k, l]) =>
@@ -193,12 +200,83 @@
       app.querySelector("[data-say]").onclick = () => speak(`${c.catchphrase} ${c.description}`, c.id);
       app.querySelector("[data-ar]").onclick = () => startAR(id);
       app.querySelector("[data-make]").onclick = () => go("create", id);
+      const codes = app.querySelector("[data-codes]");
+      if (codes) codes.onclick = () => go("decoder");
       app.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => screens.creature(id, b.dataset.tab));
       const q = app.querySelector("[data-quest]");
       if (q) q.onclick = () => go("quest", id);
     },
 
     quest(id) { runQuest(byId[id]); },
+
+    // Tangle's Secret Messages: crack codes with the Decoder Wheel (toy or on-screen).
+    decoder() {
+      save.decoded = save.decoded || {};
+      let turn = 0;
+      const draw = () => {
+        const y = window.scrollY;
+        app.innerHTML = `
+          <h1 class="screen-title">🔐 Secret <span class="grad-text">Messages</span></h1>
+          <p class="lead">Crack Tangle's codes with the Secret Decoder Wheel, or use the one on screen.</p>
+          <div class="card small">
+            <ol class="setup-steps" style="margin:0">
+              <li>Turn the dial so the <b style="color:#ff6b6b">red pointer</b> points at the message's <b>key letter</b> on the outside ring.</li>
+              <li>Find each code letter on the <b>inside</b> ring.</li>
+              <li>The real letter is right next to it on the <b>outside</b> ring. Write it down or say it out loud!</li>
+            </ol>
+          </div>
+          <div class="card center dw-card" id="dwCard">
+            ${decoderWheelSVG(turn)}
+            <div class="dw-controls">
+              <button class="btn" id="dwL" aria-label="Turn left">◀</button>
+              <span class="dw-read">Pointer on <b id="dwOn">${ALPHA[turn]}</b></span>
+              <button class="btn" id="dwR" aria-label="Turn right">▶</button>
+            </div>
+          </div>
+          ${CODE_MESSAGES.map((m, i) => { const c = byId[m.from]; const done = !!save.decoded[i]; return `
+            <div class="card code-card" style="${vars(c)}">
+              <div class="code-head">
+                <span class="hide-art">${creatureArt(c.id)}</span>
+                <div><b>Message ${i + 1} from ${c.name}</b><br><span class="small muted">Key letter: <b class="key">${m.key}</b></span></div>
+                ${done ? `<span class="pill friend" style="position:static;margin-left:auto">Cracked ✔</span>` : ""}
+              </div>
+              <p class="code">${encodeMessage(m.text, m.key).split(" ").map((w) => `<span>${w}</span>`).join(" ")}</p>
+              ${done ? `<div class="hintbox">✅ ${m.text}</div>` : ""}
+              <div class="row">
+                <button class="btn small-btn" data-setkey="${m.key}">🎯 Turn the wheel to ${m.key}</button>
+                ${done ? `<button class="btn small-btn" data-hear="${i}">🔊 Hear it</button>` : `<button class="btn good small-btn" data-crack="${i}">🔓 We cracked it!</button>`}
+              </div>
+            </div>`; }).join("")}`;
+        window.scrollTo(0, y);
+        const dial = app.querySelector(".dw-dial");
+        const turnTo = (t) => {
+          // turn the shortest way round so the animation looks right
+          let diff = ((t - turn) % 26 + 26) % 26; if (diff > 13) diff -= 26;
+          turn = ((turn + diff) % 26 + 26) % 26;
+          dial.dataset.deg = (+(dial.dataset.deg || turn * 360 / 26 - diff * 360 / 26) + diff * 360 / 26).toFixed(2);
+          dial.style.transform = `rotate(${dial.dataset.deg}deg)`;
+          app.querySelector("#dwOn").textContent = ALPHA[turn];
+        };
+        app.querySelector("#dwL").onclick = () => turnTo(turn - 1);
+        app.querySelector("#dwR").onclick = () => turnTo(turn + 1);
+        app.querySelectorAll("[data-setkey]").forEach((b) => b.onclick = () => {
+          turnTo(ALPHA.indexOf(b.dataset.setkey));
+          app.querySelector("#dwCard").scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+        app.querySelectorAll("[data-crack]").forEach((b) => b.onclick = () => {
+          const i = +b.dataset.crack, m = CODE_MESSAGES[i];
+          if (!save.decoded[i]) { save.decoded[i] = Date.now(); save.stars += 1; persist(); }
+          confetti(["🔐", "⭐", "✨"]);
+          speak(m.text.charAt(0) + m.text.slice(1).toLowerCase() + "!", m.from);
+          draw();
+        });
+        app.querySelectorAll("[data-hear]").forEach((b) => b.onclick = () => {
+          const m = CODE_MESSAGES[+b.dataset.hear];
+          speak(m.text.charAt(0) + m.text.slice(1).toLowerCase() + "!", m.from);
+        });
+      };
+      draw();
+    },
 
     create(id) {
       const c = byId[id];
@@ -619,7 +697,7 @@
     const riddles = trail.map((st, i) => makeRiddle(st.text, c, st.seed || 0, i < trail.length - 1 ? "my next clue" : null));
     const finalSpot = riddles[riddles.length - 1];
     const outside = finalSpot.place ? finalSpot.place === "outside" : save.area === "outside";
-    let stopIdx = 0, totalHints = 0, between = false, madeSomething = false;
+    let stopIdx = 0, totalHints = 0, between = false, madeSomething = false, givingBack = false;
     // Each character can have its own wheel (Leo uses Wolf Pack challenges).
     const types = challengeTypesFor(c);
     const saved = c.challengeSet === "wolf" ? save.ctypeWolf : save.ctype;
@@ -781,6 +859,22 @@
         if (h) h.onclick = () => { helpLevel++; totalHints++; render(); };
         const fc = app.querySelector("#foundClue");
         if (fc) fc.onclick = () => { stopIdx++; between = true; confetti(["📜", "✨"]); render(); };
+      } else if (step === 3 && givingBack) {
+        // Give the treasure back: it attaches to the character's plush (hook-and-loop dot or pocket).
+        const line = `Yay, that's it! Now give it back to me. ${c.returnTo || ""}`;
+        frame(`
+          <span class="step-label">🧸 Give it back!</span>
+          <div class="speech">${esc(line)}</div>
+          <p class="small muted">Got the ${esc(c.name)} plush? Pop the treasure back where it belongs.</p>
+          <div class="row">
+            <button class="btn" data-say="${esc(line)}">🔊 Listen</button>
+            <button class="btn good" id="gaveBack">🧸 It's back on my plush!</button>
+          </div>
+          <button class="btn block" id="noPlush" style="margin-top:8px">No plush yet — keep going</button>`);
+        speak(line, c.id);
+        app.querySelector("#gaveBack").onclick = () => { confetti(["🧸", c.accessoryEmoji, "✨"]); step = 4; render(); };
+        app.querySelector("#noPlush").onclick = () => { step = 4; render(); };
+        return;
       } else if (step === 3) {
         const choices = shuffle(CREATURES.filter((x) => x.id !== c.id)).slice(0, 3).concat(c);
         frame(`
@@ -789,7 +883,7 @@
           <div class="choices">${shuffle(choices).map((x) =>
             `<button class="choice" data-pick="${x.id}"><span class="e">${x.accessoryEmoji}</span>${x.accessory}</button>`).join("")}</div>`);
         app.querySelectorAll("[data-pick]").forEach((b) => b.onclick = () => {
-          if (b.dataset.pick === c.id) { step = 4; render(); }
+          if (b.dataset.pick === c.id) { givingBack = true; render(); }
           else { b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 400); }
         });
       } else if (step === 4) {

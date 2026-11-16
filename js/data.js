@@ -16,6 +16,7 @@ const STORE_LINKS = {
 const CREATURES = [
   {
     id: "scribbi",
+    returnTo: "Slide my Rainbow Crayon into the pocket on my side.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Scribbi",
     kind: "Doodle Sprite",
     color: "#ff3d8b",
@@ -58,6 +59,7 @@ const CREATURES = [
   },
   {
     id: "craggle",
+    returnTo: "Press my Glow Crystal onto the soft moss on top of my head.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Craggle",
     kind: "Moss Rock",
     color: "#2fc4b2",
@@ -100,6 +102,7 @@ const CREATURES = [
   },
   {
     id: "orbit",
+    returnTo: "Stick my Moon Marble onto my orange ring.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Orbit",
     kind: "Little Planet",
     color: "#4f74d6",
@@ -142,12 +145,13 @@ const CREATURES = [
   },
   {
     id: "tangle",
+    returnTo: "Press my Decoder Wheel onto the very middle of my tummy maze.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Tangle",
     kind: "Maze Keeper",
     color: "#1fa463",
     soft: "#e0f5e8",
-    accessory: "Golden Key",
-    accessoryEmoji: "🗝️",
+    accessory: "Secret Decoder Wheel",
+    accessoryEmoji: "🔐",
     tagline: "A cheeky puzzle-lover with a golden maze on its tummy.",
     catchphrase: "Heh-heh! Which way, which way?",
     description:
@@ -175,7 +179,7 @@ const CREATURES = [
       "Tangle says good morning with a riddle.",
     ],
     intro:
-      "Heh-heh! Psst, amigo! I'm Tangle! I lost my Golden Key — it opens the secret door in the middle of my maze. Help me find it and you'll be a maze master too!",
+      "Heh-heh! Psst, amigo! I'm Tangle! I lost my Secret Decoder Wheel — it's how I read the secret messages hidden in my maze. Help me find it and I'll teach you to crack codes!",
     challenges: [
       { text: "Trace a maze! Draw a twisty path in the air with your finger, from your head down to your toes.", seconds: 0 },
       { text: "Walk a zig-zag path across the room — no straight lines allowed!", seconds: 0 },
@@ -184,6 +188,7 @@ const CREATURES = [
   },
   {
     id: "nyxie",
+    returnTo: "Pop my Wishing Star on top, between my ears.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Nyxie",
     kind: "Moon Cat",
     color: "#8b5cf6",
@@ -226,6 +231,7 @@ const CREATURES = [
   },
   {
     id: "glitch",
+    returnTo: "Stick my Power Pixel on top of my head.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Glitch",
     kind: "Pixel Pal",
     color: "#9b4dff",
@@ -268,6 +274,7 @@ const CREATURES = [
   },
   {
     id: "leo",
+    returnTo: "Press my Moon Medallion back onto my cape.", // where the treasure attaches on the plush (hook-and-loop dot / pocket)
     name: "Leo",
     kind: "Moonwolf",
     challengeSet: "wolf",               // Leo uses the Wolf Pack challenge wheel (js/challenges.js)
