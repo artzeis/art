@@ -18,7 +18,7 @@ prototyping and quoting.
 |---|---|---|---|---|---|
 | 1 | Rainbow Crayon | Scribbi | 18 × 18 × 100 | 22 cm³ | 6 rainbow bands, divided by grooves (paint, or print in several colours); pink tip |
 | 2 | Glow Crystal | Craggle | 61 × 50 × 59 | 39 cm³ | Translucent teal or **glow-in-the-dark** plastic; grey rock base |
-| 3 | Moon Marble | Orbit | 50 × 50 × 48.5 | 65 cm³ | Pale grey / silver, with craters; small flat spot underneath so it stands up |
+| 3 | Moon Marble | Orbit | 50 × 50 × 47 | 64 cm³ | Pale grey / silver, with craters; flat underside so it stands up |
 | 4 | Secret Decoder Wheel | Tangle | 92 × 92 × 8 (assembled) | 32 cm³ | Gold base and pale-gold dial, letters engraved 0.8 mm; red pointer could be painted |
 | 5 | Wishing Star | Nyxie | 62 × 59 × 10.5 | 15 cm³ | Yellow or gold, could be glow-in-the-dark; rounded points |
 | 6 | Power Pixel | Glitch | 40 × 41 × 41 | 63 cm³ | Mint green; raised pixel hearts on the top and front |
@@ -61,11 +61,12 @@ Every treasure goes back onto its plush when it's found (the game asks kids to "
 The models were designed with children's toy rules in mind, but **the finished products must still
 be tested by an accredited lab** before sale: ASTM F963 / CPSIA in the US, EN 71 in the EU and UK.
 - **No small parts:** every treasure is too large to fit inside the small-parts test cylinder
-  (31.7 mm wide, 57.1 mm deep) in any direction.
+  (31.7 mm wide, 57.1 mm deep) in any direction. The decoder wheel's cap is the exception, which is why it
+  must be permanently fixed to the wheel.
 - **Ball size:** the Moon Marble is 50 mm across, above the 44.5 mm small-ball limit.
 - **No sharp points or edges:** the crayon tip and crystal tips are blunted, the star points are
-  rounded, and the corners of the key, medallion and cube are rounded or bevelled.
-- **Ribbons and cords:** the key and medallion have holes for a ribbon. For young children, keep any
+  rounded, and the edges of the decoder wheel, medallion and cube are rounded or bevelled.
+- **Ribbons and cords:** the medallion has a loop for a ribbon. For young children, keep any
   ribbon short (ASTM F963 cord-length limits apply) or leave it off.
 - **Materials:** use toy-safe plastics (PLA, ABS or PP) and non-toxic, lead-free paints and pigments
   that meet ASTM F963 / EN 71-3 limits on heavy metals.
