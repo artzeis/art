@@ -39,7 +39,7 @@
   let timerId = null;
   function go(screen, arg) {
     clearInterval(timerId);
-    try { speechSynthesis.cancel(); } catch (_) {}
+    Voices.stop();
     document.querySelectorAll(".tabbar button").forEach((b) =>
       b.classList.toggle("active", b.dataset.go === screen || (screen === "creature" && b.dataset.go === "journal")));
     (screens[screen] || screens.home)(arg);

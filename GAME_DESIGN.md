@@ -90,14 +90,16 @@ Every line a character says can be heard in that character's own voice (`js/voic
 device's built-in text-to-speech, so it works offline. Each character has its own pitch and speed, and
 gets a different installed voice where the device has several:
 
-| Character | Voice |
-|---|---|
-| Scribbi | very high and fast: giggly and bouncy |
-| Craggle | very deep and slow: a sleepy rumble |
-| Orbit | high and curious |
-| Tangle | quick and sneaky |
-| Nyxie | soft, calm and a little slow |
-| Glitch | low and speedy, robotic where the device has a robot voice |
+| Character | Personality | How they speak |
+|---|---|---|
+| Scribbi | Silly, creative, wiggly | Very high and fast; pitch bounces up and down between sentences; giggles "Hee-hee!" |
+| Craggle | Chill, steady, wise | Very deep and slow; starts with "Hmmmm…" and pauses to think at every comma |
+| Orbit | Curious, dreamy, amazed | Bright; voice rises in wonder on questions and exclamations; "Ooooh!" |
+| Tangle | Clever, playful, cheeky | Quick and sly; asks questions a little quieter, like a secret; chuckles "Heh-heh-heh!" |
+| Nyxie | Mysterious, gentle, loyal | Soft, quiet and slow, with sleepy pauses; starts with a purr, "Mrrrow…" |
+| Glitch | Cheeky, speedy, fair | Flat, robotic and fast; "Bleep." between thoughts and "Bleep-bloop!" to finish |
+
+The little sounds are only added to longer lines, and never when the line already has one.
 
 Characters speak on their profile page (🔊), during quests (🔊 Listen, and the thank-you at the end)
 and in AR (when found, and for waves, spins and fun facts).
