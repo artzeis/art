@@ -19,7 +19,7 @@
   const shuffle = (arr) => arr.map((v) => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map((p) => p[1]);
   const vars = (c) => `--c:${c.color};--soft:${c.soft}`;
 
-  function confetti(emojis = ["⭐", "✨", "🌸", "🍄", "🪶", "🍀"]) {
+  function confetti(emojis = ["⭐", "✨", "🌸", "🍄", "🪶", "🍀", "🎾"]) {
     for (let i = 0; i < 28; i++) {
       const s = document.createElement("span");
       s.className = "confetti";
@@ -53,11 +53,10 @@
   }
 
   const tile = (c, pill) => `
-    <button class="creature-tile bob" style="${vars(c)}" data-open="${c.id}">
-      <span class="art">${CREATURE_SVG[c.id]}</span>
-      <span class="name">${c.name}</span>
-      <span class="kind">${c.kind}</span>
+    <button class="creature-tile bob" style="${vars(c)}" data-open="${c.id}" aria-label="${c.name} the ${c.kind}">
       ${pill || ""}
+      <span class="art">${CREATURE_SVG[c.id]}</span>
+      <span class="label"><span class="name">${c.name}</span><span class="kind">${c.kind}</span></span>
     </button>`;
 
   const STATS = [
@@ -72,27 +71,26 @@
       const allDone = foundCount === CREATURES.length;
       app.innerHTML = `
         <section class="welcome">
-          <div class="big-emoji">${allDone ? "🏆" : "🗺️"}</div>
+          <div class="ring" style="--p:${Math.round(foundCount / CREATURES.length * 100)}">
+            <div><span><b>${foundCount}/${CREATURES.length}</b><br><small>friends</small></span></div>
+          </div>
           <div>
-            <h1>${allDone ? "Master Myth Seeker!" : "Who needs your help?"}</h1>
-            <p>${allDone ? "You helped every creature! Try AR mode or play a new hunt."
-              : "Magical friends lost their treasures. Pick one to start a quest!"}</p>
-            <div class="friend-dots" aria-label="${foundCount} of ${CREATURES.length} friends helped">
-              ${CREATURES.map((c) => `<span class="${save.found[c.id] ? "on" : ""}">${save.found[c.id] ? c.accessoryEmoji : "?"}</span>`).join("")}
-            </div>
+            <h1>${allDone ? `<span class="grad-text">Master Myth Seeker!</span>` : `Who needs <span class="grad-text">your help</span> tonight?`}</h1>
+            <p>${allDone ? "You helped every creature! Try the AR Hunt or start a new hunt."
+              : "Magical friends lost their treasures. Pick one to begin a quest."}</p>
           </div>
         </section>
         ${ready < CREATURES.length ? `
           <div class="setup-banner">
-            <span style="font-size:2rem">🔑</span>
+            <span style="font-size:1.8rem">🔑</span>
             <p><b>Grown-up setup</b><br><span class="small muted">${ready} of ${CREATURES.length} treasures hidden</span></p>
             <button class="btn primary" data-go="grownup" style="margin-left:auto">Set up</button>
           </div>` : ""}
         <div class="grid">
           ${CREATURES.map((c) => tile(c,
             save.found[c.id] ? `<span class="pill friend">Friend ✔</span>`
-              : save.spots[c.id] ? `<span class="pill">Help me! ${c.accessoryEmoji}</span>`
-              : `<span class="pill idle">Not hidden yet</span>`)).join("")}
+              : save.spots[c.id] ? `<span class="pill">Help me ${c.accessoryEmoji}</span>`
+              : `<span class="pill idle">Not hidden</span>`)).join("")}
         </div>`;
       app.querySelectorAll("[data-open]").forEach((b) => b.onclick = () => {
         const id = b.dataset.open;
@@ -102,7 +100,7 @@
 
     journal() {
       app.innerHTML = `
-        <h1 class="screen-title">📖 Creature Journal</h1>
+        <h1 class="screen-title">Creature <span class="grad-text">Journal</span></h1>
         <p class="lead">Tap a creature to read all about them. Help them on a quest to unlock their secrets!</p>
         <div class="grid">${CREATURES.map((c) => tile(c, save.found[c.id] ? `<span class="pill friend">Friend ✔</span>` : `<span class="pill seen">Read more</span>`)).join("")}</div>`;
       app.querySelectorAll("[data-open]").forEach((b) => b.onclick = () => go("creature", b.dataset.open));
@@ -119,9 +117,9 @@
             <div><b>🎂 Age</b>${c.age}</div>
             <div class="wide"><b>🏡 Home</b>${c.home}</div>
           </div>
-          <div class="card"><h2 class="section-title">📖 My story</h2><p class="story">${c.description}</p></div>
+          <div class="card"><h2 class="section-title"><span class="bubble-ico">📖</span>My story</h2><p class="story">${c.description}</p></div>
           <div class="card">
-            <h2 class="section-title">🌟 All about me</h2>
+            <h2 class="section-title"><span class="bubble-ico">🌟</span>All about me</h2>
             <div class="info-grid">
               <div class="info"><span class="ico">😊</span><b>Personality</b><div class="chips">${c.personality.map((p) => `<span>${p}</span>`).join("")}</div></div>
               <div class="info"><span class="ico">🍽️</span><b>Favourite food</b><span>${c.food}</span></div>
@@ -136,17 +134,18 @@
         powers: `
           <div class="power-box"><small>✨ Magic power</small>${c.power}</div>
           <div class="card">
-            <h2 class="section-title">📊 My powers</h2>
+            <h2 class="section-title"><span class="bubble-ico">📊</span>My powers</h2>
             ${STATS.map(([k, ico, label]) => `
               <div class="stat"><span class="ico">${ico}</span><b>${label}</b>
-                <div class="bar" role="img" aria-label="${label} ${c.stats[k]} out of 5"><i style="width:${c.stats[k] * 20}%"></i></div></div>`).join("")}
+                <div class="bar" role="img" aria-label="${label} ${c.stats[k]} out of 5"><i style="width:${c.stats[k] * 20}%"></i></div>
+                <span class="num">${c.stats[k]}</span></div>`).join("")}
           </div>
           <div class="card">
-            <h2 class="section-title">👀 How to tell I'm nearby</h2>
+            <h2 class="section-title"><span class="bubble-ico">👀</span>How to tell I'm nearby</h2>
             <ul class="list">${c.signs.map((s) => `<li><span>🔍</span>${s}</li>`).join("")}</ul>
           </div>
           <div class="card">
-            <h2 class="section-title">💛 How to be my friend</h2>
+            <h2 class="section-title"><span class="bubble-ico">💛</span>How to be my friend</h2>
             <ul class="list">${c.friendTips.map((s) => `<li><span>✅</span>${s}</li>`).join("")}</ul>
           </div>`,
         secrets: `
@@ -161,7 +160,8 @@
       app.innerHTML = `
         <div style="${vars(c)}">
           <section class="hero">
-            <button class="say-btn" data-say aria-label="Read aloud">🔊</button>
+            <button class="icon-btn say-btn" data-say aria-label="Read aloud">🔊</button>
+            ${c.photo ? `<div class="photo-badge"><img src="${c.photo}" alt="The real ${c.name.split(" ")[0]}">The real ${c.name.split(" ")[0]}</div>` : ""}
             <div class="art bob">${CREATURE_SVG[c.id]}</div>
             <h1>${c.name}</h1>
             <span class="kind-chip">${c.kind}${friend ? " · Friend ✔" : ""}</span><br>
@@ -188,12 +188,11 @@
 
     ar() {
       app.innerHTML = `
-        <h1 class="screen-title">🔮 AR Hide &amp; Seek</h1>
-        <p class="lead">Creatures are hiding all around you! Turn slowly in a circle and follow the meter until it's 🔥 hot.
-          Tap the creature when you find it.</p>
+        <h1 class="screen-title">AR <span class="grad-text">Hide &amp; Seek</span></h1>
+        <p class="lead">Creatures hide in your real room. Pick who you want to find.</p>
         <div class="setup-banner"><span style="font-size:1.8rem">📷</span>
-          <p class="small">Uses the camera and motion sensors. No camera? Explore a magic forest and swipe to look around.
-          <b>Grown-ups: please supervise.</b></p></div>
+          <p class="small"><b>Step 1:</b> scan the room so the creature can pick a hiding spot. <b>Step 2:</b> turn slowly and find it!
+          No camera? Explore a magic forest by swiping. <b>Grown-ups: please supervise.</b></p></div>
         <div class="grid">${CREATURES.map((c) => tile(c, save.arFound[c.id] ? `<span class="pill seen">Spotted 👀</span>` : `<span class="pill">Find me!</span>`)).join("")}</div>`;
       app.querySelectorAll("[data-open]").forEach((b) => b.onclick = () => startAR(b.dataset.open));
     },
@@ -244,8 +243,8 @@
     app.innerHTML = `
       <h1 class="screen-title">🔑 Set Up the Hunt</h1>
       <div class="card">
-        <ol class="small">
-          <li>Take out the five creature accessories.</li>
+        <ol class="setup-steps small">
+          <li>Take out the creature accessories (and any ball for Leo).</li>
           <li>Hide each one in a different spot in your play area.</li>
           <li>Choose that spot below so the riddles lead kids to it.</li>
         </ol>

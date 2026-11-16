@@ -18,6 +18,7 @@ creatures; you never capture them).
 | Lirien Leafwhisper | Elf | 🍃 Silver Leaf Bow |
 | Ember Sunfeather | Sunfeather Bird | 🪶 Golden Feather |
 | Thistle Swiftmane | Centaur | 🍀 Lucky Horseshoe |
+| Leo Starpaw | Moonhusky (based on a real dog, Leo) | 🎾 Moonbeam Ball (any ball works) |
 
 Each creature has a profile in the Creature Journal, split into three easy tabs:
 - **📖 Story:** size, age and home, the creature's story, then picture tiles for personality, favourite
@@ -30,9 +31,11 @@ Each creature has a profile in the Creature Journal, split into three easy tabs:
 Each creature also has a catchphrase and a 🔊 read-aloud button.
 
 ## Look and feel
-Bright sky colours, the rounded Baloo 2 font, chunky buttons and big tap targets. Each creature has its
-own colour, used on its card, profile and quest. Quest progress is a path of five icons
-(👋 → 🏃 → 🧩 → 🎁 → 🎉). Animations are turned off for players whose device asks for reduced motion.
+An "enchanted night" theme: a deep indigo sky with a slowly moving aurora and twinkling stars, frosted-glass
+cards, warm gradient buttons, and the rounded Fredoka and Nunito fonts. Each creature has its own glow colour,
+used on its portrait card, profile and quest. Characters are drawn in a shaded storybook style. Leo's profile
+also shows a photo of the real Leo. Quest progress is a path of five icons (👋 → 🏃 → 🧩 → 🎁 → 🎉).
+Animations are turned off for players whose device asks for reduced motion.
 
 ## Core loop
 1. **Setup (grown-up).** Behind a simple math gate, the grown-up hides each accessory and picks
@@ -51,14 +54,18 @@ own colour, used on its card, profile and quest. Quest progress is a path of fiv
 8. **Replay.** The grown-up taps "New hunt" and hides everything again in new spots.
 
 ## AR mode (optional)
-- The camera view shows a creature hidden in a random direction, 90–270° away from where the player
-  starts facing.
-- Kids turn in a circle. A ❄️→🔥 meter and arrows on the edges of the screen guide them.
-- When they find the creature, it bounces and the phone vibrates. Kids can tap it for fun facts or
-  choose **Wave**, **Spin** or **Fun fact**.
+1. **Scan.** The camera opens with a scanning grid and a progress ring. The player slowly looks around the
+   room (or swipes, without motion sensors). Every frame is analysed on a tiny canvas to find the most
+   detailed patch of the picture, such as furniture, plants or shelves, which makes a good place to hide
+   behind. The best spot in each 30° slice of the room is remembered, and a blue ping marks each one.
+2. **Hide.** After roughly a 120° sweep, the creature picks a strong spot away from where the player is
+   facing and hides there ("Close your eyes… 3, 2, 1").
+3. **Seek.** A ❄️→🔥 meter and arrows on the screen edges guide the player. When the spot comes into view,
+   the creature peeks out from behind it with a sparkle and follows the phone's tilt.
+4. **Found.** Tapping the creature, or holding it in the middle of the screen, makes it pop out. The phone
+   vibrates, and kids can Wave, Spin or hear a Fun fact.
 - The first time kids spot each creature in AR, they earn +1 ⭐.
-- **Fallbacks:** without motion sensors, kids swipe to look around. Without a camera, an illustrated
-  magic forest is shown instead.
+- **Fallbacks:** without a camera, an illustrated forest is shown instead.
 
 ## Rewards and progress
 - ⭐ Sparkle Stars from quests and AR sightings.
