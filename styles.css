@@ -375,6 +375,17 @@ ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
 .story-nav { margin-bottom: 16px; }
 .story-unlock { background: rgba(255, 95, 162, .12); border-color: rgba(255, 95, 162, .4); }
 
+/* ---------- Play together ---------- */
+.tg-head { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+.tg-icon { flex: none; width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; font-size: 1.9rem; background: color-mix(in srgb, var(--c) 30%, transparent); }
+.tg-name { font-family: "Fredoka", system-ui; font-size: 1.3rem; font-weight: 600; }
+.charade-card, .says-card { border-radius: 22px; padding: 22px 16px; margin-bottom: 12px; text-align: center; background: rgba(255,255,255,.06); border: 2px dashed var(--line); display: flex; flex-direction: column; gap: 6px; }
+.charade-card small, .says-card small { color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: .06em; font-size: .75rem; }
+.charade-card b, .says-card b { font-family: "Fredoka", system-ui; font-size: 1.5rem; line-height: 1.3; }
+.charade-card.open { background: color-mix(in srgb, var(--c) 25%, transparent); border-style: solid; border-color: var(--c); }
+.says-card b { font-size: 1.7rem; }
+.says-card.trick b { color: #ffcf6b; }
+
 /* ---------- Plush shop ---------- */
 .shop { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: center; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 22%, transparent), var(--glass)); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
 .shop img { width: 140px; height: 140px; border-radius: 22px; object-fit: cover; box-shadow: 0 10px 24px rgba(0,0,0,.35); }

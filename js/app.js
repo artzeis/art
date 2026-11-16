@@ -182,7 +182,7 @@
           <div class="row actions">
             ${!friend && hidden(id) ? `<button class="btn primary" data-quest>🗺️ Start quest</button>` : ""}
             <button class="btn purple" data-ar>🔮 Find in AR</button>
-            <button class="btn" data-make>🎨 Make something</button>
+            <button class="btn" data-make>🎲 Play together</button>
             <button class="btn" data-chapter>📖 ${friend ? "My story" : "Story (locked)"}</button>
           </div>
           <div class="tabs" role="tablist">
@@ -273,10 +273,10 @@
         <div style="${vars(c)}"><div class="card">
           <div class="quest-head"><div class="art bob">${creatureArt(c.id)}</div>
             <div><h2>${c.name}</h2><span class="kind-chip">${c.kind}</span></div></div>
-          <span class="step-label">🎨 Make something for ${c.name}</span>
+          <span class="step-label">🎲 Play together with ${c.name}</span>
           <div id="createBox"></div>
         </div></div>`;
-      renderCreate(app.querySelector("#createBox"), c, { standalone: true, onDone: (made) => { if (made) confetti(); go("journal"); } });
+      renderTogether(app.querySelector("#createBox"), c, { standalone: true, onDone: (made) => { if (made) confetti(); go("creature", id); } });
     },
 
     ar() {
@@ -347,7 +347,7 @@
       const box = document.getElementById("memories");
       if (!box) return;
       if (!list.length) {
-        box.innerHTML = `<div class="card small muted" style="grid-column:1/-1">Nothing here yet! After finding a treasure, each character asks you to make something. Snap a photo and it will appear here. You can also tap 🎨 Make something on any character's page.</div>`;
+        box.innerHTML = `<div class="card small muted" style="grid-column:1/-1">Nothing here yet! When a quest ends with the 🎨 Dream Workshop, you make something together. Snap a photo and it will appear here. You can also tap 🎲 Play together on any character's page.</div>`;
         return;
       }
       box.innerHTML = list.map((m) => { const c = byId[m.creature] || {}; return `
@@ -637,8 +637,141 @@
     w.document.close();
   }
 
-  // ---------- Make something together (+ Memory Book photo) ----------
-  function renderCreate(box, c, { onDone, standalone = false }) {
+  // ---------- Play together: rotating games for grown-up + kid (js/together.js) ----------
+  function nextGameIndex() {
+    const i = (save.togetherIdx || 0) % TOGETHER_GAMES.length;
+    save.togetherIdx = i + 1; persist();
+    return i;
+  }
+  function renderTogether(box, c, { onDone, standalone = false }) {
+    let gi = nextGameIndex();
+    const hello = standalone ? "" : "Thank you, amigo! Let's play a game together. ";
+    const draw = (speakNow) => {
+      clearInterval(timerId);
+      const g = TOGETHER_GAMES[gi];
+      const how = g.how.replace(/\{name\}/g, c.name);
+      const head = `<div class="tg-head"><span class="tg-icon">${g.icon}</span>
+        <div><b class="tg-name">${g.name}</b><br><span class="small muted">${esc(how)}</span></div></div>`;
+      const switchBtn = `<button class="btn" data-switch>🔀 Different game</button>`;
+      const wire = () => {
+        box.querySelector("[data-switch]").onclick = () => { gi = (gi + 1) % TOGETHER_GAMES.length; draw(true); };
+        const done = box.querySelector("[data-done]"); if (done) done.onclick = () => { clearInterval(timerId); onDone(true); };
+        const skip = box.querySelector("[data-skip2]"); if (skip) skip.onclick = () => { clearInterval(timerId); onDone(false); };
+      };
+      const footer = `
+        <button class="btn good block" data-done style="margin-top:12px">🎉 We did it!</button>
+        <button class="btn block" data-skip2 style="margin-top:8px">Skip for now</button>`;
+
+      if (g.id === "workshop") {
+        // The Dream Workshop is the make-something game, with a photo for the Memory Book.
+        box.innerHTML = head + `<div id="wsBox"></div><div class="row" style="margin-top:10px">${switchBtn}</div>`;
+        renderCreate(box.querySelector("#wsBox"), c, { onDone, standalone, quiet: !speakNow && standalone });
+        wire();
+        return;
+      }
+
+      if (g.id === "act") {
+        const scenes = ACT_SCENES[c.id] || ACT_SCENES.leo;
+        let si = Math.floor(Math.random() * scenes.length);
+        const show = (sayIt) => {
+          const line = hello + scenes[si];
+          box.innerHTML = head + `
+            <div class="speech">${esc(scenes[si])}</div>
+            <div class="row">
+              <button class="btn" data-listen>🔊 Listen</button>
+              <button class="btn" data-another>🎬 Another scene</button>
+              ${switchBtn}
+            </div>${footer}`;
+          box.querySelector("[data-listen]").onclick = () => speak(scenes[si], c.id);
+          box.querySelector("[data-another]").onclick = () => { si = (si + 1) % scenes.length; show(true); };
+          wire();
+          if (sayIt) speak(sayIt === true ? scenes[si] : line, c.id);
+        };
+        show(speakNow ? true : (standalone ? false : "first"));
+        return;
+      }
+
+      if (g.id === "charades") {
+        const others = shuffle(Object.entries(CHARADES).filter(([k]) => k !== c.id).flatMap(([, v]) => v));
+        const cards = [...shuffle(CHARADES[c.id] || []), ...others];
+        let ci = 0, open = false;
+        const show = () => {
+          box.innerHTML = head + `
+            <div class="charade-card ${open ? "open" : ""}">
+              ${open ? `<small>Act out… (no words!)</small><b>${esc(cards[ci % cards.length])}</b>`
+                     : `<small>Turn ${ci + 1}</small><b>🤫 Actor: hide the screen and tap to peek</b>`}
+            </div>
+            <div class="row">
+              ${open ? `<button class="btn primary" data-hide>👍 Got it! Hide the card</button>` : `<button class="btn primary" data-peek>👀 Peek at the secret card</button>`}
+              ${switchBtn}
+            </div>${footer}`;
+          const pk = box.querySelector("[data-peek]"); if (pk) pk.onclick = () => { open = true; show(); };
+          const hd = box.querySelector("[data-hide]"); if (hd) hd.onclick = () => { open = false; ci++; show(); };
+          wire();
+        };
+        show();
+        if (speakNow || !standalone) speak(hello + how, c.id);
+        return;
+      }
+
+      if (g.id === "says") {
+        // A round of 10 moves; about a third are tricks without "<name> says".
+        const pool = shuffle([...(SAYS_MOVES[c.id] || []), ...SAYS_EVERYDAY]).slice(0, 10);
+        const tricks = new Set(shuffle([...Array(10).keys()].slice(1)).slice(0, 3));
+        let k = -1, running = false;
+        const show = () => {
+          const move = k >= 0 && k < pool.length ? pool[k] : null;
+          const isTrick = tricks.has(k);
+          box.innerHTML = head + `
+            <div class="says-card ${isTrick ? "trick" : ""}">
+              ${move ? `<small>Move ${k + 1} of ${pool.length}</small><b>${isTrick ? "" : `${esc(c.name)} says… `}${esc(move)}!</b>`
+                     : k >= pool.length ? `<b>🎉 Great listening!</b><small>Did anyone get caught by a trick?</small>`
+                     : `<b>Ready?</b><small>Listen carefully for "${esc(c.name)} says"!</small>`}
+            </div>
+            <div class="row">
+              ${running ? `<button class="btn" data-stop>⏸ Pause</button>` : `<button class="btn primary" data-go2>${k < 0 ? "▶ Start" : k >= pool.length ? "🔁 Play again" : "▶ Keep going"}</button>`}
+              ${switchBtn}
+            </div>${footer}`;
+          const st = box.querySelector("[data-go2]");
+          if (st) st.onclick = () => {
+            if (k >= pool.length) k = -1;
+            running = true; tick();
+            timerId = setInterval(tick, 4500);
+          };
+          const sp = box.querySelector("[data-stop]"); if (sp) sp.onclick = () => { running = false; clearInterval(timerId); show(); };
+          wire();
+        };
+        const tick = () => {
+          if (!box.isConnected) return clearInterval(timerId);
+          k++;
+          if (k >= pool.length) { running = false; clearInterval(timerId); show(); speak("Great listening, amigo!", c.id); return; }
+          show();
+          speak(tricks.has(k) ? `${pool[k]}!` : `${c.name} says… ${pool[k]}!`, c.id);
+        };
+        show();
+        if (speakNow || !standalone) speak(hello + how, c.id);
+        return;
+      }
+
+      if (g.id === "box") {
+        const line = `${BOX_TWIST[c.id] || "Here's an invisible box!"} Open it carefully… what's inside?`;
+        box.innerHTML = head + `
+          <div class="speech">🎁 ${esc(line)}</div>
+          <p class="small muted">Ideas: Is it tiny or huge? Light or heavy? Wiggly, sticky, fluffy, slippery? Does it make a sound?</p>
+          <div class="row">
+            <button class="btn" data-listen>🔊 Listen</button>
+            ${switchBtn}
+          </div>${footer}`;
+        box.querySelector("[data-listen]").onclick = () => speak(line, c.id);
+        wire();
+        if (speakNow || !standalone) speak(hello + line, c.id);
+      }
+    };
+    draw(false);
+  }
+
+  // ---------- Dream Workshop: make something together (+ Memory Book photo) ----------
+  function renderCreate(box, c, { onDone, standalone = false, quiet = false }) {
     const reqs = CREATE_REQUESTS[c.id] || ["Make something wonderful together!"];
     let idx = Math.floor(Math.random() * reqs.length), photo = null;
     const lineFor = (req) => standalone ? `Will you make something for me? ${req}` : `Thank you so much! Will you do one more thing for me? ${req}`;
@@ -675,12 +808,12 @@
       box.querySelector("[data-skip]").onclick = () => onDone(false);
     };
     draw();
-    if (!standalone) speak(lineFor(reqs[idx]), c.id);
+    if (!quiet) speak(lineFor(reqs[idx]), c.id);
   }
 
   // ---------- Quest flow ----------
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
-  const PATH = ["👋", "🏃", "🧩", "🎁", "🎨", "🎉"];
+  const PATH = ["👋", "🏃", "🧩", "🎁", "🎲", "🎉"];
   function runQuest(c) {
     if (!hidden(c.id)) return go("creature", c.id);
     // Treasure trail: one riddle per stop (clue cards first, the treasure last).
@@ -878,8 +1011,8 @@
           else { b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 400); }
         });
       } else if (step === 4) {
-        frame(`<span class="step-label">Step 4 · Make something together</span><div id="createBox"></div>`);
-        renderCreate(app.querySelector("#createBox"), c, { onDone: (made) => { madeSomething = made; step = 5; render(); } });
+        frame(`<span class="step-label">Step 4 · Play together</span><div id="createBox"></div>`);
+        renderTogether(app.querySelector("#createBox"), c, { onDone: (made) => { madeSomething = made; step = 5; render(); } });
         return;
       } else {
         const first = !save.found[c.id];

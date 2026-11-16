@@ -118,11 +118,20 @@ a slow, heavy rock (Craggle), spin like a little planet (Orbit), zig-zag like yo
 tiptoe like a cat (Nyxie), move like a robot (Glitch) or lope like a wolf (Leo). Each extra stop earns
 +1 ⭐.
 
-**🎨 Make something together.** After the treasure is found, the character asks the family to build,
-draw or invent something: Leo's pillow den, Orbit's rocket ship, Tangle's marble maze, Nyxie's night sky
-with a made-up constellation, and so on. There are three ideas per character, and 🔀 swaps the idea.
-📷 takes a photo, which is saved to the **Memory Book** in the Creature Journal. Photos are stored only
-on the device. "We made it!" earns +1 ⭐. Any character's page also has 🎨 Make something, any time.
+**🎲 Play together.** Every quest ends with a quick game for a grown-up and a kid (`js/together.js`). The
+game **rotates** each quest, and 🔀 switches to another one any time:
+1. **🎭 Act it out:** the character sets a pretend scene to play out, like Leo's "the floor is lava"
+   rescue or Orbit's no-gravity float.
+2. **🤫 Creature charades:** the actor peeks at a secret card ("Craggle napping in the sun") and acts it
+   out with no words while the others guess.
+3. **📣 Imagamigo says:** a Simon Says round led by the character in their own voice. There are 10
+   moves, each character has its own moves, and about a third are tricks without "___ says".
+4. **🎁 The Invisible Box:** each character brings an invisible box (Orbit's is from outer space).
+   Take turns pulling something imaginary out and acting it out while the others guess.
+5. **🎨 Dream Workshop** (formerly "Make something together"): build or draw something together, and
+   📷 save a photo to the **Memory Book** in the Creature Journal. Photos are stored only on the device.
+
+"We did it!" earns +1 ⭐. Every character's page also has **🎲 Play together**, any time.
 
 **🌙 Calm down with Nyxie.** A 2½-minute guided wind-down, offered after every quest and on the home
 screen. Nyxie speaks each step softly: get cosy, moon breathing (the moon grows for 4 seconds while
