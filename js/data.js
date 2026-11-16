@@ -267,124 +267,21 @@ const CREATURES = [
   },
 ];
 
-// Hiding spots. A grown-up picks one per accessory in Setup.
-// Each spot has three levels of help: a riddle, a clue, and a big hint.
-const SPOTS = [
-  {
-    id: "couch", label: "Couch / sofa cushions", place: "inside",
-    riddle: "I have a back but no spine, arms but no hands. You sink into me to watch shows and read with your family. What am I?",
-    clue: "Look where people sit and snuggle in the living room.",
-    hint: "Check between or under the couch cushions!",
-  },
-  {
-    id: "bookshelf", label: "Bookshelf", place: "inside",
-    riddle: "I hold a thousand stories, but I never say a word. Line by line on my wooden shelves, adventures sleep. Where am I?",
-    clue: "Find where the books live.",
-    hint: "Look on, behind or between books on the bookshelf.",
-  },
-  {
-    id: "plant", label: "Houseplant / flowerpot", place: "inside",
-    riddle: "I am green and I drink but never eat. I grow toward the sunshine and never move my feet. What am I?",
-    clue: "Find something leafy that lives in a pot.",
-    hint: "Peek around the bottom of a plant or flowerpot.",
-  },
-  {
-    id: "shoes", label: "By the shoes / front door", place: "inside",
-    riddle: "You put us on to go outside; we come in pairs and have tongues but never talk. Where are we?",
-    clue: "Go to where you take your shoes off.",
-    hint: "Look in or next to the shoes by the front door.",
-  },
-  {
-    id: "pillow", label: "Under a bed pillow", place: "inside",
-    riddle: "I'm soft and fluffy and I hold your dreams all night long. Where your head lays down, that's where I belong.",
-    clue: "Go to a bedroom and look where you sleep.",
-    hint: "Lift up a pillow on a bed!",
-  },
-  {
-    id: "table", label: "Under the kitchen table", place: "inside",
-    riddle: "I have four legs but never walk. Plates sit on my back while families talk. Look below me!",
-    clue: "Where do you eat dinner?",
-    hint: "Crawl under the kitchen or dining table.",
-  },
-  {
-    id: "toybox", label: "Toy box / toy basket", place: "inside",
-    riddle: "I'm full of fun, but I'm closed or I'm piled. I'm the treasure chest of every child!",
-    clue: "Where do your toys go at clean-up time?",
-    hint: "Look in the toy box or toy basket.",
-  },
-  {
-    id: "window", label: "Windowsill", place: "inside",
-    riddle: "I am a hole in the wall you can see through, but you can't walk through. Sunbeams come to visit me.",
-    clue: "Find where the light comes in.",
-    hint: "Check along a windowsill or behind the curtain.",
-  },
-  {
-    id: "chair", label: "Under a chair", place: "inside",
-    riddle: "I have a seat but I never sit, four legs but I never run. Look underneath for some fun!",
-    clue: "Check something you sit on — not the couch!",
-    hint: "Look under a chair.",
-  },
-  {
-    id: "tree", label: "At the base of a tree", place: "outside",
-    riddle: "I'm tall with a trunk but I'm not an elephant. I have bark but I'm not a dog. What am I?",
-    clue: "Go outside and find something with leaves that's taller than a grown-up.",
-    hint: "Look around the roots at the bottom of a tree.",
-  },
-  {
-    id: "rock", label: "Under or beside a big rock", place: "outside",
-    riddle: "I'm hard and grey and I sit very still. Bugs like to hide underneath me. What am I?",
-    clue: "Find something heavy and stony in the garden.",
-    hint: "Look beside or under a big rock.",
-  },
-  {
-    id: "flowerbed", label: "In a flower bed", place: "outside",
-    riddle: "Red, yellow, purple and blue, we smell sweet and bees love us too. Where do we grow?",
-    clue: "Find where the flowers are growing outside.",
-    hint: "Search gently in the flower bed — don't squish the flowers!",
-  },
-  {
-    id: "step", label: "On a step / porch", place: "outside",
-    riddle: "You go up me and you go down me, but I never move at all. What am I?",
-    clue: "Look near the door where you go outside.",
-    hint: "Check the steps or porch.",
-  },
-  {
-    id: "bush", label: "Under a bush / hedge", place: "outside",
-    riddle: "I'm round and green and full of leaves. Birds hide in me, but I'm not a tree. What am I?",
-    clue: "Find a leafy plant that's smaller than a tree.",
-    hint: "Look under or around a bush or hedge.",
-  },
-  {
-    id: "fence", label: "Along the fence", place: "outside",
-    riddle: "I stand in a long line all around the yard, keeping things in — I work very hard! What am I?",
-    clue: "Walk to the edge of the yard.",
-    hint: "Check along the bottom of the fence.",
-  },
-  {
-    id: "bench", label: "Outdoor bench / garden chair", place: "outside",
-    riddle: "I have a seat but I live outside. Grown-ups rest on me in the sunshine. What am I?",
-    clue: "Find somewhere to sit outdoors.",
-    hint: "Look under or beside an outdoor bench or chair.",
-  },
-  {
-    id: "playset", label: "Swings / slide / play set", place: "outside",
-    riddle: "Up you climb and down you whoosh, back and forth with a mighty push! Where am I?",
-    clue: "Where do you play outside?",
-    hint: "Check under the slide or near the swings.",
-  },
-  {
-    id: "planter", label: "Outdoor flowerpot / planter", place: "outside",
-    riddle: "I'm a pot that lives outside the door, with soil inside and flowers galore. What am I?",
-    clue: "Find a plant pot that lives outside.",
-    hint: "Look behind or under an outdoor flowerpot.",
-  },
-  {
-    id: "hose", label: "By the garden hose / watering can", place: "outside",
-    riddle: "I curl up like a snake but I'm not alive. When the garden is thirsty, I help it thrive! What am I?",
-    clue: "What do grown-ups use to water the plants?",
-    hint: "Look near the garden hose or watering can.",
-  },
-];
+// Hiding-place ideas for the "Suggest" button in grown-up setup.
+// Grown-ups can also type any hiding place they like — js/riddles.js writes the riddle.
+const HIDING_IDEAS = {
+  inside: [
+    "under a cushion on the sofa", "behind the books on the bookshelf", "next to a plant pot",
+    "inside a shoe by the front door", "under a pillow on the bed", "under the kitchen table",
+    "in the toy box", "on the windowsill behind the curtain", "under a chair", "under the doormat",
+    "inside the laundry basket", "behind the bathroom door",
+  ],
+  outside: [
+    "at the bottom of a tree", "beside a big rock", "in the flower bed", "on the porch step",
+    "under a bush", "along the bottom of the fence", "under the garden bench", "under the slide",
+    "behind an outdoor flowerpot", "inside the watering can",
+  ],
+};
 
 // Seeker Challenges used when a treasure is hidden outside (more room to move!).
 const OUTDOOR_CHALLENGES = {

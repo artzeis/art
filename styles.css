@@ -250,6 +250,16 @@ ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
 .area-pick small { color: var(--muted); font-size: .74rem; line-height: 1.2; }
 .area-pick button.active { background: rgba(143, 123, 255, .3); border-color: rgba(170, 150, 255, .8); box-shadow: 0 0 22px rgba(143, 123, 255, .35); }
 
+/* ---------- Hiding-place setup ---------- */
+.hide-card { border-color: color-mix(in srgb, var(--c) 40%, transparent); }
+.hide-head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+.hide-art { width: 56px; height: 56px; flex: none; }
+.hide-input { width: 100%; font: inherit; font-size: 16px; padding: 13px 14px; border-radius: 16px; border: 1px solid var(--line); background: #1d1747; color: var(--ink); }
+.hide-input:focus { outline: 2px solid color-mix(in srgb, var(--c) 70%, #fff); outline-offset: 1px; }
+.riddle-preview:not(:empty) { margin-top: 10px; padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,.05); border: 1px dashed var(--line); font-size: .92rem; }
+.riddle-preview p { margin: 0 0 6px; }
+.small-btn { padding: 8px 14px; font-size: .88rem; margin-top: 4px; }
+
 /* ---------- Plush shop ---------- */
 .shop { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: center; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 22%, transparent), var(--glass)); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
 .shop img { width: 140px; height: 140px; border-radius: 22px; object-fit: cover; box-shadow: 0 10px 24px rgba(0,0,0,.35); }

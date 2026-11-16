@@ -43,17 +43,27 @@ used on its portrait card, profile and quest. Characters are drawn in a shaded s
 Animations are turned off for players whose device asks for reduced motion.
 
 ## Core loop
-1. **Setup (grown-up).** Behind a simple math gate, the grown-up chooses where to play: **Inside**,
-   **Outside** or **Both**. They then hide each accessory and pick the matching spot from that area's
-   list (19 spots: 9 indoor, 10 outdoor). "Suggest spots" picks spots from the chosen area. Outdoor
-   play shows a safety reminder (fenced area, away from roads and water).
+1. **Setup (grown-up).** Behind a simple math gate, the grown-up chooses where to play (**Inside**,
+   **Outside** or **Both**), hides each character's lost item, and **types where it is**, for example
+   *"under the blue cushion on the sofa"*. "Suggest hiding places" fills in ideas for the chosen area.
+   Outdoor play shows a safety reminder.
+   - **Riddle maker** (`js/riddles.js`): turns the description into a riddle, a clue and a big hint,
+     right on the device. It recognises about 60 hiding objects (sofa, bookshelf, fridge, tree,
+     slide…), the position word (under, behind, inside, on top of…), the room (kitchen, backyard…) and
+     colours. Example: *"I have a back but no spine… My Rainbow Crayon is hiding under it!"*, then
+     the clue *"Go to the living room… Look for something blue"*, then the big hint *"Look under the blue cushion
+     on the sofa!"* An unrecognised object gets a letter riddle ("starts with D, ends with R, 8
+     letters"). The grown-up sees a live preview, can tap 🔄 for a different riddle, and is warned
+     about unsafe spots (oven, fireplace, road, pool).
+   - Whether the spot is inside or outside, worked out from the description, decides between indoor
+     and outdoor challenges.
 2. **Choose a quest.** Kids pick a creature marked "Lost".
 3. **Intro.** The creature explains what it lost. The text can be read aloud.
 4. **Seeker Challenge.** An activity matched to the character: wiggling like a squiggle, freezing like a rock, spinning like a planet,
    zig-zag walks, cat stretches, robot moves and so on. Some have a timer.
    Treasures hidden outside get outdoor challenges instead, such as galloping across the yard, spotting
    real birds, finding cloud shapes or lining up pebbles.
-5. **Riddle.** The riddle describes the hiding spot. Help comes in three levels: Riddle → 🔎 Clue →
+5. **Riddle.** The generated riddle describes the hiding spot. Help comes in three levels: Riddle → 🔎 Clue →
    💡 Big Hint.
 6. **Show me!** Kids pick the treasure they found from four choices. This is a light check that they
    really found it.

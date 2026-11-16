@@ -3,12 +3,13 @@
   const STORE_KEY = "mythSeekers.v2";
   const app = document.getElementById("app");
   const byId = Object.fromEntries(CREATURES.map((c) => [c.id, c]));
-  const spotById = Object.fromEntries(SPOTS.map((s) => [s.id, s]));
 
   // ---------- Saved progress (per device) ----------
-  const fresh = () => ({ spots: {}, found: {}, arFound: {}, stars: 0, area: "inside" });
+  const fresh = () => ({ hides: {}, found: {}, arFound: {}, stars: 0, area: "inside" });
   let save = fresh();
   try { save = { ...fresh(), ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") }; } catch (_) {}
+  save.hides = save.hides || {};
+  const hidden = (id) => !!(save.hides[id] && save.hides[id].text);
   const persist = () => {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(save)); } catch (_) {}
     document.getElementById("starCount").textContent = save.stars;
@@ -66,7 +67,7 @@
 
   const screens = {
     home() {
-      const ready = CREATURES.filter((c) => save.spots[c.id]).length;
+      const ready = CREATURES.filter((c) => hidden(c.id)).length;
       const foundCount = Object.keys(save.found).length;
       const allDone = foundCount === CREATURES.length;
       app.innerHTML = `
@@ -89,12 +90,12 @@
         <div class="grid">
           ${CREATURES.map((c) => tile(c,
             save.found[c.id] ? `<span class="pill friend">Friend ✔</span>`
-              : save.spots[c.id] ? `<span class="pill">Help me ${c.accessoryEmoji}</span>`
+              : hidden(c.id) ? `<span class="pill">Help me ${c.accessoryEmoji}</span>`
               : `<span class="pill idle">Not hidden</span>`)).join("")}
         </div>`;
       app.querySelectorAll("[data-open]").forEach((b) => b.onclick = () => {
         const id = b.dataset.open;
-        if (save.spots[id] && !save.found[id]) go("quest", id); else go("creature", id);
+        if (hidden(id) && !save.found[id]) go("quest", id); else go("creature", id);
       });
     },
 
@@ -167,7 +168,7 @@
             <span class="bubble">“${c.catchphrase}”</span>
           </section>
           <div class="row actions">
-            ${!friend && save.spots[id] ? `<button class="btn primary" data-quest>🗺️ Start quest</button>` : ""}
+            ${!friend && hidden(id) ? `<button class="btn primary" data-quest>🗺️ Start quest</button>` : ""}
             <button class="btn purple" data-ar>🔮 Find in AR</button>
           </div>
           <div class="tabs" role="tablist">
@@ -274,14 +275,10 @@
     ["outside", "🌳", "Outside", "Yard, garden or park"],
     ["both", "🏡", "Both", "Inside and outside"],
   ];
-  const spotsFor = (area) => SPOTS.filter((s) => area === "both" || s.place === area);
+  const ideasFor = (area) => area === "both" ? [...HIDING_IDEAS.inside, ...HIDING_IDEAS.outside] : HIDING_IDEAS[area];
 
   function setupScreen() {
     const area = save.area || "inside";
-    const options = (sel) => ["inside", "outside"].filter((p) => area === "both" || p === area).map((place) => `
-      <optgroup label="${place === "inside" ? "Inside" : "Outside"}">
-        ${SPOTS.filter((s) => s.place === place).map((s) => `<option value="${s.id}" ${sel === s.id ? "selected" : ""}>${s.label}</option>`).join("")}
-      </optgroup>`).join("");
     app.innerHTML = `
       <h1 class="screen-title">🔑 Set Up the Hunt</h1>
       <div class="card">
@@ -295,51 +292,72 @@
       </div>
       <div class="card">
         <ol class="setup-steps small">
-          <li>Take out the six treasures (or any small toys to stand in for them).</li>
-          <li>Hide each one in a different spot ${area === "outside" ? "outside" : area === "both" ? "inside or outside" : "inside"}.</li>
-          <li>Choose that spot below so the riddles lead kids to it.</li>
+          <li>Hide each character's lost item somewhere ${area === "outside" ? "outside" : area === "both" ? "inside or outside" : "in the house"}.</li>
+          <li>Type where you hid it, like <em>"under the blue cushion on the sofa"</em>.</li>
+          <li>The app writes a riddle, a clue and a big hint from your words. Tap 🔄 for a different riddle.</li>
         </ol>
-        <p class="small muted">Not hidden yet? Tap "Suggest spots" and hide each one where the app says.</p>
-        <button class="btn block" id="suggest">✨ Suggest spots</button>
+        <button class="btn block" id="suggest">✨ Suggest hiding places</button>
       </div>
-      <div class="card">
-        ${CREATURES.map((c) => `
-          <label class="field">${c.accessoryEmoji} ${c.accessory} <span class="muted small">(${c.name} the ${c.kind})</span>
-            <select data-spot="${c.id}"><option value="">— Not hidden —</option>${options(save.spots[c.id])}</select>
-          </label>`).join("")}
-        <button class="btn primary block" id="saveSetup">Save &amp; start playing</button>
-      </div>
+      ${CREATURES.map((c) => `
+        <div class="card hide-card" style="${vars(c)}">
+          <div class="hide-head">
+            <span class="hide-art">${creatureArt(c.id)}</span>
+            <div><b>${c.name}'s ${c.accessory}</b> ${c.accessoryEmoji}<br><span class="muted small">Where did you hide it?</span></div>
+          </div>
+          <input type="text" class="hide-input" data-hide="${c.id}" value="${esc((save.hides[c.id] || {}).text || "")}"
+            placeholder="e.g. ${esc(pick(ideasFor(area)))}" autocomplete="off" autocapitalize="off" enterkeyhint="done" maxlength="140">
+          <div class="riddle-preview" data-preview="${c.id}"></div>
+        </div>`).join("")}
+      <button class="btn primary block" id="saveSetup" style="margin-bottom:16px">Save &amp; start playing</button>
       <div class="card">
         <b>Play again</b>
-        <p class="small muted">Clears found creatures so kids can hunt again. Stars are kept.</p>
+        <p class="small muted">Clears found characters so kids can hunt again. Stars are kept.</p>
         <div class="row">
           <button class="btn" id="replay">🔄 New hunt</button>
           <button class="btn" id="wipe">🗑️ Reset everything</button>
         </div>
       </div>`;
 
-    const readSpots = () => app.querySelectorAll("[data-spot]").forEach((sel) => {
-      if (sel.value) save.spots[sel.dataset.spot] = sel.value; else delete save.spots[sel.dataset.spot];
+    const setHide = (id, text) => {
+      const prev = save.hides[id] || {};
+      text = text.trim();
+      if (text) save.hides[id] = { text, seed: prev.text === text ? prev.seed || 0 : prev.seed || 0 };
+      else delete save.hides[id];
+      persist();
+    };
+    const preview = (id) => {
+      const box = app.querySelector(`[data-preview="${id}"]`);
+      const h = save.hides[id];
+      if (!h) { box.innerHTML = ""; return; }
+      const r = makeRiddle(h.text, byId[id], h.seed || 0);
+      box.innerHTML = `
+        ${r.unsafe ? `<p class="hintbox hot small">⚠️ That spot might not be safe for kids. Please choose somewhere else.</p>` : ""}
+        <p><b>🧩 Riddle:</b> ${esc(r.riddle)}</p>
+        <p><b>🔎 Clue:</b> ${esc(r.clue)}</p>
+        <p><b>💡 Big hint:</b> ${esc(r.hint)}</p>
+        ${r.variants > 1 ? `<button class="btn small-btn" data-reroll="${id}">🔄 Different riddle</button>` : ""}`;
+      if (r.variants > 1) box.querySelector("[data-reroll]").onclick = () => { h.seed = (h.seed || 0) + 1; persist(); preview(id); };
+    };
+    app.querySelectorAll("[data-hide]").forEach((inp) => {
+      preview(inp.dataset.hide);
+      let t;
+      inp.oninput = () => { clearTimeout(t); t = setTimeout(() => { setHide(inp.dataset.hide, inp.value); preview(inp.dataset.hide); }, 250); };
+      inp.onkeydown = (e) => { if (e.key === "Enter") inp.blur(); };
     });
-    app.querySelectorAll("[data-area]").forEach((b) => b.onclick = () => {
-      readSpots();
-      save.area = b.dataset.area;
-      // Drop hiding spots that don't belong to the new play area.
-      const allowed = new Set(spotsFor(save.area).map((s) => s.id));
-      Object.keys(save.spots).forEach((k) => { if (!allowed.has(save.spots[k])) delete save.spots[k]; });
-      persist(); setupScreen();
-    });
+    app.querySelectorAll("[data-area]").forEach((b) => b.onclick = () => { save.area = b.dataset.area; persist(); setupScreen(); });
     app.querySelector("#suggest").onclick = () => {
-      const pool = shuffle(spotsFor(area));
-      app.querySelectorAll("[data-spot]").forEach((sel, i) => sel.value = pool[i % pool.length].id);
+      const pool = shuffle(ideasFor(area));
+      app.querySelectorAll("[data-hide]").forEach((inp, i) => {
+        inp.value = pool[i % pool.length]; setHide(inp.dataset.hide, inp.value); preview(inp.dataset.hide);
+      });
     };
     app.querySelector("#saveSetup").onclick = () => {
-      readSpots();
-      persist(); go("home");
+      app.querySelectorAll("[data-hide]").forEach((inp) => setHide(inp.dataset.hide, inp.value));
+      go("home");
     };
     app.querySelector("#replay").onclick = () => { save.found = {}; persist(); setupScreen(); };
     app.querySelector("#wipe").onclick = () => {
-      if (confirm("Reset all progress, stars and hiding spots?")) { save = fresh(); persist(); setupScreen(); }
+      if (confirm("Reset all progress, stars and hiding places?")) { save = fresh(); persist(); setupScreen(); }
     };
   }
 
@@ -347,9 +365,10 @@
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
   const PATH = ["👋", "🏃", "🧩", "🎁", "🎉"];
   function runQuest(c) {
-    const spot = spotById[save.spots[c.id]];
-    if (!spot) return go("creature", c.id);
-    const challenge = pick(spot.place === "outside" ? OUTDOOR_CHALLENGES[c.id] : c.challenges);
+    if (!hidden(c.id)) return go("creature", c.id);
+    const spot = makeRiddle(save.hides[c.id].text, c, save.hides[c.id].seed || 0);
+    const outside = spot.place ? spot.place === "outside" : save.area === "outside";
+    const challenge = pick(outside ? OUTDOOR_CHALLENGES[c.id] : c.challenges);
     let step = 0, helpLevel = 0;
 
     const frame = (body) => {
