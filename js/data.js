@@ -1,4 +1,4 @@
-// Myth Seekers — game content: characters, hiding spots, riddles and challenges.
+// Imagamigos — game content: characters, hiding spots, riddles and challenges.
 // Everything a designer would want to tune lives in this file.
 
 // ⭐ PLUSH STORE LINKS — paste each product's web address between the quotes.
@@ -175,7 +175,7 @@ const CREATURES = [
       "Tangle says good morning with a riddle.",
     ],
     intro:
-      "Heh-heh! Psst, Seeker! I'm Tangle! I lost my Golden Key — it opens the secret door in the middle of my maze. Help me find it and you'll be a maze master too!",
+      "Heh-heh! Psst, amigo! I'm Tangle! I lost my Golden Key — it opens the secret door in the middle of my maze. Help me find it and you'll be a maze master too!",
     challenges: [
       { text: "Trace a maze! Draw a twisty path in the air with your finger, from your head down to your toes.", seconds: 0 },
       { text: "Walk a zig-zag path across the room — no straight lines allowed!", seconds: 0 },
@@ -217,7 +217,7 @@ const CREATURES = [
       "A slow blink from Nyxie means 'I trust you'.",
     ],
     intro:
-      "Mrrrow… hello, little Seeker. My Wishing Star slipped out of the sky and landed somewhere nearby. Without it, I can't send tonight's sweet dreams. Will you help me find it?",
+      "Mrrrow… hello, little amigo. My Wishing Star slipped out of the sky and landed somewhere nearby. Without it, I can't send tonight's sweet dreams. Will you help me find it?",
     challenges: [
       { text: "Cat stretch! Reach your paws forward, arch your back, then do a big yawn.", seconds: 0 },
       { text: "Tiptoe like a cat at night — 10 completely silent steps.", seconds: 0 },
@@ -326,7 +326,7 @@ const HIDING_IDEAS = {
   ],
 };
 
-// Seeker Challenges used when a treasure is hidden outside (more room to move!).
+// Challenges used when a treasure is hidden outside (more room to move!).
 const OUTDOOR_CHALLENGES = {
   scribbi: [
     { text: "Find something outside for each colour: red, yellow, green and blue.", seconds: 0 },

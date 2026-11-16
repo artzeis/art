@@ -1,4 +1,4 @@
-# Myth Seekers ✨
+# Imagamigos ✨
 
 A real-world treasure hunt game for kids. Help Scribbi, Craggle, Orbit, Tangle, Nyxie and Glitch
 find their lost treasures by solving riddles and completing activity challenges. There is

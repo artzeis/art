@@ -1,4 +1,4 @@
-# Myth Seekers — Character Art
+# Imagamigos — Character Art
 
 Each character has two pictures:
 

@@ -1,4 +1,6 @@
-# Myth Seekers — Game Design Document
+# Imagamigos — Game Design Document
+
+*Imagamigos = imagination + amigos (friends). Kids are called "amigo" by the characters.*
 
 ## Concept
 A real-world creature hunt for kids (about ages 4–10) built like Pokémon GO, but instead of catching
@@ -71,7 +73,7 @@ Animations are turned off for players whose device asks for reduced motion.
      and outdoor challenges.
 2. **Choose a quest.** Kids pick a creature marked "Lost".
 3. **Intro.** The creature explains what it lost. The text can be read aloud.
-4. **Seeker Challenge.** Kids **spin the challenge wheel** for a type and turn the **difficulty dial**:
+4. **Challenge.** Kids **spin the challenge wheel** for a type and turn the **difficulty dial**:
    - The wheel has four colours: **🏃 Physical** (move your body), **🧠 Mental** (use your brain),
      **🤝 Teamwork** (play together) and **💖 Kindness** (an act of kindness, such as a compliment, helping
      tidy up, a thank-you card or a secret surprise for the family). **SPIN** lands on one at random;
@@ -161,8 +163,8 @@ need the service to speak them live, through a small server that keeps the servi
 
 ## Rewards and progress
 - ⭐ Sparkle Stars from quests and AR sightings.
-- The Creature Journal fills in with "Friend ✔" badges. Helping all five unlocks the **Master Myth
-  Seeker** banner.
+- The Creature Journal fills in with "Friend ✔" badges. Helping all seven unlocks the **Amigo
+  Champion** banner.
 - Progress is saved on the device.
 
 ## Safety and accessibility

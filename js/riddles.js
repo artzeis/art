@@ -1,4 +1,4 @@
-// Myth Seekers — riddle maker.
+// Imagamigos — riddle maker.
 //
 // A grown-up types where a lost item is hidden, e.g. "under the blue cushion on the sofa".
 // makeRiddle() turns that description into a kid-friendly riddle, a clue and a big hint.

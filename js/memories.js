@@ -1,4 +1,4 @@
-// Myth Seekers — Memory Book: photos of things families made, kept on this device only (IndexedDB).
+// Imagamigos — Memory Book: photos of things families made, kept on this device only (IndexedDB).
 const Memories = (() => {
   let dbp = null;
   const open = () => dbp || (dbp = new Promise((resolve, reject) => {

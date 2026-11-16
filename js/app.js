@@ -1,4 +1,4 @@
-// Myth Seekers — main app: screens, quest flow, journal, grown-up setup.
+// Imagamigos — main app: screens, quest flow, journal, grown-up setup.
 (() => {
   const STORE_KEY = "mythSeekers.v2";
   const app = document.getElementById("app");
@@ -76,7 +76,7 @@
             <div><span><b>${foundCount}/${CREATURES.length}</b><br><small>friends</small></span></div>
           </div>
           <div>
-            <h1>${allDone ? `<span class="grad-text">Master Myth Seeker!</span>` : `Who needs <span class="grad-text">your help</span> tonight?`}</h1>
+            <h1>${allDone ? `<span class="grad-text">Amigo Champion!</span>` : `Who needs <span class="grad-text">your help</span> tonight?`}</h1>
             <p>${allDone ? "You helped every creature! Try the AR Hunt or start a new hunt."
               : "Magical friends lost their treasures. Pick one to begin a quest."}</p>
           </div>
@@ -554,7 +554,7 @@
     const base = location.href.replace(/[^/]*$/, "");
     const w = window.open("", "_blank");
     if (!w) return alert("Please allow pop-ups to print the clue cards.");
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Myth Seekers clue cards</title>
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Imagamigos clue cards</title>
       <style>body{font-family:system-ui,sans-serif;margin:16px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
       .card{border:3px dashed #999;border-radius:18px;padding:16px;text-align:center;break-inside:avoid;min-height:230px}
       .card img{height:110px}.card h2{margin:6px 0;font-size:20px}.card p{margin:4px 0;font-size:15px}
@@ -565,7 +565,7 @@
         <img src="${base}assets/characters/${c.id}.png" alt="">
         <h2>📜 You found a clue!</h2>
         <span class="tag">${c.name}'s trail${blank ? "" : ` · clue ${i + 1} of ${clues}`}</span>
-        <p>Great tracking, Seeker! Go back to the app and tap<br><b>"We found the clue card!"</b></p></div>`).join("")}</div>
+        <p>Great tracking, amigo! Go back to the app and tap<br><b>"We found the clue card!"</b></p></div>`).join("")}</div>
       </body></html>`);
     w.document.close();
   }
