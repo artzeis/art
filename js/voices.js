@@ -52,6 +52,13 @@ const VOICE_STYLES = {
     prefer: ["Oliver", "Aaron", "Arthur", "Daniel", "Evan", "Tom", "Microsoft Andrew", "Microsoft Guy", "Google UK English Male"],
     before: { text: "Awoooo!", pitch: 1.05, rate: 0.85 }, after: null, skipIf: /^awoo/i,
   },
+  // Storyteller for the Dreamwood Storybook — warm, clear and a little slow. (Listed last so the
+  // characters get first pick of the voices.)
+  narrator: {
+    pitch: 1.0, rate: 0.92, voice: "f",
+    prefer: ["Serena", "Kate", "Samantha", "Karen", "Moira", "Microsoft Libby", "Microsoft Sonia", "Google UK English Female"],
+    before: null, after: null,
+  },
 };
 
 // Old robotic and novelty voices (mainly on Apple devices) that are never used.
@@ -121,13 +128,19 @@ const Voices = (() => {
       speechSynthesis.cancel();
       if (!assigned) assigned = assign();
       const st = VOICE_STYLES[id] || { pitch: 1, rate: 1 };
-      const line = String(text).trim();
-      const extras = line.length > 40 && !(st.skipIf && st.skipIf.test(line));
-      const parts = [
-        extras && st.before ? st.before : null,
-        { text: line },
-        extras && st.after ? st.after : null,
-      ].filter(Boolean);
+      let parts;
+      if (Array.isArray(text)) {
+        // A list of paragraphs (e.g. a story chapter): read them in order, no extra sounds.
+        parts = text.map((t) => ({ text: String(t).trim() })).filter((p) => p.text);
+      } else {
+        const line = String(text).trim();
+        const extras = line.length > 40 && !(st.skipIf && st.skipIf.test(line));
+        parts = [
+          extras && st.before ? st.before : null,
+          { text: line },
+          extras && st.after ? st.after : null,
+        ].filter(Boolean);
+      }
       const my = ++token;
       const voice = assigned && assigned[id];
       const play = (i) => {
@@ -139,7 +152,7 @@ const Voices = (() => {
         u.rate = p.rate ?? st.rate;
         u.volume = st.volume ?? 1;
         let done = false;
-        const next = () => { if (done) return; done = true; setTimeout(() => play(i + 1), 120); };
+        const next = () => { if (done) return; done = true; setTimeout(() => play(i + 1), Array.isArray(text) ? 450 : 120); };
         u.onend = next; u.onerror = next;
         speechSynthesis.speak(u);
       };

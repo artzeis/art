@@ -47,6 +47,7 @@
   function go(screen, arg) {
     clearInterval(timerId);
     Voices.stop();
+    document.querySelectorAll(".confetti").forEach((el) => el.remove());
     document.querySelectorAll(".tabbar button").forEach((b) =>
       b.classList.toggle("active", b.dataset.go === screen || (screen === "creature" && b.dataset.go === "journal")));
     (screens[screen] || screens.home)(arg);
@@ -182,6 +183,7 @@
             ${!friend && hidden(id) ? `<button class="btn primary" data-quest>🗺️ Start quest</button>` : ""}
             <button class="btn purple" data-ar>🔮 Find in AR</button>
             <button class="btn" data-make>🎨 Make something</button>
+            <button class="btn" data-chapter>📖 ${friend ? "My story" : "Story (locked)"}</button>
           </div>
           <div class="tabs" role="tablist">
             ${[["story", "📖 Story"], ["powers", "⭐ Powers"], ["secrets", friend ? "🔓 Secrets" : "🔒 Secrets"]].map(([k, l]) =>
@@ -194,12 +196,96 @@
       app.querySelector("[data-say]").onclick = () => speak(`${c.catchphrase} ${c.description}`, c.id);
       app.querySelector("[data-ar]").onclick = () => startAR(id);
       app.querySelector("[data-make]").onclick = () => go("create", id);
+      app.querySelector("[data-chapter]").onclick = () => go("story", friend ? id : null);
       app.querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => screens.creature(id, b.dataset.tab));
       const q = app.querySelector("[data-quest]");
       if (q) q.onclick = () => go("quest", id);
     },
 
     quest(id) { runQuest(byId[id]); },
+
+    // ---------- Dreamwood Storybook ----------
+    // story(): the contents page.  story(id): read a chapter ("prologue", a character id, or "finale").
+    story(which) {
+      const order = ["prologue", ...CREATURES.map((c) => c.id).filter((id) => STORY.chapters[id]), "finale"];
+      const allFound = CREATURES.every((c) => save.found[c.id]);
+      const unlocked = (k) => k === "prologue" || (k === "finale" ? allFound : !!save.found[k]);
+      const chapterOf = (k) => k === "prologue" ? STORY.prologue : k === "finale" ? STORY.finale : STORY.chapters[k];
+      const numberOf = (k) => order.indexOf(k);
+
+      if (!which || !unlocked(which)) {
+        app.innerHTML = `
+          <h1 class="screen-title">📚 The Dreamwood <span class="grad-text">Storybook</span></h1>
+          <p class="lead">${esc(STORY.title)}: one big story in short chapters. Find a friend's treasure to unlock their chapter.</p>
+          <div class="chapter-list">
+            ${order.map((k) => {
+              const ch = chapterOf(k), open = unlocked(k), c = byId[k];
+              const art = c ? creatureArt(c.id) : k === "prologue" ? "🌙" : "🚪";
+              const lockMsg = k === "finale" ? "Find all seven treasures to unlock" : c ? `Find ${c.name}'s ${c.accessory} to unlock` : "";
+              return `
+                <button class="chapter ${open ? "" : "locked"}" style="${c ? vars(c) : ""}" data-chapter="${k}" ${open ? "" : "aria-disabled=\"true\""}>
+                  <span class="chapter-art">${art}</span>
+                  <span class="chapter-txt"><small>${k === "prologue" ? "Prologue" : `Chapter ${numberOf(k)}`}</small>
+                    <b>${esc(ch.title)}</b>
+                    <span class="small muted">${open ? (save.readChapters && save.readChapters[k] ? "✔ Read" : "✨ Ready to read") : `🔒 ${lockMsg}`}</span></span>
+                </button>`; }).join("")}
+            ${STORY.next.map((n) => `
+              <div class="chapter soon"><span class="chapter-art">✨</span>
+                <span class="chapter-txt"><small>Coming soon</small><b>${esc(n.title)}</b><span class="small muted">${esc(n.teaser)}</span></span></div>`).join("")}
+          </div>`;
+        app.querySelectorAll("[data-chapter]").forEach((b) => b.onclick = () => { if (unlocked(b.dataset.chapter)) go("story", b.dataset.chapter); });
+        return;
+      }
+
+      const ch = chapterOf(which), c = byId[which];
+      save.readChapters = save.readChapters || {};
+      save.readChapters[which] = Date.now(); persist();
+      const i = order.indexOf(which), prev = order[i - 1], next = order[i + 1];
+      app.innerHTML = `
+        <div style="${c ? vars(c) : ""}">
+          <div class="card story-page">
+            <div class="story-top">
+              <button class="btn small-btn" id="toc">📚 All chapters</button>
+              <button class="btn small-btn" id="readAloud">🔊 Read aloud</button>
+            </div>
+            <div class="story-art ${c ? "bob" : ""}">${c ? creatureArt(c.id) : which === "prologue" ? "🌙" : "🚪"}</div>
+            <small class="story-num">${which === "prologue" ? "Prologue" : `Chapter ${i}`}</small>
+            <h1 class="story-title">${esc(ch.title)}</h1>
+            ${ch.text.map((t) => `<p class="story-text">${esc(t)}</p>`).join("")}
+            ${ch.clue ? `<div class="hintbox story-clue">🔍 <b>Mystery clue:</b> ${esc(ch.clue)}</div>` : ""}
+            ${ch.meanwhile ? `<p class="story-meanwhile">✨ <i>Meanwhile… ${esc(ch.meanwhile)}</i></p>` : ""}
+            ${ch.ending ? `<p class="story-ending">${esc(ch.ending)}</p>` : ""}
+            ${ch.wonder ? `<div class="hintbox hot">💭 ${esc(ch.wonder)}</div>` : ""}
+          </div>
+          ${ch.challenge ? `
+            <div class="card story-chal">
+              <span class="step-label">📖 ${esc(c.name)}'s Story Challenge</span>
+              <h2>${esc(ch.challenge.title)}</h2>
+              <p>${esc(ch.challenge.text)}</p>
+              <button class="btn primary" id="doChallenge">Do it together</button>
+            </div>` : ""}
+          <div class="row story-nav">
+            ${prev ? `<button class="btn" data-goto="${prev}">◀ ${prev === "prologue" ? "Prologue" : "Previous"}</button>` : ""}
+            ${next ? `<button class="btn ${unlocked(next) ? "purple" : ""}" data-goto="${next}">${unlocked(next) ? "Next chapter ▶" : "🔒 Next chapter"}</button>` : ""}
+          </div>
+        </div>`;
+      app.querySelector("#toc").onclick = () => go("story");
+      app.querySelector("#readAloud").onclick = () => speakAs("narrator", [ch.title, ...ch.text, ch.clue ? `Mystery clue: ${ch.clue}` : "", ch.meanwhile ? `Meanwhile… ${ch.meanwhile}` : "", ch.ending || "", ch.wonder || ""]);
+      const dc = app.querySelector("#doChallenge");
+      if (dc) dc.onclick = () => go("storyChallenge", which);
+      app.querySelectorAll("[data-goto]").forEach((b) => b.onclick = () => go("story", unlocked(b.dataset.goto) ? b.dataset.goto : null));
+    },
+
+    storyChallenge(id) {
+      const c = byId[id], chap = STORY.chapters[id];
+      app.innerHTML = `
+        <div style="${vars(c)}"><div class="card">
+          <div class="quest-head"><div class="art bob">${creatureArt(c.id)}</div>
+            <div><h2>${c.name}</h2><span class="kind-chip">${c.kind}</span></div></div>
+          <div id="createBox"></div>
+        </div></div>`;
+      renderCreate(app.querySelector("#createBox"), c, { standalone: true, story: chap.challenge, onDone: (made) => { if (made) confetti(); go("story", id); } });
+    },
 
     create(id) {
       const c = byId[id];
@@ -572,25 +658,31 @@
   }
 
   // ---------- Make something together (+ Memory Book photo) ----------
-  function renderCreate(box, c, { onDone, standalone = false }) {
-    const reqs = CREATE_REQUESTS[c.id] || ["Make something wonderful together!"];
+  // `story` = the character's personal Story Challenge from their storybook chapter (js/story.js).
+  function renderCreate(box, c, { onDone, standalone = false, story = null }) {
+    const reqs = story ? [story.text] : (CREATE_REQUESTS[c.id] || ["Make something wonderful together!"]);
     let idx = Math.floor(Math.random() * reqs.length), photo = null;
+    const lineFor = (req) => story
+      ? (standalone ? `${story.title}! ${req}` : `Thank you, amigo! Now help me with my story: ${story.title}! ${req}`)
+      : (standalone ? `Will you make something for me? ${req}` : `Thank you so much! Will you do one more thing for me? ${req}`);
     const draw = () => {
       const req = reqs[idx];
-      const line = standalone ? `Will you make something for me? ${req}` : `Thank you so much! Will you do one more thing for me? ${req}`;
+      const line = lineFor(req);
       box.innerHTML = `
+        ${story ? `<div class="story-chal-title">📖 ${esc(story.title)}</div>` : ""}
         <div class="speech">${esc(line)}</div>
         <p class="small muted">Make it together with your grown-up, then snap a photo to keep it in your 📸 Memory Book.</p>
         ${photo ? `<div class="photo-slot"><img src="${photo}" alt="Your creation"></div>` : ""}
         <div class="row">
           <button class="btn" data-listen>🔊 Listen</button>
-          <button class="btn" data-other>🔀 Another idea</button>
+          ${reqs.length > 1 ? `<button class="btn" data-other>🔀 Another idea</button>` : ""}
           <label class="btn purple file-btn">📷 ${photo ? "Retake" : "Take a photo"}<input type="file" accept="image/*" capture="environment" hidden></label>
         </div>
-        <button class="btn good block" data-made style="margin-top:10px">🎨 We made it!</button>
+        <button class="btn good block" data-made style="margin-top:10px">${story ? "🎉 We did it!" : "🎨 We made it!"}</button>
         <button class="btn block" data-skip style="margin-top:8px">Skip for now</button>`;
       box.querySelector("[data-listen]").onclick = () => speak(line, c.id);
-      box.querySelector("[data-other]").onclick = () => { idx = (idx + 1) % reqs.length; draw(); speak(reqs[idx], c.id); };
+      const other = box.querySelector("[data-other]");
+      if (other) other.onclick = () => { idx = (idx + 1) % reqs.length; draw(); speak(reqs[idx], c.id); };
       box.querySelector("input[type=file]").onchange = async (e) => {
         const f = e.target.files && e.target.files[0];
         if (!f) return;
@@ -599,7 +691,7 @@
       };
       box.querySelector("[data-made]").onclick = async () => {
         if (photo) {
-          try { await Memories.add({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, creature: c.id, text: req, date: Date.now(), img: photo }); }
+          try { await Memories.add({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, creature: c.id, text: story ? `${story.title}: ${req}` : req, date: Date.now(), img: photo }); }
           catch (_) { alert("The photo couldn't be saved on this device, but well done!"); }
         }
         onDone(true);
@@ -607,12 +699,12 @@
       box.querySelector("[data-skip]").onclick = () => onDone(false);
     };
     draw();
-    if (!standalone) speak(`Thank you so much! Will you do one more thing for me? ${reqs[idx]}`, c.id);
+    if (!standalone) speak(lineFor(reqs[idx]), c.id);
   }
 
   // ---------- Quest flow ----------
   // Steps: 0 intro → 1 activity challenge → 2 riddle → 3 "what did you find?" → 4 celebrate
-  const PATH = ["👋", "🏃", "🧩", "🎁", "🎨", "🎉"];
+  const PATH = ["👋", "🏃", "🧩", "🎁", "📖", "🎉"];
   function runQuest(c) {
     if (!hidden(c.id)) return go("creature", c.id);
     // Treasure trail: one riddle per stop (clue cards first, the treasure last).
@@ -810,8 +902,9 @@
           else { b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 400); }
         });
       } else if (step === 4) {
-        frame(`<span class="step-label">Step 4 · Make something together</span><div id="createBox"></div>`);
-        renderCreate(app.querySelector("#createBox"), c, { onDone: (made) => { madeSomething = made; step = 5; render(); } });
+        frame(`<span class="step-label">Step 4 · Story Challenge</span><div id="createBox"></div>`);
+        const chap = STORY.chapters[c.id];
+        renderCreate(app.querySelector("#createBox"), c, { story: chap && chap.challenge, onDone: (made) => { madeSomething = made; step = 5; render(); } });
         return;
       } else {
         const first = !save.found[c.id];
@@ -825,6 +918,8 @@
           <div class="speech">${thanks}</div>
           ${first ? `<p class="big center">You earned ${"⭐".repeat(gained)}</p>` : ""}
           <div class="hintbox center">🔓 You unlocked ${c.facts.length} secret fun facts in the Creature Journal!</div>
+          ${STORY.chapters[c.id] ? `<div class="hintbox center story-unlock">📖 New story chapter: <b>${esc(STORY.chapters[c.id].title)}</b>
+            <br><button class="btn small-btn" id="readChapter" style="margin-top:8px">Read it now</button></div>` : ""}
           <p></p>
           <div class="row">
             <button class="btn" data-say="${esc(thanks)}">🔊 Listen</button>
@@ -835,6 +930,8 @@
           </div>
           <button class="btn block calm-btn" id="calmDown" style="margin-top:10px">🌙 Calm down with Nyxie</button>`);
         app.querySelector("#calmDown").onclick = () => Calm.start(() => go("home"));
+        const rc = app.querySelector("#readChapter");
+        if (rc) rc.onclick = () => go("story", c.id);
         app.querySelector("#secrets").onclick = () => { go("creature", c.id); screens.creature(c.id, "secrets"); };
         app.querySelector("#seeAR").onclick = () => startAR(c.id);
         app.querySelector("#home").onclick = () => go("home");

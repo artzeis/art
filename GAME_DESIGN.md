@@ -134,6 +134,37 @@ spot on its plush: a hook-and-loop dot, or a pocket for Scribbi's crayon. "It's 
 "No plush yet — keep going" for families without the plush. Attachment details are in
 `manufacturing/treasures/README.md`.
 
+## 📚 The Dreamwood Storybook
+One big story told in short chapters (`js/story.js`), in a **Stories** tab.
+- **The world:** the Imagamigos live in **Dreamwood**, a secret land on the other side of every pillow
+  (a nod to the pillow plush toys). One night **the Great Gust** blew their seven treasures through the
+  pillow-doors into our world.
+- **Chapters unlock as you play:** the prologue is always open, and each character's chapter unlocks
+  when their treasure is found. Chapters can be read in any order. Each stands on its own, but adds a
+  **mystery clue** and a **"Meanwhile…"** line that hands the story to another friend:
+  - **Scribbi:** a tiny rider on the Gust.
+  - **Craggle:** the legend of the Moon Door.
+  - **Orbit:** a question-mark-shaped shooting star.
+  - **Tangle:** a new door in the maze with seven shapes.
+  - **Nyxie:** Pip-Pip, the smallest star, is missing.
+  - **Glitch:** a tiny voice whispering "find the door".
+  - **Leo:** the Gust smells of peppermint, thunder and birthday cake.
+- **The finale ("The Moon Door")** unlocks when all seven are home. The door opens a crack, a tiny voice
+  says hello, and the chapter ends **"To be continued…"**. It asks kids what they think is behind the
+  door, leaving room for future chapters and new characters (`STORY.next` lists "Coming soon" chapters).
+- **Read aloud:** a warm narrator voice reads each chapter paragraph by paragraph.
+- **Personal Story Challenges:** the last challenge of every quest is that character's own **Story
+  Challenge**, tied to their chapter:
+  - **Scribbi:** paint Dreamwood back to life.
+  - **Craggle:** make up the slow, rumbly song.
+  - **Orbit:** chart the mystery star.
+  - **Tangle:** build the secret door and crawl through.
+  - **Nyxie:** make a dream shield.
+  - **Glitch:** invent the signal dance.
+  - **Leo:** make a pack flag and howl together.
+
+  Photos go to the Memory Book. Story Challenges can also be done any time from the storybook.
+
 ## Character voices
 Every line a character says can be heard in that character's own voice (`js/voices.js`). The game uses
 the device's built-in text-to-speech, so it's free and works offline. It is tuned to sound **natural
