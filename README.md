@@ -45,7 +45,7 @@ Wordweave is an installable web app: it has its own icon, opens full-screen, and
    - **Android (Chrome):** menu ⋮ → *Install app* / *Add to Home screen*.
    - **Desktop (Chrome/Edge):** the install icon in the address bar.
 
-The icon lives in `icons/icon.svg`. After editing it, run `node scripts/make-icons.js` to regenerate the PNG sizes.
+The app icon (colorful WOW/JOY crossword tiles) lives in `icons/icon.svg`, and the simplified browser-tab icon in `icons/favicon.svg`. After editing either, run `node scripts/make-icons.js` to regenerate the PNG sizes.
 
 ## Project layout
 
