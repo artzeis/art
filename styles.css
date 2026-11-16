@@ -287,6 +287,13 @@ ol.setup-steps { padding-left: 20px; margin: 0 0 10px; }
   box-shadow: 0 6px 18px rgba(0,0,0,.45); }
 .spin-btn:active { transform: scale(.94); }
 
+.voice-list { display: grid; gap: 8px; }
+.voice-row { display: grid; grid-template-columns: 48px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 16px; background: rgba(255,255,255,.04); border: 1px solid var(--line); }
+.voice-row .hide-art { width: 48px; height: 48px; }
+.voice-tip { margin-top: 12px; background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+.voice-tip ul { padding-left: 18px; margin: 6px 0 0; }
+.voice-tip li { margin: 4px 0; }
+
 /* ---------- Plush shop ---------- */
 .shop { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: center; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 22%, transparent), var(--glass)); border-color: color-mix(in srgb, var(--c) 45%, transparent); }
 .shop img { width: 140px; height: 140px; border-radius: 22px; object-fit: cover; box-shadow: 0 10px 24px rgba(0,0,0,.35); }

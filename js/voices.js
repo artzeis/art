@@ -1,86 +1,86 @@
 // Myth Seekers — character voices.
 //
-// Every character speaks with the device's built-in text-to-speech (works offline), and each one
-// "performs" its lines to match its personality:
-//   • its own pitch, speed and volume
-//   • its own installed voice where the device has several (the `prefer` list is tried in order)
-//   • its own delivery: how lines are split up, pauses, pitch changes and little sounds
+// Characters speak with the device's built-in text-to-speech (free, works offline).
+// To sound natural rather than robotic:
+//   • the best-quality voices on the device are chosen first ("Premium", "Enhanced", "Natural",
+//     "Neural", "Online" voices), and old robotic/novelty voices are never used
+//   • pitch and speed stay close to normal (big pitch changes are what make voices sound robotic)
+//   • each line is spoken in one smooth piece; personality comes from the voice, a gentle
+//     pitch/speed change, and a short sound like "Hee-hee!" or "Mrrrow…"
 //
-// Tune a character by editing its entry below.
-//   pitch: 0.1 (very deep) … 2 (very high)    rate: 0.5 (slow) … 1.5 (fast)    pause: ms between phrases
+// Tune a character below.  pitch: 0.5 (deep) … 1.5 (high), 1 = normal.  rate: 0.7 (slow) … 1.3 (fast).
 const VOICE_STYLES = {
-  // Silly, creative, wiggly — high, fast and bouncy, pitch hopping up and down, giggles.
+  // Silly, creative, wiggly — bright young voice, a bit quick, giggles.
   scribbi: {
-    pitch: 1.75, rate: 1.15, pause: 60, split: "sentence",
-    prefer: ["Junior", "Samantha", "Ava", "Microsoft Ana", "Microsoft Aria", "Google US English"],
-    shape: (parts, long, text) => {
-      parts = parts.map((p, i) => ({ ...p, pitch: i % 2 ? 1.95 : 1.7 }));
-      if (long && !/hee/i.test(text)) parts.push({ text: "Hee-hee!", pitch: 2, rate: 1.25 });
-      return parts;
-    },
+    pitch: 1.25, rate: 1.06,
+    prefer: ["Ava", "Samantha", "Zoe", "Allison", "Nicky", "Microsoft Ana", "Microsoft Aria", "Microsoft Jenny", "Google US English"],
+    before: null, after: { text: "Hee-hee!", pitch: 1.4, rate: 1.1 }, skipIf: /hee/i,
   },
-  // Chill, steady, wise — very deep and slow, thinks between every phrase.
+  // Chill, steady, wise — deep, calm, slow, a thoughtful "Hmmm…" first.
   craggle: {
-    pitch: 0.45, rate: 0.72, pause: 420, split: "phrase",
-    prefer: ["Ralph", "Grandpa", "Daniel", "Fred", "Microsoft Guy", "Google UK English Male", "Arthur"],
-    shape: (parts, long, text) => (long && !/^h+m+/i.test(text) ? [{ text: "Hmmmm…", rate: 0.6 }, ...parts] : parts),
+    pitch: 0.78, rate: 0.84,
+    prefer: ["Daniel", "Evan", "Tom", "Arthur", "Aaron", "Oliver", "Microsoft Guy", "Microsoft Ryan", "Microsoft Christopher", "Google UK English Male"],
+    before: { text: "Hmmm…", rate: 0.75 }, after: null, skipIf: /^h+m+/i,
   },
-  // Curious, dreamy, amazed — bright, voice rises at questions and exclamations.
+  // Curious, dreamy, amazed — warm, bright and wide-eyed.
   orbit: {
-    pitch: 1.35, rate: 1.0, pause: 140, split: "sentence",
-    prefer: ["Kathy", "Tessa", "Karen", "Microsoft Jenny", "Google US English"],
-    shape: (parts, long, text) => {
-      parts = parts.map((p) => ({ ...p, pitch: /\?\s*$/.test(p.text) ? 1.65 : /!\s*$/.test(p.text) ? 1.5 : 1.3 }));
-      return long && !/^(boop|ooo)/i.test(text) ? [{ text: "Ooooh!", pitch: 1.7 }, ...parts] : parts;
-    },
+    pitch: 1.18, rate: 1.0,
+    prefer: ["Karen", "Tessa", "Allison", "Susan", "Victoria", "Microsoft Natasha", "Microsoft Libby", "Microsoft Jenny", "Google UK English Female"],
+    before: { text: "Ooooh!", pitch: 1.3 }, after: null, skipIf: /^(boop|ooo)/i,
   },
-  // Clever, playful, cheeky — quick and sly, a little quieter on the sneaky bits, chuckles.
+  // Clever, playful, cheeky — quick and sly, with a chuckle.
   tangle: {
-    pitch: 1.1, rate: 1.2, pause: 90, split: "sentence",
-    prefer: ["Jester", "Eddy", "Reed", "Rishi", "Aaron", "Microsoft Christopher"],
-    shape: (parts, long, text) => {
-      parts = parts.map((p) => ({ ...p, volume: /\?\s*$/.test(p.text) ? 0.85 : 1 }));
-      if (long && !/heh/i.test(text)) parts.push({ text: "Heh-heh-heh!", pitch: 1.2, rate: 1.3 });
-      return parts;
-    },
+    pitch: 1.05, rate: 1.1,
+    prefer: ["Rishi", "Nathan", "Alex", "Aaron", "Lee", "Microsoft Brian", "Microsoft Andrew", "Microsoft Guy", "Google US English"],
+    before: null, after: { text: "Heh-heh!", pitch: 1.1, rate: 1.05 }, skipIf: /heh/i,
   },
-  // Mysterious, gentle, loyal — soft and slow, sleepy pauses, a purr to start.
+  // Mysterious, gentle, loyal — soft, calm and unhurried, starts with a purr.
   nyxie: {
-    pitch: 0.95, rate: 0.8, volume: 0.85, pause: 380, split: "sentence",
-    prefer: ["Moira", "Serena", "Shelley", "Martha", "Microsoft Sonia", "Google UK English Female"],
-    shape: (parts, long, text) => (long && !/^mr+/i.test(text) ? [{ text: "Mrrrow…", rate: 0.7, pitch: 0.9 }, ...parts] : parts),
+    pitch: 0.96, rate: 0.88, volume: 0.9,
+    prefer: ["Moira", "Serena", "Kate", "Martha", "Fiona", "Stephanie", "Microsoft Sonia", "Microsoft Libby", "Google UK English Female"],
+    before: { text: "Mrrrow…", rate: 0.8 }, after: null, skipIf: /^mr+/i,
   },
-  // Cheeky, speedy, fair — steady robot tone (flat pitch, clear voice), short beeps between thoughts.
+  // Cheeky, speedy, fair — clear, upbeat game-show style, with a quick beep to finish.
   glitch: {
-    pitch: 0.9, rate: 0.98, pause: 200, split: "sentence",
-    prefer: ["Fred", "Alex", "Daniel", "Microsoft David", "Google US English"],
-    shape: (parts, long, text) => {
-      const beeps = long && !/bleep/i.test(text);
-      const out = [];
-      parts.forEach((p, i) => { out.push({ ...p, pitch: 0.9 }); if (beeps && i === 0 && parts.length > 1) out.push({ text: "Bleep.", pitch: 1.3, rate: 1.1 }); });
-      if (beeps) out.push({ text: "Bleep-bloop!", pitch: 1.25, rate: 1.1 });
-      return out;
-    },
+    pitch: 1.0, rate: 1.04,
+    prefer: ["Alex", "Tom", "Evan", "Nathan", "Lee", "Aaron", "Daniel", "Microsoft Eric", "Microsoft Steffan", "Microsoft Davis", "Google US English"],
+    before: null, after: { text: "Bleep-bloop!", pitch: 1.2, rate: 1.1 }, skipIf: /bleep/i,
   },
 };
+
+// Old robotic and novelty voices (mainly on Apple devices) that are never used.
+const ROBOTIC_VOICES = /^(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|eddy|flo|fred|good news|grandma|grandpa|hysterical|jester|junior|kathy|organ|princess|ralph|reed|rocko|sandy|shelley|superstar|trinoids|whisper|wobble|zarvox)\b/i;
+const QUALITY_VOICES = /premium|enhanced|natural|neural|online|siri/i;
 
 const Voices = (() => {
   let assigned = null;
   let token = 0;
-  const english = () => (window.speechSynthesis ? speechSynthesis.getVoices() : [])
-    .filter((v) => /^en(-|_|$)/i.test(v.lang))
-    .sort((a, b) => (b.localService - a.localService) || a.name.localeCompare(b.name));
 
-  // Give each character a different voice: its favourite if the device has it, otherwise the next unused one.
+  const score = (v) => (QUALITY_VOICES.test(v.name) ? 50 : 0) + (v.localService ? 0 : 5) + (/^en-(us|gb)/i.test(v.lang) ? 2 : 0);
+  const englishVoices = () => (window.speechSynthesis ? speechSynthesis.getVoices() : [])
+    .filter((v) => /^en(-|_|$)/i.test(v.lang) && !ROBOTIC_VOICES.test(v.name))
+    .sort((a, b) => score(b) - score(a) || a.name.localeCompare(b.name));
+
+  // Each character gets its best preferred voice the device has (highest quality first),
+  // a different one from the other characters where possible.
   function assign() {
-    const list = english();
+    const list = englishVoices();
     if (!list.length) return null;
     const used = new Set();
     const map = {};
     Object.entries(VOICE_STYLES).forEach(([id, st]) => {
-      const fav = st.prefer.map((n) => list.find((v) => v.name.toLowerCase().startsWith(n.toLowerCase()) && !used.has(v.name))).find(Boolean);
-      const v = fav || list.find((x) => !used.has(x.name)) || list[0];
-      used.add(v.name); map[id] = v;
+      // Among this character's preferred voices, a high-quality one wins; otherwise the earliest in the list.
+      let v = null, best = -Infinity;
+      st.prefer.forEach((pref, i) => {
+        list.forEach((x) => {
+          if (used.has(x.name) || !x.name.toLowerCase().startsWith(pref.toLowerCase())) return;
+          const sc = (QUALITY_VOICES.test(x.name) ? 100 : 0) - i;
+          if (sc > best) { best = sc; v = x; }
+        });
+      });
+      v = v || list.find((x) => !used.has(x.name)) || list[0];
+      used.add(v.name);
+      map[id] = v;
     });
     return map;
   }
@@ -89,21 +89,19 @@ const Voices = (() => {
     assigned = assign();
   }
 
-  // Break a line into phrases (",;:" too) or sentences.
-  function split(text, mode) {
-    const re = mode === "phrase" ? /[^.!?,;:…]+[.!?,;:…]*/g : /[^.!?…]+[.!?…]*/g;
-    return (text.match(re) || [text]).map((t) => t.trim()).filter(Boolean).map((t) => ({ text: t }));
-  }
-
   function speakAs(id, text) {
     try {
       if (!window.speechSynthesis || !text) return;
       speechSynthesis.cancel();
       if (!assigned) assigned = assign();
-      const st = VOICE_STYLES[id] || { pitch: 1.1, rate: 0.95, pause: 100, split: "sentence" };
-      const base = split(text, st.split);
-      const long = text.length > 60;                // little extras only on longer lines
-      const parts = st.shape ? st.shape(base, long, text.trim()) : base;
+      const st = VOICE_STYLES[id] || { pitch: 1, rate: 1 };
+      const line = String(text).trim();
+      const extras = line.length > 40 && !(st.skipIf && st.skipIf.test(line));
+      const parts = [
+        extras && st.before ? st.before : null,
+        { text: line },
+        extras && st.after ? st.after : null,
+      ].filter(Boolean);
       const my = ++token;
       const voice = assigned && assigned[id];
       const play = (i) => {
@@ -113,9 +111,9 @@ const Voices = (() => {
         if (voice) { u.voice = voice; u.lang = voice.lang; }
         u.pitch = p.pitch ?? st.pitch;
         u.rate = p.rate ?? st.rate;
-        u.volume = p.volume ?? st.volume ?? 1;
+        u.volume = st.volume ?? 1;
         let done = false;
-        const next = () => { if (done) return; done = true; setTimeout(() => play(i + 1), st.pause || 0); };
+        const next = () => { if (done) return; done = true; setTimeout(() => play(i + 1), 120); };
         u.onend = next; u.onerror = next;
         speechSynthesis.speak(u);
       };
@@ -123,6 +121,8 @@ const Voices = (() => {
     } catch (_) {}
   }
   const stop = () => { token++; try { window.speechSynthesis && speechSynthesis.cancel(); } catch (_) {} };
-  return { speakAs, stop, voiceFor: (id) => assigned && assigned[id] };
+  const voiceFor = (id) => { if (!assigned) assigned = assign(); return assigned && assigned[id]; };
+  const hasQualityVoices = () => englishVoices().some((v) => QUALITY_VOICES.test(v.name));
+  return { speakAs, stop, voiceFor, hasQualityVoices };
 })();
 const speakAs = Voices.speakAs;

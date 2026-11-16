@@ -303,6 +303,28 @@
         </div>`).join("")}
       <button class="btn primary block" id="saveSetup" style="margin-bottom:16px">Save &amp; start playing</button>
       <div class="card">
+        <h2 class="section-title">🔊 Voice check</h2>
+        <p class="small muted" style="margin-top:0">Tap ▶ to hear each character.</p>
+        <div class="voice-list">
+          ${CREATURES.map((c) => { const v = Voices.voiceFor(c.id); return `
+            <div class="voice-row" style="${vars(c)}">
+              <span class="hide-art">${creatureArt(c.id)}</span>
+              <div><b>${c.name}</b><br><span class="small muted">${v ? esc(v.name) : "Default voice"}</span></div>
+              <button class="btn small-btn" data-voicetest="${c.id}" aria-label="Hear ${c.name}">▶</button>
+            </div>`; }).join("")}
+        </div>
+        ${Voices.hasQualityVoices()
+          ? `<p class="small" style="margin-bottom:0">✅ High-quality voices found on this device.</p>`
+          : `<details class="small voice-tip"><summary><b>Make the voices sound more natural (free)</b></summary>
+              <p>Download a high-quality voice on this device, then reopen the game:</p>
+              <ul>
+                <li><b>iPhone / iPad:</b> Settings → Accessibility → Spoken Content → Voices → English → download voices marked <em>Enhanced</em> or <em>Premium</em> (for example Ava, Zoe, Evan, Nathan).</li>
+                <li><b>Mac:</b> System Settings → Accessibility → Spoken Content → System Voice → Manage Voices.</li>
+                <li><b>Android:</b> Settings → search "Text-to-speech" → Google → Install voice data → English → pick a high-quality voice.</li>
+                <li><b>Windows:</b> open the game in Microsoft Edge to use its built-in Natural voices.</li>
+              </ul></details>`}
+      </div>
+      <div class="card">
         <b>Play again</b>
         <p class="small muted">Clears found characters so kids can hunt again. Stars are kept.</p>
         <div class="row">
@@ -348,6 +370,10 @@
       app.querySelectorAll("[data-hide]").forEach((inp) => setHide(inp.dataset.hide, inp.value));
       go("home");
     };
+    app.querySelectorAll("[data-voicetest]").forEach((b) => b.onclick = () => {
+      const c = byId[b.dataset.voicetest];
+      speak(`Hi! I'm ${c.name}. ${c.catchphrase}`, c.id);
+    });
     app.querySelector("#replay").onclick = () => { save.found = {}; persist(); setupScreen(); };
     app.querySelector("#wipe").onclick = () => {
       if (confirm("Reset all progress, stars and hiding places?")) { save = fresh(); persist(); setupScreen(); }

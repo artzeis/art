@@ -96,23 +96,31 @@ Animations are turned off for players whose device asks for reduced motion.
 - **Fallbacks:** without a camera, an illustrated forest is shown instead.
 
 ## Character voices
-Every line a character says can be heard in that character's own voice (`js/voices.js`), using the
-device's built-in text-to-speech, so it works offline. Each character has its own pitch and speed, and
-gets a different installed voice where the device has several:
+Every line a character says can be heard in that character's own voice (`js/voices.js`). The game uses
+the device's built-in text-to-speech, so it's free and works offline. It is tuned to sound **natural
+rather than robotic**:
+- **Best voices first:** high-quality voices ("Enhanced", "Premium", "Natural", "Neural") are picked
+  first, and old robotic or novelty voices (Zarvox, Fred, Jester, Grandpa…) are never used.
+- **Gentle settings:** pitch and speed stay close to normal, because big pitch changes are what make
+  speech sound robotic. Each line is spoken in one smooth piece.
+- **Personality** comes from the choice of voice, a gentle pitch and speed change, and one short sound.
 
-| Character | Personality | How they speak |
+| Character | Personality | Voice |
 |---|---|---|
-| Scribbi | Silly, creative, wiggly | Very high and fast; pitch bounces up and down between sentences; giggles "Hee-hee!" |
-| Craggle | Chill, steady, wise | Very deep and slow; starts with "Hmmmm…" and pauses to think at every comma |
-| Orbit | Curious, dreamy, amazed | Bright; voice rises in wonder on questions and exclamations; "Ooooh!" |
-| Tangle | Clever, playful, cheeky | Quick and sly; asks questions a little quieter, like a secret; chuckles "Heh-heh-heh!" |
-| Nyxie | Mysterious, gentle, loyal | Soft, quiet and slow, with sleepy pauses; starts with a purr, "Mrrrow…" |
-| Glitch | Cheeky, speedy, fair | Steady, even robot tone at a clear, easy-to-follow pace; "Bleep." between thoughts and "Bleep-bloop!" to finish |
+| Scribbi | Silly, creative, wiggly | Bright young voice, a little quick, ends with "Hee-hee!" |
+| Craggle | Chill, steady, wise | Deep, calm and slow, starts with a thoughtful "Hmmm…" |
+| Orbit | Curious, dreamy, amazed | Warm and bright, starts with an amazed "Ooooh!" |
+| Tangle | Clever, playful, cheeky | Quick and sly, ends with a chuckle, "Heh-heh!" |
+| Nyxie | Mysterious, gentle, loyal | Soft and unhurried, starts with a purr, "Mrrrow…" |
+| Glitch | Cheeky, speedy, fair | Clear and upbeat, ends with a quick "Bleep-bloop!" |
 
-The little sounds are only added to longer lines, and never when the line already has one.
+**Voice check (Grown-up Corner):** lists the voice each character is using, with a ▶ button to hear
+each one, plus steps to download free high-quality voices (iPhone/iPad: Settings → Accessibility →
+Spoken Content → Voices; Android: Text-to-speech settings; Windows: use Microsoft Edge).
 
-Characters speak on their profile page (🔊), during quests (🔊 Listen, and the thank-you at the end)
-and in AR (when found, and for waves, spins and fun facts).
+For voices that sound like real actors, the next step would be recorded or AI-generated audio from a
+voice service. Fixed lines could be pre-recorded, but the riddles are written on the fly, so they would
+need the service to speak them live, through a small server that keeps the service's key safe.
 
 ## Rewards and progress
 - ⭐ Sparkle Stars from quests and AR sightings.
