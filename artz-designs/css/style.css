@@ -175,7 +175,7 @@ h1, h2, .logo, .next strong {
   position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
   text-align: center;
   aspect-ratio: 3 / 5; min-height: 380px;
-  padding: 0 26px 34px;
+  padding: 0 22px 44px;
   border-radius: var(--arch); overflow: hidden;
   text-decoration: none; color: #fffaf0;
   background: var(--c); isolation: isolate;
@@ -184,6 +184,9 @@ h1, h2, .logo, .next strong {
 }
 @media (max-width: 560px) { .cat-card { aspect-ratio: 4 / 5; } }
 .cat-card:hover { transform: translateY(-6px); }
+.cat-card.soon { cursor: default; }
+.cat-card.soon:hover { transform: none; }
+.cat-card.soon h2 { opacity: .85; font-style: italic; }
 .cat-card .cover {
   position: absolute; inset: 0; z-index: -2;
   background-size: cover; background-position: center;
@@ -203,8 +206,8 @@ h1, h2, .logo, .next strong {
 .cat-card .num { font-family: var(--caps); font-size: .85rem; letter-spacing: .3em; color: var(--gold-soft); }
 .cat-card h2 {
   font-family: var(--serif); font-weight: 400;
-  font-size: clamp(1.7rem, 2.4vw, 2.2rem); line-height: 1.05; letter-spacing: -0.01em;
-  margin: 6px 0 10px;
+  font-size: clamp(1.8rem, 2.5vw, 2.3rem); line-height: 1.08; letter-spacing: -0.01em;
+  margin: 0;
 }
 .cat-card p { font-size: .95rem; opacity: .9; line-height: 1.5; }
 .cat-card .go {
@@ -215,8 +218,8 @@ h1, h2, .logo, .next strong {
 .cat-card:hover .go { background: var(--gold-soft); color: var(--forest); border-color: var(--gold-soft); }
 
 .cat-card.landscape { --c: var(--landscape); }
-.cat-card.festival  { --c: var(--festival); }
-.cat-card.stages    { --c: var(--stages); }
+.cat-card.installations { --c: var(--festival); }
+.cat-card.soon      { --c: var(--stages); }
 .cat-card.interiors { --c: var(--interiors); }
 
 /* Illustrated covers used until real images are added */
@@ -228,13 +231,13 @@ h1, h2, .logo, .next strong {
     radial-gradient(160% 50% at 50% 110%, #5f8f45 0 60%, transparent 61%),
     linear-gradient(#f2d79a, #b8d09a 70%);
 }
-.cat-card.festival .cover:not([style]) {
+.cat-card.installations .cover:not([style]) {
   background:
     radial-gradient(circle at 50% 26%, #ffe2a0 0 8%, transparent 9%),
     repeating-conic-gradient(from 0deg at 50% 26%, #e07a4a 0 7.5deg, #c2553a 7.5deg 15deg),
     #c2553a;
 }
-.cat-card.stages .cover:not([style]) {
+.cat-card.soon .cover:not([style]) {
   background:
     radial-gradient(60% 30% at 50% 100%, rgba(255,226,160,.45), transparent 70%),
     conic-gradient(from 150deg at 50% 0%, transparent 0 10deg, rgba(255,226,160,.28) 12deg 20deg, transparent 22deg 28deg, rgba(255,226,160,.22) 30deg 38deg, transparent 40deg 46deg, rgba(255,226,160,.28) 48deg 56deg, transparent 58deg),
@@ -294,8 +297,7 @@ h1, h2, .logo, .next strong {
 .page-hero p { max-width: 58ch; margin: 0 auto; color: var(--ink-soft); font-size: 1.12rem; }
 
 body.landscape { --c: var(--landscape); }
-body.festival  { --c: var(--festival); }
-body.stages    { --c: var(--stages); }
+body.installations { --c: var(--festival); }
 body.interiors { --c: var(--interiors); }
 
 /* Masonry gallery */

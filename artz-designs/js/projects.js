@@ -2,8 +2,8 @@
    PORTFOLIO CONTENT — edit this file to add your work.
 
    1. Drop image files into the matching folder:
-        images/landscape/   images/festival/
-        images/stages/      images/interiors/
+        images/landscape/   images/installations/
+        images/installations/      images/interiors/
    2. Add an entry to that category's "items" list below, e.g.
         { src: "images/landscape/rock-garden.jpg",
           title: "Desert Rock Garden",
@@ -15,34 +15,27 @@
    ========================================================== */
 
 window.PORTFOLIO = {
+  installations: {
+    cover: "images/installations/driftwood-moon-day.jpg",
+    items: [
+      { src: "images/installations/bamboo-string-stage.jpg", title: "Bamboo String Stage", caption: "Bent bamboo arches and string-art netting around a wooden stage deck.", year: "" },
+      { src: "images/installations/driftwood-moon-day.jpg", title: "Driftwood Moon", caption: "A crescent moon of layered driftwood with a walkable deck and hanging orb.", year: "" },
+      { src: "images/installations/driftwood-moon-night.jpg", title: "Driftwood Moon — Night", caption: "The orb lit up after dark, with the campfire glowing beyond.", year: "" },
+      { src: "images/installations/bloom-pod-day.jpg", title: "Bloom Pod", caption: "A wooden flower bud lounge with layered petals and a mossy interior.", year: "" },
+      { src: "images/installations/bloom-pod-night.jpg", title: "Bloom Pod — Night", caption: "Inside the pod beneath a glowing pinecone lantern.", year: "" },
+      { src: "images/installations/teardrop-pavilion.jpg", title: "Teardrop Pavilion", caption: "A woven-branch teardrop shelter set among the pines.", year: "" },
+      { src: "images/installations/teardrop-pavilion-yoga.jpg", title: "Teardrop Pavilion in Winter", caption: "The pavilion in the snow, with its striped timber backdrop.", year: "" },
+      { src: "images/installations/owl-festival-crowd.jpg", title: "Great Owl", caption: "A giant UV-painted wooden owl watching over the festival crowd.", year: "" },
+      { src: "images/installations/owl-gateway-uv.jpg", title: "Owl Gateway", caption: "The owl with its wings spread over an entrance path, glowing under blacklight.", year: "" },
+      { src: "images/installations/floral-entrance-arch.jpg", title: "Floral Entrance Arch", caption: "A towering flower-covered gateway in the pines.", year: "" },
+      { src: "images/installations/wooden-serpent-build.jpg", title: "Wooden Serpent (in progress)", caption: "Faceted timber segments taking shape during the build.", year: "" },
+    ],
+  },
   landscape: {
     cover: "images/landscape/branch-helix.jpg",
     items: [
       { src: "images/landscape/branch-helix.jpg", title: "Branch Helix", caption: "A spiralling ladder of peeled branches rising out of the meadow.", year: "" },
       { src: "images/landscape/driftwood-pillars-path.jpg", title: "Driftwood Path Pillars", caption: "Twisted driftwood columns glowing from within, framing a lit garden path.", year: "" },
-    ],
-  },
-
-  festival: {
-    cover: "images/festival/driftwood-moon-day.jpg",
-    items: [
-      { src: "images/festival/driftwood-moon-day.jpg", title: "Driftwood Moon", caption: "A crescent moon of layered driftwood with a walkable deck and hanging orb.", year: "" },
-      { src: "images/festival/driftwood-moon-night.jpg", title: "Driftwood Moon — Night", caption: "The orb lit up after dark, with the campfire glowing beyond.", year: "" },
-      { src: "images/festival/bloom-pod-day.jpg", title: "Bloom Pod", caption: "A wooden flower bud lounge with layered petals and a mossy interior.", year: "" },
-      { src: "images/festival/bloom-pod-night.jpg", title: "Bloom Pod — Night", caption: "Inside the pod beneath a glowing pinecone lantern.", year: "" },
-      { src: "images/festival/teardrop-pavilion.jpg", title: "Teardrop Pavilion", caption: "A woven-branch teardrop shelter set among the pines.", year: "" },
-      { src: "images/festival/teardrop-pavilion-yoga.jpg", title: "Teardrop Pavilion in Winter", caption: "The pavilion in the snow, with its striped timber backdrop.", year: "" },
-      { src: "images/festival/owl-festival-crowd.jpg", title: "Great Owl", caption: "A giant UV-painted wooden owl watching over the festival crowd.", year: "" },
-      { src: "images/festival/owl-gateway-uv.jpg", title: "Owl Gateway", caption: "The owl with its wings spread over an entrance path, glowing under blacklight.", year: "" },
-      { src: "images/festival/floral-entrance-arch.jpg", title: "Floral Entrance Arch", caption: "A towering flower-covered gateway in the pines.", year: "" },
-      { src: "images/festival/wooden-serpent-build.jpg", title: "Wooden Serpent (in progress)", caption: "Faceted timber segments taking shape during the build.", year: "" },
-    ],
-  },
-
-  stages: {
-    cover: "images/stages/bamboo-string-stage.jpg",
-    items: [
-      { src: "images/stages/bamboo-string-stage.jpg", title: "Bamboo String Stage", caption: "Bent bamboo arches and string-art netting around a wooden stage deck.", year: "" },
     ],
   },
 
