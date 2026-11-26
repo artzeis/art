@@ -1,5 +1,5 @@
 /* ==========================================================
-   Artz Designs — solarpunk × ornamental portfolio styles
+   ArtZ Designs — solarpunk × ornamental portfolio styles
    ========================================================== */
 
 :root {
@@ -129,7 +129,7 @@ h1, h2, .logo, .next strong {
 }
 .hero h1 {
   font-family: var(--serif); font-weight: 350;
-  font-size: clamp(2.8rem, 7.4vw, 6.2rem);
+  font-size: clamp(2.6rem, 6vw, 5rem);
   line-height: 1; letter-spacing: -0.03em;
   margin: 20px 0 28px;
 }

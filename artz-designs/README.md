@@ -1,4 +1,4 @@
-# Artz Designs — Portfolio Website
+# ArtZ Designs — Portfolio Website
 
 Live at **https://artzeis.github.io/art/** (redeploys automatically on every push to `master`).
 

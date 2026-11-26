@@ -26,6 +26,6 @@ folder on GitHub Pages works well for playing on a phone.
 - `js/app.js` — screens, quest flow, journal, grown-up setup
 - `js/ar.js` — AR hide-and-seek mode
 
-## Artz Designs portfolio
+## ArtZ Designs portfolio
 The portfolio website lives in [`artz-designs/`](artz-designs/) and is published at
 https://artzeis.github.io/art/ by `.github/workflows/pages.yml` on every push to `master`.
