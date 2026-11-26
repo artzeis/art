@@ -23,7 +23,12 @@ window.PORTFOLIO = {
         title: "Bamboo Bridge",
         meta: "Envision Festival",
         caption: "A bridge decoration of bent bamboo arches and hand-strung string art, turning a festival crossing into a glowing threshold after dark.",
-        views: [{ src: "images/installations/bamboo-string-stage.jpg" }],
+        views: [
+          { label: "Entrance", icon: "moon", mood: "night", src: "images/installations/bamboo-bridge-entrance-night.jpg",
+            note: "From the path, bent bamboo ribs rise into a pointed arch, with a geometric lantern hung at the peak to light the way across." },
+          { label: "On the bridge", icon: "star", mood: "night", src: "images/installations/bamboo-string-stage.jpg",
+            note: "Out on the deck, hand-strung string art fills the space between the arches." },
+        ],
       },
       {
         title: "Driftwood Moon",
@@ -87,6 +92,26 @@ window.PORTFOLIO = {
     cover: "images/landscape/branch-helix.jpg",
     layout: "projects",
     items: [
+      {
+        title: "Leaf Moon Pod",
+        caption: "A circular garden pod clad in overlapping hand-cut wooden leaves that sweep around the opening like a gust of wind, with a turf-lined seat inside, a woven pendant lamp, and a stepped timber deck beneath the palms.",
+        views: [
+          { label: "Front", icon: "sun", src: "images/landscape/leaf-moon-pod-front.jpg",
+            note: "Head-on, it reads as a full moon of leaves with a soft green hollow to sink into." },
+          { label: "Side", icon: "leaf", src: "images/landscape/leaf-moon-pod-side.jpg",
+            note: "From the side, the leaves spiral off the rim, and a shingled, curtained arch connects it to the next room." },
+        ],
+      },
+      {
+        title: "Petal Pod",
+        caption: "A small meditation room shaped like a flower bud: layered wooden petals with a translucent curved roof, sheer curtains, and a warm lamp that makes it glow at dusk.",
+        views: [{ src: "images/landscape/petal-pod-dusk.jpg" }],
+      },
+      {
+        title: "Wave Cedar Shed",
+        caption: "A garden shed turned sculpture: layered cedar cut into flowing waves across vertical siding, with an organic-shaped window and a porthole in the door.",
+        views: [{ src: "images/landscape/wave-cedar-shed.jpg" }],
+      },
       {
         title: "Pergola Lounge Deck",
         caption: "A custom timber pergola over a wraparound deck, with built-in cushioned bench seating, a geometric lattice column climbing through the center, and slatted shade that throws shifting patterns across the lounge.",
