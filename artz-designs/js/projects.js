@@ -83,9 +83,33 @@ window.PORTFOLIO = {
   },
   landscape: {
     cover: "images/landscape/branch-helix.jpg",
+    layout: "projects",
     items: [
-      { src: "images/landscape/branch-helix.jpg", title: "Branch Helix", caption: "A spiralling ladder of peeled branches rising out of the meadow.", year: "" },
-      { src: "images/landscape/driftwood-pillars-path.jpg", title: "Driftwood Path Pillars", caption: "Twisted driftwood columns glowing from within, framing a lit garden path.", year: "" },
+      {
+        title: "Pergola Lounge Deck",
+        caption: "A custom timber pergola over a wraparound deck, with built-in cushioned bench seating, a geometric lattice column climbing through the center, and slatted shade that throws shifting patterns across the lounge.",
+        views: [{ src: "images/landscape/pergola-lounge-deck.jpg" }],
+      },
+      {
+        title: "Slatted Timber Gateway",
+        caption: "A side-yard entry reimagined: a pivoting gate and frame clad in alternating timber slats over black steel, with vertical rhythm on the door and horizontal bands around the opening.",
+        views: [{ src: "images/landscape/slatted-timber-gateway.jpg" }],
+      },
+      {
+        title: "Courtyard Lounge & Planter Screen",
+        caption: "A slatted privacy screen topped with a bromeliad planter and trained vines, paired with a live-edge bar top to turn a narrow courtyard into an outdoor living room.",
+        views: [{ src: "images/landscape/courtyard-planter-screen.jpg" }],
+      },
+      {
+        title: "Branch Helix",
+        caption: "A spiralling ladder of peeled branches rising out of the meadow.",
+        views: [{ src: "images/landscape/branch-helix.jpg" }],
+      },
+      {
+        title: "Driftwood Path Pillars",
+        caption: "Twisted driftwood columns glowing from within, framing a lit garden path.",
+        views: [{ src: "images/landscape/driftwood-pillars-path.jpg" }],
+      },
     ],
   },
 
