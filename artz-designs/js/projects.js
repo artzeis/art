@@ -17,18 +17,68 @@
 window.PORTFOLIO = {
   installations: {
     cover: "images/installations/driftwood-moon-day.jpg",
+    layout: "projects",   // feature rows; group photos with "views"
     items: [
-      { src: "images/installations/bamboo-string-stage.jpg", title: "Bamboo String Stage", caption: "Bent bamboo arches and string-art netting around a wooden stage deck.", year: "" },
-      { src: "images/installations/driftwood-moon-day.jpg", title: "Driftwood Moon", caption: "A crescent moon of layered driftwood with a walkable deck and hanging orb.", year: "" },
-      { src: "images/installations/driftwood-moon-night.jpg", title: "Driftwood Moon — Night", caption: "The orb lit up after dark, with the campfire glowing beyond.", year: "" },
-      { src: "images/installations/bloom-pod-day.jpg", title: "Bloom Pod", caption: "A wooden flower bud lounge with layered petals and a mossy interior.", year: "" },
-      { src: "images/installations/bloom-pod-night.jpg", title: "Bloom Pod — Night", caption: "Inside the pod beneath a glowing pinecone lantern.", year: "" },
-      { src: "images/installations/teardrop-pavilion.jpg", title: "Teardrop Pavilion", caption: "A woven-branch teardrop shelter set among the pines.", year: "" },
-      { src: "images/installations/teardrop-pavilion-yoga.jpg", title: "Teardrop Pavilion in Winter", caption: "The pavilion in the snow, with its striped timber backdrop.", year: "" },
-      { src: "images/installations/owl-festival-crowd.jpg", title: "Great Owl", caption: "A giant UV-painted wooden owl watching over the festival crowd.", year: "" },
-      { src: "images/installations/owl-gateway-uv.jpg", title: "Owl Gateway", caption: "The owl with its wings spread over an entrance path, glowing under blacklight.", year: "" },
-      { src: "images/installations/floral-entrance-arch.jpg", title: "Floral Entrance Arch", caption: "A towering flower-covered gateway in the pines.", year: "" },
-      { src: "images/installations/wooden-serpent-build.jpg", title: "Wooden Serpent (in progress)", caption: "Faceted timber segments taking shape during the build.", year: "" },
+      {
+        title: "Bamboo Bridge",
+        meta: "Envision Festival",
+        caption: "A bridge decoration of bent bamboo arches and hand-strung string art, turning a festival crossing into a glowing threshold after dark.",
+        views: [{ src: "images/installations/bamboo-string-stage.jpg" }],
+      },
+      {
+        title: "Driftwood Moon",
+        meta: "Private client · Northern California",
+        caption: "A crescent moon built from hundreds of pieces of layered driftwood, with a walkable deck through its belly and a glowing orb strung from tip to tip.",
+        views: [
+          { label: "Day", icon: "sun", src: "images/installations/driftwood-moon-day.jpg",
+            note: "By day it rests in the meadow like something washed ashore: weathered, sculptural, a place to climb in and lounge." },
+          { label: "Night", icon: "moon", mood: "night", src: "images/installations/driftwood-moon-night.jpg",
+            note: "After dark the orb lights up and the moon gets its own moon, glowing against the night sky." },
+        ],
+      },
+      {
+        title: "Idea Seed",
+        meta: "Lighthaven · Berkeley, CA",
+        caption: "An event space shaped like a seed pod cracking open: shingled wooden petals curl around a soft, moss-green interior big enough to gather in.",
+        views: [
+          { label: "Day", icon: "sun", src: "images/installations/bloom-pod-day.jpg",
+            note: "In daylight it reads as sculpture: warm wood, curling petals and a green heart waiting to be sat in." },
+          { label: "Night", icon: "moon", mood: "night", src: "images/installations/bloom-pod-night.jpg",
+            note: "At night it changes completely. The petals fall into silhouette, the moss glows electric green, and a carved pinecone lantern hangs at the center like the seed's first spark." },
+        ],
+      },
+      {
+        title: "Teardrop Pavilion",
+        meta: "Retreat center · Rocky Mountains",
+        caption: "Functional art for a mountain retreat: a teardrop of woven branches wrapped around a timber-striped nook with a deck and table, for conversation, meditation and practice.",
+        views: [
+          { label: "Autumn", icon: "leaf", src: "images/installations/teardrop-pavilion.jpg",
+            note: "Tucked among the pines, it shelters a quiet conversation." },
+          { label: "Winter", icon: "snow", src: "images/installations/teardrop-pavilion-yoga.jpg",
+            note: "In deep snow it still holds its shape, framing the mountain light for a morning practice." },
+        ],
+      },
+      {
+        title: "Great Owl",
+        meta: "In collaboration with Alchemy Arts Collective",
+        caption: "A giant wooden owl painted in UV-reactive sacred geometry that comes alive under blacklight.",
+        views: [
+          { label: "Gateway", icon: "star", src: "images/installations/owl-gateway-uv.jpg",
+            note: "With wings spread wide, it becomes a glowing gateway to walk beneath." },
+          { label: "Main stage", icon: "moon", mood: "night", src: "images/installations/owl-festival-crowd.jpg", position: "18% 50%",
+            note: "Perched beside the main stage, it watches over thousands of dancers." },
+        ],
+      },
+      {
+        title: "Floral Entrance Arch",
+        caption: "A towering flower-covered gateway in the pines.",
+        views: [{ src: "images/installations/floral-entrance-arch.jpg" }],
+      },
+      {
+        title: "Wooden Serpent (in progress)",
+        caption: "Faceted timber segments taking shape during the build.",
+        views: [{ src: "images/installations/wooden-serpent-build.jpg" }],
+      },
     ],
   },
   landscape: {

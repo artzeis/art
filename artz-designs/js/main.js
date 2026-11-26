@@ -41,6 +41,9 @@
         t.innerHTML = '<div class="frame" style="aspect-ratio:' + r + '">Image coming soon</div>';
         gallery.appendChild(t);
       });
+    } else if (cat.layout === "projects") {
+      gallery.classList.add("projects");
+      items = renderProjects(cat.items, gallery);
     } else {
       items.forEach(function (item, i) {
         var b = document.createElement("button");
@@ -73,6 +76,109 @@
         gallery.appendChild(b);
       });
     }
+  }
+
+  // ---- Project rows (photos + story, with view toggles) ----
+  // Returns a flat list of every photo on the page for the lightbox.
+  function renderProjects(projects, root) {
+    var flat = [];
+    var ICONS = { sun: "☀︎", moon: "☾︎", snow: "❄︎", leaf: "❦︎", star: "✦︎" };
+
+    projects.forEach(function (p) {
+      var views = p.views || [{ src: p.src }];
+      var firstIndex = flat.length;
+      views.forEach(function (v) {
+        flat.push({
+          src: v.src,
+          title: p.title + (v.label && views.length > 1 ? " — " + v.label : ""),
+          caption: v.note || p.caption || "",
+          year: p.year || "",
+        });
+      });
+
+      var art = document.createElement("article");
+      art.className = "project reveal";
+
+      // Media: all views stacked, cross-fading
+      var media = document.createElement("button");
+      media.type = "button";
+      media.className = "project-media";
+      media.setAttribute("aria-label", "Open " + p.title + " full screen");
+      views.forEach(function (v, j) {
+        var img = document.createElement("img");
+        img.src = v.src;
+        img.alt = p.title + (v.label ? " — " + v.label : "");
+        img.loading = "lazy";
+        if (v.position) img.style.objectPosition = v.position;
+        if (j === 0) {
+          img.className = "on";
+          img.addEventListener("load", function () {
+            media.style.aspectRatio = img.naturalWidth + " / " + img.naturalHeight;
+          });
+        }
+        media.appendChild(img);
+      });
+      var active = 0;
+      media.addEventListener("click", function () { openLightbox(firstIndex + active); });
+
+      // Text
+      var text = document.createElement("div");
+      text.className = "project-text";
+      if (p.meta) {
+        var meta = document.createElement("div");
+        meta.className = "eyebrow";
+        meta.textContent = p.meta;
+        text.appendChild(meta);
+      }
+      var h = document.createElement("h2");
+      h.textContent = p.title;
+      text.appendChild(h);
+      if (p.caption) {
+        var cap = document.createElement("p");
+        cap.textContent = p.caption;
+        text.appendChild(cap);
+      }
+
+      if (views.length > 1) {
+        var note = document.createElement("p");
+        note.className = "view-note";
+        note.setAttribute("aria-live", "polite");
+
+        var tabs = document.createElement("div");
+        tabs.className = "view-toggle";
+        tabs.setAttribute("role", "group");
+        tabs.setAttribute("aria-label", "Change view");
+        var imgs = media.querySelectorAll("img");
+
+        var select = function (j) {
+          active = j;
+          imgs.forEach(function (im, k) { im.classList.toggle("on", k === j); });
+          tabs.querySelectorAll("button").forEach(function (b, k) {
+            b.setAttribute("aria-pressed", String(k === j));
+          });
+          art.dataset.mood = views[j].mood || "";
+          note.textContent = views[j].note || "";
+          note.hidden = !views[j].note;
+        };
+
+        views.forEach(function (v, j) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.innerHTML = (ICONS[v.icon] ? '<span aria-hidden="true">' + ICONS[v.icon] + "</span> " : "");
+          b.appendChild(document.createTextNode(v.label || "View " + (j + 1)));
+          b.addEventListener("click", function () { select(j); });
+          tabs.appendChild(b);
+        });
+        text.appendChild(tabs);
+        text.appendChild(note);
+        select(0);
+      }
+
+      art.appendChild(media);
+      art.appendChild(text);
+      root.appendChild(art);
+    });
+    return flat;
   }
 
   // ---- Lightbox ----
