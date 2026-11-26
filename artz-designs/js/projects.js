@@ -115,10 +115,33 @@ window.PORTFOLIO = {
 
   interiors: {
     cover: "images/interiors/timber-booth-dining-nook.jpg",
+    layout: "projects",
     items: [
-      { src: "images/interiors/timber-booth-dining-nook.jpg", title: "Timber Booth Dining Nook", caption: "Built-in pine booths with live-edge tabletops and a curved divider, set beneath a living green wall.", year: "" },
-      { src: "images/interiors/carved-swirl-panel.jpg", title: "Carved Swirl Panel", caption: "A large hand-carved relief panel with flowing spirals and wood-grain currents.", year: "" },
-      { src: "images/interiors/carved-wall-pair.jpg", title: "Carved Wall Pair", caption: "Two sculpted wall pieces carved from a single branch.", year: "" },
+      {
+        title: "Timber Booth Dining Nook",
+        caption: "Built-in pine booths with live-edge tabletops and a curved divider, set beneath a living green wall.",
+        views: [{ src: "images/interiors/timber-booth-dining-nook.jpg" }],
+      },
+      {
+        title: "Laundry Room Conversion",
+        caption: "A covered side passage turned into a bright laundry room: birch-ply walls, herringbone oak floors and a translucent roof that pours daylight down between the rafters.",
+        views: [
+          { label: "Laundry nook", src: "images/interiors/laundry-room-nook.jpg",
+            note: "A stacked washer-dryer tucked into its own plywood-lined alcove, with room left for a plant to soak up the skylight." },
+          { label: "Built-in shelving", src: "images/interiors/laundry-room-shelving.jpg",
+            note: "Deep stepped shelves built over the stairwell make storage out of space that was going to waste." },
+        ],
+      },
+      {
+        title: "Carved Swirl Panel",
+        caption: "A large hand-carved relief panel with flowing spirals and wood-grain currents.",
+        views: [{ src: "images/interiors/carved-swirl-panel.jpg" }],
+      },
+      {
+        title: "Carved Wall Pair",
+        caption: "Two sculpted wall pieces carved from a single branch.",
+        views: [{ src: "images/interiors/carved-wall-pair.jpg" }],
+      },
     ],
   },
 };
