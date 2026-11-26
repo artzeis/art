@@ -82,7 +82,7 @@
   // Returns a flat list of every photo on the page for the lightbox.
   function renderProjects(projects, root) {
     var flat = [];
-    var ICONS = { sun: "☀︎", moon: "☾︎", snow: "❄︎", leaf: "❦︎", star: "✦︎" };
+    var ICONS = { play: "▶︎", sun: "☀︎", moon: "☾︎", snow: "❄︎", leaf: "❦︎", star: "✦︎" };
 
     projects.forEach(function (p) {
       var views = p.views || [{ src: p.src }];
@@ -90,6 +90,7 @@
       views.forEach(function (v) {
         flat.push({
           src: v.src,
+          video: v.video || "",
           title: p.title + (v.label && views.length > 1 ? " — " + v.label : ""),
           caption: v.note || p.caption || "",
           year: p.year || "",
@@ -105,7 +106,19 @@
       media.className = "project-media";
       media.setAttribute("aria-label", "Open " + p.title + " full screen");
       views.forEach(function (v, j) {
-        var img = document.createElement("img");
+        var img;
+        if (v.video) {
+          // Short looping clip; plays only while its view is selected
+          img = document.createElement("video");
+          img.src = v.video;
+          img.poster = v.src;
+          img.muted = true; img.loop = true; img.playsInline = true;
+          img.preload = "metadata";
+          img.setAttribute("aria-label", p.title + (v.label ? " — " + v.label : ""));
+          media.appendChild(img);
+          return;
+        }
+        img = document.createElement("img");
         img.src = v.src;
         img.alt = p.title + (v.label ? " — " + v.label : "");
         img.loading = "lazy";
@@ -148,11 +161,17 @@
         tabs.className = "view-toggle";
         tabs.setAttribute("role", "group");
         tabs.setAttribute("aria-label", "Change view");
-        var imgs = media.querySelectorAll("img");
+        var imgs = media.querySelectorAll("img, video");
 
         var select = function (j) {
           active = j;
-          imgs.forEach(function (im, k) { im.classList.toggle("on", k === j); });
+          imgs.forEach(function (im, k) {
+            im.classList.toggle("on", k === j);
+            if (im.tagName === "VIDEO") {
+              if (k === j) { var pr = im.play(); if (pr && pr.catch) pr.catch(function () {}); }
+              else im.pause();
+            }
+          });
           tabs.querySelectorAll("button").forEach(function (b, k) {
             b.setAttribute("aria-pressed", String(k === j));
           });
@@ -182,7 +201,7 @@
   }
 
   // ---- Lightbox ----
-  var lb, lbImg, lbCap, current = 0, lastFocus;
+  var lb, lbImg, lbVid, lbCap, current = 0, lastFocus;
 
   function buildLightbox() {
     lb = document.createElement("div");
@@ -192,10 +211,11 @@
     lb.innerHTML =
       '<button class="lb-close" aria-label="Close">&times;</button>' +
       '<button class="lb-prev" aria-label="Previous">&larr;</button>' +
-      '<figure><img alt=""><figcaption></figcaption></figure>' +
+      '<figure><img alt=""><video controls loop playsinline muted hidden></video><figcaption></figcaption></figure>' +
       '<button class="lb-next" aria-label="Next">&rarr;</button>';
     document.body.appendChild(lb);
     lbImg = lb.querySelector("img");
+    lbVid = lb.querySelector("video");
     lbCap = lb.querySelector("figcaption");
     lb.querySelector(".lb-close").onclick = closeLightbox;
     lb.querySelector(".lb-prev").onclick = function () { show(current - 1); };
@@ -206,7 +226,15 @@
   function show(i) {
     current = (i + items.length) % items.length;
     var item = items[current];
-    lbImg.src = item.src;
+    if (item.video) {
+      lbImg.hidden = true; lbImg.removeAttribute("src");
+      lbVid.hidden = false; lbVid.poster = item.src; lbVid.src = item.video;
+      var pr = lbVid.play(); if (pr && pr.catch) pr.catch(function () {});
+    } else {
+      lbVid.pause(); lbVid.hidden = true; lbVid.removeAttribute("src");
+      lbImg.hidden = false;
+      lbImg.src = item.src;
+    }
     lbImg.alt = item.title || "";
     lbCap.textContent = "";
     if (item.title) {
@@ -234,6 +262,7 @@
   }
 
   function closeLightbox() {
+    if (lbVid) lbVid.pause();
     lb.classList.remove("open");
     document.body.style.overflow = "";
     if (lastFocus) lastFocus.focus();

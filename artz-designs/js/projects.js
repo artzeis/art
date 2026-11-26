@@ -158,6 +158,18 @@ window.PORTFOLIO = {
     layout: "projects",
     items: [
       {
+        title: "Moon Gate Cabin",
+        caption: "A round timber cabin that disappears into the garden: a full-moon opening framed in curved cedar boards and lattice, wrapped in climbing vines, with built-in cushioned benches and a mossy carpet inside.",
+        views: [
+          { label: "Arrival", icon: "leaf", src: "images/indoors-outdoors/moon-gate-cabin.jpg",
+            note: "Vines have grown right over the arch, so the cabin reads as part of the garden rather than something placed in it." },
+          { label: "Through the moon", icon: "sun", src: "images/indoors-outdoors/moon-gate-cabin-garden.jpg",
+            note: "Step back and the round opening frames the flowering garden beyond, like a window cut through the hedge." },
+          { label: "Inside", icon: "play", src: "images/indoors-outdoors/moon-gate-cabin-inside.jpg", video: "images/indoors-outdoors/moon-gate-cabin-inside.mp4",
+            note: "Inside, warm cedar curves overhead and U-shaped benches wrap the room, with the garden glowing through the far end." },
+        ],
+      },
+      {
         title: "Garden Moon Nook",
         caption: "A tiny garden room hidden in the plantings: a crescent-moon archway hung with tasseled curtains opens onto a timber deck with built-in bench seating, shelves and a low table, reached by slate stepping stones through agave, bromeliads and banana leaves.",
         views: [{ src: "images/indoors-outdoors/garden-moon-nook.jpg" }],
