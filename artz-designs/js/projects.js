@@ -61,8 +61,8 @@ window.PORTFOLIO = {
             note: "Late sun slips through the pines and lights up the sweep of branches as they rise into the teardrop's point." },
           { label: "Gathering", icon: "leaf", src: "images/installations/teardrop-pavilion.jpg",
             note: "Tucked among the pines, it shelters a quiet conversation." },
-          { label: "Winter", icon: "snow", src: "images/installations/teardrop-pavilion-yoga.jpg",
-            note: "In deep snow it still holds its shape, framing the mountain light for a morning practice." },
+          { label: "Winter", icon: "snow", src: "images/installations/teardrop-pavilion-snow.jpg",
+            note: "Dusted with snow among the firs, its sweep of branches rises to a point like a flame in the winter forest." },
         ],
       },
       {
