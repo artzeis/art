@@ -52,7 +52,9 @@ window.PORTFOLIO = {
         meta: "Retreat center · Rocky Mountains",
         caption: "Functional art for a mountain retreat: a teardrop of woven branches wrapped around a timber-striped nook with a deck and table, for conversation, meditation and practice.",
         views: [
-          { label: "Autumn", icon: "leaf", src: "images/installations/teardrop-pavilion.jpg",
+          { label: "Golden hour", icon: "sun", src: "images/installations/teardrop-pavilion-golden-hour.jpg",
+            note: "Late sun slips through the pines and lights up the sweep of branches as they rise into the teardrop's point." },
+          { label: "Gathering", icon: "leaf", src: "images/installations/teardrop-pavilion.jpg",
             note: "Tucked among the pines, it shelters a quiet conversation." },
           { label: "Winter", icon: "snow", src: "images/installations/teardrop-pavilion-yoga.jpg",
             note: "In deep snow it still holds its shape, framing the mountain light for a morning practice." },
@@ -147,6 +149,18 @@ window.PORTFOLIO = {
         title: "Carved Wall Pair",
         caption: "Two sculpted wall pieces carved from a single branch.",
         views: [{ src: "images/interiors/carved-wall-pair.jpg" }],
+      },
+    ],
+  },
+
+  indoorsoutdoors: {
+    cover: "images/indoors-outdoors/garden-moon-nook.jpg",
+    layout: "projects",
+    items: [
+      {
+        title: "Garden Moon Nook",
+        caption: "A tiny garden room hidden in the plantings: a crescent-moon archway hung with tasseled curtains opens onto a timber deck with built-in bench seating, shelves and a low table, reached by slate stepping stones through agave, bromeliads and banana leaves.",
+        views: [{ src: "images/indoors-outdoors/garden-moon-nook.jpg" }],
       },
     ],
   },

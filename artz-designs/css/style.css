@@ -107,7 +107,7 @@ h1, h2, .logo, .next strong {
 .menu-open .menu-btn span::before { top: 0; transform: rotate(45deg); }
 .menu-open .menu-btn span::after { top: 0; width: 24px; transform: rotate(-45deg); }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
   .menu-btn { display: block; }
   .nav {
     position: fixed; inset: 76px 0 auto 0;
@@ -219,7 +219,7 @@ h1, h2, .logo, .next strong {
 
 .cat-card.landscape { --c: var(--landscape); }
 .cat-card.installations { --c: var(--festival); }
-.cat-card.soon      { --c: var(--stages); }
+.cat-card.indoorsoutdoors { --c: var(--stages); }
 .cat-card.interiors { --c: var(--interiors); }
 
 /* Illustrated covers used until real images are added */
@@ -237,7 +237,7 @@ h1, h2, .logo, .next strong {
     repeating-conic-gradient(from 0deg at 50% 26%, #e07a4a 0 7.5deg, #c2553a 7.5deg 15deg),
     #c2553a;
 }
-.cat-card.soon .cover:not([style]) {
+.cat-card.indoorsoutdoors .cover:not([style]) {
   background:
     radial-gradient(60% 30% at 50% 100%, rgba(255,226,160,.45), transparent 70%),
     conic-gradient(from 150deg at 50% 0%, transparent 0 10deg, rgba(255,226,160,.28) 12deg 20deg, transparent 22deg 28deg, rgba(255,226,160,.22) 30deg 38deg, transparent 40deg 46deg, rgba(255,226,160,.28) 48deg 56deg, transparent 58deg),
@@ -298,6 +298,7 @@ h1, h2, .logo, .next strong {
 
 body.landscape { --c: var(--landscape); }
 body.installations { --c: var(--festival); }
+body.indoorsoutdoors { --c: var(--stages); }
 body.interiors { --c: var(--interiors); }
 
 /* Masonry gallery */
