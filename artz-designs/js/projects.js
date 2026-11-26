@@ -113,6 +113,12 @@ window.PORTFOLIO = {
         views: [{ src: "images/landscape/wave-cedar-shed.jpg" }],
       },
       {
+        title: "Cinnamon Tree Tea Lounge",
+        meta: "Hawaii",
+        caption: "A hexagonal tea lounge set beneath a cinnamon tree: a shingled roof on hand-carved posts with flowing cutout brackets, sheltering an open timber deck with low rail seating.",
+        views: [{ src: "images/landscape/cinnamon-tea-lounge.jpg" }],
+      },
+      {
         title: "Pergola Lounge Deck",
         caption: "A custom timber pergola over a wraparound deck, with built-in cushioned bench seating, a geometric lattice column climbing through the center, and slatted shade that throws shifting patterns across the lounge.",
         views: [{ src: "images/landscape/pergola-lounge-deck.jpg" }],
@@ -160,10 +166,27 @@ window.PORTFOLIO = {
         ],
       },
       {
+        title: "Event Kitchen Pantry",
+        meta: "Event space kitchen",
+        caption: "Curved, wave-edged pantry shelving in pale wood: floating shelves above a freestanding stepped unit that keeps snacks organized and on display.",
+        views: [{ src: "images/interiors/event-kitchen-pantry.jpg" }],
+      },
+      {
+        title: "Hotel Laundry Room",
+        meta: "Nonprofit hotel & event space",
+        caption: "A working laundry room with an L-shaped folding counter built over the machines, a curved notch for easy reach, open cubbies and long floating shelves beneath stained-glass windows.",
+        views: [{ src: "images/interiors/hotel-laundry-room.jpg" }],
+      },
+      {
         title: "Podcast Room",
-        meta: "Lighthaven · Berkeley, CA",
+        meta: "Lighthaven · California",
         caption: "A recording room wrapped in warm wood: walnut-veneer feature panels framed by dark slatted acoustic walls, with curved floating shelves stepping across the wall to hold books, plants and objects behind the conversation.",
-        views: [{ src: "images/interiors/podcast-room.jpg" }],
+        views: [
+          { label: "Conversation", src: "images/interiors/podcast-room-hosts.jpg",
+            note: "Set for two: the shelves frame the Lighthaven sign right behind the conversation." },
+          { label: "Full room", src: "images/interiors/podcast-room.jpg",
+            note: "Pulled back, the slatted acoustic walls wrap the corners and the floating shelves step all the way across." },
+        ],
       },
       {
         title: "Carved Swirl Panel",
