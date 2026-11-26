@@ -47,8 +47,9 @@ window.PORTFOLIO = {
   },
 
   interiors: {
-    cover: "images/interiors/carved-swirl-panel.jpg",
+    cover: "images/interiors/timber-booth-dining-nook.jpg",
     items: [
+      { src: "images/interiors/timber-booth-dining-nook.jpg", title: "Timber Booth Dining Nook", caption: "Built-in pine booths with live-edge tabletops and a curved divider, set beneath a living green wall.", year: "" },
       { src: "images/interiors/carved-swirl-panel.jpg", title: "Carved Swirl Panel", caption: "A large hand-carved relief panel with flowing spirals and wood-grain currents.", year: "" },
       { src: "images/interiors/carved-wall-pair.jpg", title: "Carved Wall Pair", caption: "Two sculpted wall pieces carved from a single branch.", year: "" },
     ],
