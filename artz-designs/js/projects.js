@@ -133,6 +133,12 @@ window.PORTFOLIO = {
         ],
       },
       {
+        title: "Podcast Room",
+        meta: "Lighthaven · Berkeley, CA",
+        caption: "A recording room wrapped in warm wood: walnut-veneer feature panels framed by dark slatted acoustic walls, with curved floating shelves stepping across the wall to hold books, plants and objects behind the conversation.",
+        views: [{ src: "images/interiors/podcast-room.jpg" }],
+      },
+      {
         title: "Carved Swirl Panel",
         caption: "A large hand-carved relief panel with flowing spirals and wood-grain currents.",
         views: [{ src: "images/interiors/carved-swirl-panel.jpg" }],
