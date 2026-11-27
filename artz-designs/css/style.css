@@ -107,7 +107,7 @@ h1, h2, .logo, .next strong {
 .menu-open .menu-btn span::before { top: 0; transform: rotate(45deg); }
 .menu-open .menu-btn span::after { top: 0; width: 24px; transform: rotate(-45deg); }
 
-@media (max-width: 1000px) {
+@media (max-width: 1240px) {
   .menu-btn { display: block; }
   .nav {
     position: fixed; inset: 76px 0 auto 0;
@@ -467,6 +467,77 @@ body.interiors { --c: var(--interiors); }
   .lb-prev { left: calc(50% - 64px); }
   .lb-next { right: calc(50% - 64px); }
 }
+
+/* ---------- Start a Project form ---------- */
+body.start { --c: var(--landscape); }
+.nav .nav-cta {
+  padding: 8px 16px; border-radius: 999px; background: var(--ink); color: var(--paper) !important;
+}
+.nav .nav-cta::after { display: none; }
+.nav .nav-cta:hover, .nav .nav-cta[aria-current="page"] { background: var(--landscape); }
+@media (max-width: 1240px) {
+  .nav .nav-cta { display: inline-block; margin-top: 14px; padding: 10px 22px; border-bottom: 0; }
+}
+.inquiry { max-width: 760px; margin: 0 auto; padding-bottom: clamp(64px, 9vw, 110px); display: grid; gap: 22px; }
+.inquiry .panel {
+  border: 1px solid var(--line); border-radius: 24px; background: var(--paper);
+  padding: clamp(20px, 3.5vw, 36px); display: grid; gap: 18px; min-width: 0;
+}
+.inquiry legend {
+  font-family: var(--serif); font-size: 1.45rem; padding: 0 10px; margin-left: -10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.inquiry .step {
+  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--gold); color: var(--forest); font-family: var(--caps); font-size: .85rem;
+}
+.inquiry label { display: grid; gap: 7px; font-weight: 500; font-size: .95rem; }
+.inquiry label small { color: var(--ink-soft); font-weight: 400; }
+.inquiry input:not([type=radio]):not([type=file]), .inquiry select, .inquiry textarea {
+  font: inherit; font-weight: 400; color: var(--ink); width: 100%;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+}
+.inquiry textarea { resize: vertical; line-height: 1.5; }
+.inquiry :is(input, select, textarea):focus-visible { outline: 2px solid var(--landscape); outline-offset: 1px; }
+.inquiry.tried :is(input, select, textarea):invalid { border-color: var(--accent); }
+.inquiry .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .inquiry .row { grid-template-columns: 1fr; } }
+
+.drop {
+  position: relative; place-items: center; text-align: center; cursor: pointer;
+  border: 1.5px dashed color-mix(in srgb, var(--landscape) 50%, transparent);
+  border-radius: 20px; padding: 34px 18px !important;
+  background: color-mix(in srgb, var(--landscape) 6%, var(--paper)); transition: background .2s, border-color .2s;
+}
+.drop.over { background: color-mix(in srgb, var(--landscape) 16%, var(--paper)); border-color: var(--landscape); }
+.drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.drop-icon { font-size: 1.8rem; color: var(--gold); line-height: 1; }
+.drop strong { font-family: var(--serif); font-weight: 500; font-size: 1.2rem; }
+.drop small { color: var(--ink-soft); }
+.thumbs { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+.thumbs:empty { display: none; }
+.thumbs li { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: var(--bg); }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; }
+.thumbs .rm {
+  position: absolute; top: 5px; right: 5px; width: 26px; height: 26px; border-radius: 50%; border: 0;
+  background: rgba(23, 41, 31, .8); color: #fff; font-size: 1rem; line-height: 1; cursor: pointer;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { display: block !important; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span {
+  display: block; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--bg); cursor: pointer; font-weight: 500; transition: .2s;
+}
+.chip:hover span { border-color: var(--landscape); }
+.chip input:checked + span { background: var(--landscape); border-color: var(--landscape); color: #fff; }
+.chip input:focus-visible + span { outline: 2px solid var(--landscape); outline-offset: 2px; }
+.inquiry.tried .chips:has(input:invalid) span { border-color: var(--accent); }
+.form-msg { min-height: 1.5em; text-align: center; font-weight: 500; }
+.form-msg.ok { color: var(--landscape); }
+.form-msg.warn { color: var(--accent); }
+.inquiry .submit { justify-self: center; margin-top: 0; border: 0; font: inherit; font-weight: 500; cursor: pointer; }
+.inquiry .submit:disabled { opacity: .6; cursor: wait; }
 
 /* ---------- Faded material textures (stone + moss) ---------- */
 body { position: relative; isolation: isolate; }
