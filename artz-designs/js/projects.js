@@ -169,12 +169,31 @@ window.PORTFOLIO = {
         title: "Cinnamon Tree Tea Lounge",
         meta: "Hawaii",
         caption: "A hexagonal tea lounge set beneath a cinnamon tree: a shingled roof on hand-carved posts with flowing cutout brackets, sheltering an open timber deck with low rail seating.",
-        views: [{ src: "images/landscape/cinnamon-tea-lounge.jpg" }],
+        views: [
+          { label: "Under the tree", src: "images/landscape/cinnamon-tea-lounge.jpg" },
+          { label: "Full view", src: "images/landscape/cinnamon-tea-lounge-full.jpg", note: "Stepping back shows the whole pavilion: carved, pierced posts and swooping brackets under a cedar-shingle hip roof." },
+        ],
+      },
+      {
+        title: "Gothic Garden Gate",
+        caption: "Double redwood gates in a pointed Gothic arch, crowned by a stepped sunburst of fanned boards and hung on hand-forged strap hinges.",
+        views: [
+          { label: "Closed", src: "images/landscape/gothic-gate-closed.jpg", note: "Closed, the two leaves meet beneath a carved arch rib and the sunburst crown." },
+          { label: "Open", icon: "sun", src: "images/landscape/gothic-gate-open.jpg", note: "Swung open, the arch frames the garden path and the pods beyond." },
+        ],
+      },
+      {
+        title: "Rose Arbor Bench",
+        caption: "A curved cedar reading nook with a corrugated roof and lit bench, now almost swallowed by climbing roses and nandina.",
+        views: [{ src: "images/landscape/rose-arbor-bench.jpg" }],
       },
       {
         title: "Pergola Lounge Deck",
         caption: "A custom timber pergola over a wraparound deck, with built-in cushioned bench seating, a geometric lattice column climbing through the center, and slatted shade that throws shifting patterns across the lounge.",
-        views: [{ src: "images/landscape/pergola-lounge-deck.jpg" }],
+        views: [
+          { label: "Lounge", src: "images/landscape/pergola-lounge-deck.jpg" },
+          { label: "Lattice column", src: "images/landscape/pergola-lattice-column.jpg", note: "Up close, the center column is a stack of offset timber frames that climbing vines can weave through." },
+        ],
       },
       {
         title: "Slatted Timber Gateway",
@@ -184,7 +203,10 @@ window.PORTFOLIO = {
       {
         title: "Courtyard Lounge & Planter Screen",
         caption: "A slatted privacy screen topped with a bromeliad planter and trained vines, paired with a live-edge bar top to turn a narrow courtyard into an outdoor living room.",
-        views: [{ src: "images/landscape/courtyard-planter-screen.jpg" }],
+        views: [
+          { label: "Finished", src: "images/landscape/courtyard-planter-screen.jpg" },
+          { label: "Build", src: "images/landscape/courtyard-planter-screen-build.jpg", note: "Mid-install: the slatted screen and its planter box going in beside the live-edge bar top." },
+        ],
       },
       {
         title: "Branch Helix",
@@ -212,6 +234,8 @@ window.PORTFOLIO = {
         title: "Laundry Room Conversion",
         caption: "A covered side passage turned into a bright laundry room: birch-ply walls, herringbone oak floors and a translucent roof that pours daylight down between the rafters.",
         views: [
+          { label: "Finished", src: "images/interiors/laundry-room-finished.jpg",
+            note: "Done: herringbone oak floors, birch-ply walls and the stacked washer-dryer under the skylight roof." },
           { label: "Laundry nook", src: "images/interiors/laundry-room-nook.jpg",
             note: "A stacked washer-dryer tucked into its own plywood-lined alcove, with room left for a plant to soak up the skylight." },
           { label: "Built-in shelving", src: "images/interiors/laundry-room-shelving.jpg",
@@ -256,7 +280,10 @@ window.PORTFOLIO = {
       {
         title: "Carved Wall Pair",
         caption: "Two sculpted wall pieces carved from a single branch.",
-        views: [{ src: "images/interiors/carved-wall-pair.jpg" }],
+        views: [
+          { label: "Installed", src: "images/interiors/carved-wall-pair.jpg" },
+          { label: "Detail", src: "images/interiors/carved-wall-pieces.jpg", note: "Laid flat, the pair shows its spiralling cuts, knots and glossy hand-rubbed finish." },
+        ],
       },
     ],
   },
@@ -292,6 +319,11 @@ window.PORTFOLIO = {
         views: [
           { src: "images/indoors-outdoors/leaf-shell-lounge.jpg" },
         ],
+      },
+      {
+        title: "Stone Wall Patio Office",
+        caption: "A covered patio turned year-round workspace: a sculpted faux-rock wall behind clear roll-down panels, a translucent roof on timber rafters, ferns, string lights and overhead heaters.",
+        views: [{ src: "images/indoors-outdoors/stone-wall-patio-office.jpg" }],
       },
       {
         title: "Garden Moon Nook",
