@@ -133,14 +133,6 @@ window.PORTFOLIO = {
         ],
       },
       {
-        title: "Arched Garden Office",
-        caption: "A pointed-arch work cabin attached to the Leaf Moon Pod: dark timber ribs, cascading cedar shingles, tied-back linen curtains and a built-in curved desk under the palms.",
-        views: [
-          { label: "Inside", icon: "sun", src: "images/landscape/arched-garden-office-front.jpg", note: "Through the arch: a quiet desk with a view of the palm fronds." },
-          { label: "Arch", icon: "leaf", src: "images/landscape/arched-garden-office-side.jpg", note: "From the side, the shingles spill over the curved roof like overlapping leaves." },
-        ],
-      },
-      {
         title: "Garden Bar Pavilion",
         caption: "A backyard bar pavilion with geometric mountain-motif railings, a wraparound bar top and a star lantern, connected by a herringbone deck to a turf-topped bench built around an old tree.",
         views: [
@@ -302,6 +294,14 @@ window.PORTFOLIO = {
             note: "Step back and the round opening frames the flowering garden beyond, like a window cut through the hedge." },
           { label: "Inside", icon: "play", src: "images/indoors-outdoors/moon-gate-cabin-inside.jpg", video: "images/indoors-outdoors/moon-gate-cabin-inside.mp4",
             note: "Inside, warm cedar curves overhead and U-shaped benches wrap the room, with the garden glowing through the far end." },
+        ],
+      },
+      {
+        title: "Arched Garden Office",
+        caption: "A pointed-arch work cabin attached to the Leaf Moon Pod: dark timber ribs, cascading cedar shingles, tied-back linen curtains and a built-in curved desk under the palms.",
+        views: [
+          { label: "Inside", icon: "sun", src: "images/indoors-outdoors/arched-garden-office-front.jpg", note: "Through the arch: a quiet desk with a view of the palm fronds." },
+          { label: "Arch", icon: "leaf", src: "images/indoors-outdoors/arched-garden-office-side.jpg", note: "From the side, the shingles spill over the curved roof like overlapping leaves." },
         ],
       },
       {
