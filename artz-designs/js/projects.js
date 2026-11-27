@@ -31,6 +31,35 @@ window.PORTFOLIO = {
         ],
       },
       {
+        title: "Golden Face Pyramid Stage",
+        caption: "A main-stage facade: a towering pyramid of warm geometric panels crowned by a golden-masked face and sunburst halo, with sculpted wooden arms reaching out over the crowd.",
+        views: [
+          { src: "images/installations/golden-face-pyramid-stage.jpg" },
+        ],
+      },
+      {
+        title: "Forest Arch Stage",
+        caption: "A city-festival stage built as a living ruin: weathered reclaimed-wood pillars rising into lit arches wrapped in greenery, with a diamond keystone at the crown.",
+        views: [
+          { label: "Show", icon: "star", src: "images/installations/forest-arch-stage-crowd.jpg", note: "Packed and lit up, the arches frame the DJ booth above a sea of hands." },
+          { label: "Before doors", icon: "sun", src: "images/installations/forest-arch-stage-dusk.jpg", note: "At dusk before the gates open, the fixtures and reclaimed-wood structure read clearly against the sky." },
+        ],
+      },
+      {
+        title: "Jungle DJ Stage",
+        caption: "A DJ stage in the jungle: layered wooden wings and a central crest cut with organic cell patterns, string curtains, river stones at the base and a web painted across the dance floor.",
+        views: [
+          { src: "images/installations/jungle-dj-stage.jpg" },
+        ],
+      },
+      {
+        title: "Vine Tower House",
+        caption: "A whimsical storybook tower for a festival: a leaning, flared timber house with coffin-shaped doors and windows, a crooked chimney and a tiny pagoda lookout, all wrapped in vines.",
+        views: [
+          { src: "images/installations/vine-tower-house.jpg" },
+        ],
+      },
+      {
         title: "Driftwood Moon",
         meta: "Private client · Northern California",
         caption: "A crescent moon built from hundreds of pieces of layered driftwood, with a walkable deck through its belly and a glowing orb strung from tip to tip.",
@@ -98,8 +127,32 @@ window.PORTFOLIO = {
         views: [
           { label: "Front", icon: "sun", src: "images/landscape/leaf-moon-pod-front.jpg",
             note: "Head-on, it reads as a full moon of leaves with a soft green hollow to sink into." },
+          { label: "Seat", icon: "star", src: "images/landscape/leaf-moon-pod-seat.jpg", note: "Up close, the turf-lined hollow curves into a single sculpted seat under the woven lamp." },
           { label: "Side", icon: "leaf", src: "images/landscape/leaf-moon-pod-side.jpg",
             note: "From the side, the leaves spiral off the rim, and a shingled, curtained arch connects it to the next room." },
+        ],
+      },
+      {
+        title: "Arched Garden Office",
+        caption: "A pointed-arch work cabin attached to the Leaf Moon Pod: dark timber ribs, cascading cedar shingles, tied-back linen curtains and a built-in curved desk under the palms.",
+        views: [
+          { label: "Inside", icon: "sun", src: "images/landscape/arched-garden-office-front.jpg", note: "Through the arch: a quiet desk with a view of the palm fronds." },
+          { label: "Arch", icon: "leaf", src: "images/landscape/arched-garden-office-side.jpg", note: "From the side, the shingles spill over the curved roof like overlapping leaves." },
+        ],
+      },
+      {
+        title: "Garden Bar Pavilion",
+        caption: "A backyard bar pavilion with geometric mountain-motif railings, a wraparound bar top and a star lantern, connected by a herringbone deck to a turf-topped bench built around an old tree.",
+        views: [
+          { label: "Bar", icon: "star", src: "images/landscape/garden-bar-pavilion.jpg", note: "Angular timber latticework rises like a mountain range behind the bar seating." },
+          { label: "Tree bench", icon: "leaf", src: "images/landscape/tree-bench-deck.jpg", note: "A turf-topped bench wraps the trunk of the old tree, with the deck patterns leading back to the bar." },
+        ],
+      },
+      {
+        title: "Lounge Pergola",
+        caption: "A heavy-timber pergola on a stained deck, with angled braces, hanging greenery and low lounge seating set into a garden lawn.",
+        views: [
+          { src: "images/landscape/lounge-pergola.jpg" },
         ],
       },
       {
@@ -189,6 +242,13 @@ window.PORTFOLIO = {
         ],
       },
       {
+        title: "Carved Folding Screen",
+        caption: "A three-panel room divider carved with flowing currents and a cascade of moons, warm-stained to sit among plants in an open living space.",
+        views: [
+          { src: "images/interiors/carved-folding-screen.jpg" },
+        ],
+      },
+      {
         title: "Carved Swirl Panel",
         caption: "A large hand-carved relief panel with flowing spirals and wood-grain currents.",
         views: [{ src: "images/interiors/carved-swirl-panel.jpg" }],
@@ -215,6 +275,22 @@ window.PORTFOLIO = {
             note: "Step back and the round opening frames the flowering garden beyond, like a window cut through the hedge." },
           { label: "Inside", icon: "play", src: "images/indoors-outdoors/moon-gate-cabin-inside.jpg", video: "images/indoors-outdoors/moon-gate-cabin-inside.mp4",
             note: "Inside, warm cedar curves overhead and U-shaped benches wrap the room, with the garden glowing through the far end." },
+        ],
+      },
+      {
+        title: "Hex Work Pod",
+        caption: "A hexagonal outdoor meeting room: a heavy timber frame with a shingled, turf-topped roof, cedar-lined interior and facing bench seats around a standing desk.",
+        views: [
+          { label: "Furnished", icon: "sun", src: "images/indoors-outdoors/hex-pod-furnished.jpg", note: "Cushioned benches, a sit-stand table and a roll-down shade make it a working office in the garden." },
+          { label: "Outside", icon: "leaf", src: "images/indoors-outdoors/hex-pod-angle.jpg", note: "From the corner, the tilted hexagon and shingle roof with tufts of greenery read as one sculptural form." },
+          { label: "Build", icon: "star", src: "images/indoors-outdoors/hex-pod-build.jpg", note: "Fresh from the build: the cedar-lined benches and floor before furnishing." },
+        ],
+      },
+      {
+        title: "Leaf Shell Lounge",
+        caption: "A curling shell of layered wooden leaves sheltering a built-in curved bench, its ceiling hung with ivy, ferns and string lights.",
+        views: [
+          { src: "images/indoors-outdoors/leaf-shell-lounge.jpg" },
         ],
       },
       {
