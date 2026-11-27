@@ -1,13 +1,16 @@
-# Artz Designs — Portfolio Website
+# ArtZ Designs — Portfolio Website
 
-A static portfolio site (no build step) with a home page and four gallery pages:
+Live at **https://artzeis.github.io/art/** (redeploys automatically on every push to `master`).
 
-| Page | File | Image folder |
-|---|---|---|
-| Landscape Design | `landscape-design.html` | `images/landscape/` |
-| Festival Installations | `festival-installations.html` | `images/festival/` |
-| Stages | `stages.html` | `images/stages/` |
-| Interior Remodels | `interior-remodels.html` | `images/interiors/` |
+A static portfolio site (no build step) with a home page and three gallery pages:
+
+| Page | File | Image folder | Data key |
+|---|---|---|---|
+| Stages & Installations | `stages-installations.html` | `images/installations/` | `installations` |
+| Landscape Design | `landscape-design.html` | `images/landscape/` | `landscape` |
+| Interior Design | `interior-design.html` | `images/interiors/` | `interiors` |
+
+A fourth category is planned; the home page shows a "Coming Soon" card for it.
 
 ## Adding images
 1. Put the image in the right folder under `images/`.
