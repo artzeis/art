@@ -60,6 +60,16 @@ window.PORTFOLIO = {
         ],
       },
       {
+        title: "Driftwood Fish DJ Booth",
+        caption: "A DJ booth built from layered driftwood in the shape of a great fish, balanced on a forked driftwood trunk, framed by a wall of green bamboo under a stretch tent.",
+        views: [
+          { label: "Day", icon: "sun", src: "images/installations/driftwood-fish-dj-booth-day.jpg",
+            note: "By day the weathered grain of every piece of driftwood reads clearly against the bamboo." },
+          { label: "Night", icon: "moon", mood: "night", src: "images/installations/driftwood-fish-dj-booth-night.jpg",
+            note: "At night it glows amber against purple light beams fanning across the tent above." },
+        ],
+      },
+      {
         title: "Driftwood Moon",
         meta: "Private client · Northern California",
         caption: "A crescent moon built from hundreds of pieces of layered driftwood, with a walkable deck through its belly and a glowing orb strung from tip to tip.",
@@ -101,6 +111,8 @@ window.PORTFOLIO = {
         views: [
           { label: "Gateway", icon: "star", src: "images/installations/owl-gateway-uv.jpg",
             note: "With wings spread wide, it becomes a glowing gateway to walk beneath." },
+          { label: "Daylight", icon: "sun", src: "images/installations/great-owl-daylight.jpg",
+            note: "In daylight the hand-painted chevron feathers and patterned face show every detail." },
           { label: "Main stage", icon: "moon", mood: "night", src: "images/installations/owl-festival-crowd.jpg", position: "18% 50%",
             note: "Perched beside the main stage, it watches over thousands of dancers." },
         ],
